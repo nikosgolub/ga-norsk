@@ -49,14 +49,14 @@ button{touch-action:manipulation}
   transition:opacity .9s cubic-bezier(.16,1,.3,1)}
 .fj.on{opacity:1}
 .fj-fade{position:absolute;inset:0;opacity:0;transition:opacity .9s cubic-bezier(.16,1,.3,1);
-  background:linear-gradient(to bottom,rgba(12,12,12,.40) 0%,rgba(12,12,12,.52) 30%,
-    rgba(12,12,12,.88) 58%,var(--bg) 74%)}
+  background:linear-gradient(to bottom,rgba(12,12,12,.16) 0%,rgba(12,12,12,.36) 30%,
+    rgba(12,12,12,.84) 58%,var(--bg) 74%)}
 body.fj-on .fj-fade{opacity:1}
 /* Отдельный слой затемнения: им управляет скролл, поэтому переходов на нём нет. */
 .fj-dim{position:absolute;inset:0;background:var(--bg);opacity:0}
 body.fj-on .amb{display:none}
-body.light .fj-fade{background:linear-gradient(to bottom,rgba(245,245,245,.30) 0%,
-  rgba(245,245,245,.48) 30%,rgba(245,245,245,.9) 58%,var(--bg) 74%)}
+body.light .fj-fade{background:linear-gradient(to bottom,rgba(245,245,245,.62) 0%,
+  rgba(245,245,245,.74) 30%,rgba(245,245,245,.95) 58%,var(--bg) 74%)}
 .amb{position:absolute;border-radius:50%;filter:blur(120px)}
 .amb.a1{width:70vw;height:70vw;min-width:420px;min-height:420px;top:-25%;right:-20%;background:radial-gradient(circle,rgba(122,162,247,0.20),transparent 70%)}
 .amb.a2{width:60vw;height:60vw;min-width:360px;min-height:360px;bottom:-20%;left:-18%;background:radial-gradient(circle,rgba(248,113,113,0.14),transparent 70%)}
@@ -6023,29 +6023,53 @@ function fjBuild(THREE){
   catch(e){ fjState = 3; return; }
   // Это фон: резкость ему не нужна, а каждый лишний пиксель — это батарея.
   renderer.setPixelRatio(Math.min((window.devicePixelRatio||1) * 0.7, 1.4));
-  renderer.setClearColor(0x6f777e, 1);
+  renderer.setClearColor(0x232e3d, 1);
 
   // Пасмурный фьорд: тёмный зенит, светлая дымка у воды, ни одного тёплого оттенка.
-  const HAZE = 0x6f777e;
+  const HAZE = 0x232e3d;
   const scene = new THREE.Scene();
   scene.fog = new THREE.Fog(HAZE, 10, 185);          // вся глубина держится на тумане
   const camera = new THREE.PerspectiveCamera(52, 1, 0.1, 700);
 
-  function grad(stops, w, h){
-    const c = document.createElement('canvas'); c.width = w; c.height = h;
-    const g = c.getContext('2d'), lg = g.createLinearGradient(0,0,0,h);
-    for(let i=0;i<stops.length;i++) lg.addColorStop(stops[i][0], stops[i][1]);
-    g.fillStyle = lg; g.fillRect(0,0,w,h);
-    return new THREE.CanvasTexture(c);
+  // Небо рисуем на холсте пошире: по тому же полотну рассыпаем звёзды.
+  function nightSky(){
+    const c = document.createElement('canvas'); c.width = 512; c.height = 512;
+    const g = c.getContext('2d');
+    const lg = g.createLinearGradient(0, 0, 0, 512);
+    [[0,'#05070a'],[0.24,'#0b111a'],[0.40,'#18212e'],[0.5,'#232e3d'],[1,'#232e3d']]
+      .forEach(function(st){ lg.addColorStop(st[0], st[1]); });
+    g.fillStyle = lg; g.fillRect(0, 0, 512, 512);
+    const t = new THREE.CanvasTexture(c);
+    t.colorSpace = THREE.SRGBColorSpace;
+    return t;
   }
 
   // Купол неба: градиент привязан к миру, поэтому горизонт всегда совпадает с водой.
   scene.add(new THREE.Mesh(
-    new THREE.SphereGeometry(450, 24, 18),
-    new THREE.MeshBasicMaterial({
-      map: grad([[0,'#13181c'],[0.27,'#262d33'],[0.44,'#4d555d'],[0.5,'#6f777e'],[1,'#6f777e']], 4, 256),
-      side: THREE.BackSide, fog:false, depthWrite:false })
+    new THREE.SphereGeometry(450, 32, 20),
+    new THREE.MeshBasicMaterial({ map: nightSky(), side: THREE.BackSide,
+      fog:false, depthWrite:false })
   ));
+
+  // Звёзды — точки на дальней сфере, от горизонта и выше.
+  const SN = 300;
+  const sPos = new Float32Array(SN * 3), sCol = new Float32Array(SN * 3);
+  for(let i = 0; i < SN; i++){
+    const th = fjVn(i * 1.7, 0.3) * 6.2832;
+    const ph = 0.05 + Math.pow(fjVn(i * 2.9, 7.1), 1.5) * 0.70;
+    const ca = Math.cos(ph) * 400;
+    sPos[i*3] = Math.cos(th) * ca;
+    sPos[i*3+1] = Math.sin(ph) * 400;
+    sPos[i*3+2] = Math.sin(th) * ca;
+    const b = 0.22 + fjVn(i * 5.1, 2.7) * 0.78;
+    sCol[i*3] = b * 0.84; sCol[i*3+1] = b * 0.9; sCol[i*3+2] = b;
+  }
+  const starGeo = new THREE.BufferGeometry();
+  starGeo.setAttribute('position', new THREE.BufferAttribute(sPos, 3));
+  starGeo.setAttribute('color', new THREE.BufferAttribute(sCol, 3));
+  scene.add(new THREE.Points(starGeo, new THREE.PointsMaterial({
+    size:1.8, sizeAttenuation:false, vertexColors:true,
+    transparent:true, opacity:0.85, fog:false, depthWrite:false })));
 
   // Стены фьорда: одна сетка, продавленная шумом на старте.
   const geo = new THREE.PlaneGeometry(320, 760, 140, 210);
@@ -6053,7 +6077,7 @@ function fjBuild(THREE){
   for(let i=0;i<pos.count;i++) pos.setZ(i, fjH(pos.getX(i), -pos.getY(i)));
   geo.computeVertexNormals();
   const land = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({
-    color:0x414950, roughness:1.0, metalness:0.0 }));
+    color:0x1b2230, roughness:1.0, metalness:0.0 }));
   land.rotation.x = -Math.PI/2; land.position.z = -320; scene.add(land);
 
   // Вода: гладь с еле заметными полосами, даль уводит туман.
@@ -6065,9 +6089,10 @@ function fjBuild(THREE){
     wg.fillRect(0, i, 4, 1);
   }
   const wtex = new THREE.CanvasTexture(wv);
+  wtex.colorSpace = THREE.SRGBColorSpace;
   wtex.wrapS = wtex.wrapT = THREE.RepeatWrapping; wtex.repeat.set(1, 46);
   const water = new THREE.Mesh(new THREE.PlaneGeometry(1400,1400),
-    new THREE.MeshBasicMaterial({ color:0x545c63, map:wtex,
+    new THREE.MeshBasicMaterial({ color:0x121a25, map:wtex,
       polygonOffset:true, polygonOffsetFactor:-1, polygonOffsetUnits:-1 }));
   water.rotation.x = -Math.PI/2; scene.add(water);
 
@@ -6075,11 +6100,12 @@ function fjBuild(THREE){
   const mv = document.createElement('canvas'); mv.width = 4; mv.height = 128;
   const mgc = mv.getContext('2d');
   const mlg = mgc.createLinearGradient(0,0,0,128);
-  mlg.addColorStop(0,'rgba(124,132,140,0)');
-  mlg.addColorStop(0.58,'rgba(132,140,148,0.62)');
-  mlg.addColorStop(1,'rgba(132,140,148,0.8)');
+  mlg.addColorStop(0,'rgba(56,72,96,0)');
+  mlg.addColorStop(0.58,'rgba(62,80,106,0.58)');
+  mlg.addColorStop(1,'rgba(66,85,112,0.74)');
   mgc.fillStyle = mlg; mgc.fillRect(0,0,4,128);
   const mtex = new THREE.CanvasTexture(mv);
+  mtex.colorSpace = THREE.SRGBColorSpace;
   [[-42, 7, 0.5, 13], [-78, 11, 0.62, 19], [-126, 16, 0.7, 26]].forEach(function(m){
     const q = new THREE.Mesh(new THREE.PlaneGeometry(220, 1),
       new THREE.MeshBasicMaterial({ map:mtex, transparent:true, opacity:m[2],
@@ -6093,17 +6119,18 @@ function fjBuild(THREE){
   const gv = document.createElement('canvas'); gv.width = gv.height = 256;
   const gg = gv.getContext('2d');
   const rg = gg.createRadialGradient(128,150,6,128,150,126);
-  rg.addColorStop(0,'rgba(214,222,230,0.42)'); rg.addColorStop(0.42,'rgba(186,195,204,0.15)');
-  rg.addColorStop(1,'rgba(198,206,214,0)');
+  rg.addColorStop(0,'rgba(178,198,228,0.40)'); rg.addColorStop(0.42,'rgba(126,150,186,0.14)');
+  rg.addColorStop(1,'rgba(126,150,186,0)');
   gg.fillStyle = rg; gg.fillRect(0,0,256,256);
+  const gtex = new THREE.CanvasTexture(gv); gtex.colorSpace = THREE.SRGBColorSpace;
   const glow = new THREE.Mesh(new THREE.PlaneGeometry(150,95),
-    new THREE.MeshBasicMaterial({ map:new THREE.CanvasTexture(gv), transparent:true,
+    new THREE.MeshBasicMaterial({ map:gtex, transparent:true,
       blending:THREE.AdditiveBlending, depthWrite:false, fog:false }));
   glow.position.set(0,16,-215); scene.add(glow);
 
-  scene.add(new THREE.HemisphereLight(HAZE, 0x1b2024, 1.3));
-  const key = new THREE.DirectionalLight(0xd9e0e6, 0.7);
-  key.position.set(-24,34,-40); scene.add(key);
+  scene.add(new THREE.HemisphereLight(HAZE, 0x05070a, 0.70));
+  const moon = new THREE.DirectionalLight(0xa8bdd8, 1.25);   // холодная кромка на гребнях
+  moon.position.set(-46, 40, -22); scene.add(moon);
 
   let p = 0, shownP = -1, on = false, raf = 0, hidden = false;
 
