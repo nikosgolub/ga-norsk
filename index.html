@@ -1186,6 +1186,22 @@ body:not(.light) .s-wans{color:var(--ring-phrases)!important}
 .ch-inp{border-radius:var(--r-sheet)!important;background:var(--surface)!important}
 .wn-c b{font-size:var(--fs-16);font-weight:800}
 .wn-c span{font-size:var(--fs-14);color:var(--ink-2);line-height:1.5}
+
+/* ─── ревью v1.1: правки ─── */
+:root{--accent-text:#7D7AFF}
+body.light,.theme-light{--accent-text:#5A57E0}
+.dl-who,body:not(.light) .dl-who,.s-opt.on .s-opt-h b,body:not(.light) .s-opt.on .s-opt-h b,.s-wans,body:not(.light) .s-wans{color:var(--accent-text)!important}
+.wd-chip.on,body.light .wd-chip.on,body:not(.light) .wd-chip.on{background:var(--accent)!important;border-color:var(--accent)!important;color:var(--on-accent)!important}
+/* стекло только у .glass (шит урока) и модалки — остальное наследие */
+.tour-tip,.header.head-card,.mode-toggle,.card,.lesson-card,.course-card,.toast,.allwin,.hero,.block-card,.word-stage,.wn-item,.modal-back,.glass:not(.fb-sheet){-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+.season,.amb,#fjord,.fj-fade,.fj-dim{display:none!important}
+.s-field,body.light .s-field{font-size:var(--fs-16)!important}
+.text-input,.ch-inp{font-size:var(--fs-16)}
+.wl-form .s-field{width:100%}
+.rvc-none{margin-top:6px;font-size:var(--fs-14);font-weight:700;color:var(--ink-2)}
+.gset-preview.night-card{padding:var(--sp-4);margin:calc(-1 * var(--sp-2)) calc(-1 * var(--sp-2)) var(--sp-3);--rtrack:var(--night-line);--rdone:var(--night-line);color:var(--night-ink)}
+.gset-preview.night-card .gset-now{color:var(--night-ink)}
+.gset-preview.night-card .gset-of{color:var(--night-ink-2)}
 /* ═══ Gå! v1.0 — правила дизайн-системы (последний слой, перекрывает старые) ═══ */
 body{font-family:var(--f-ui)}
 [lang="nb"]{font-family:var(--f-no)}
@@ -2577,7 +2593,7 @@ function renderCourses(){
       '<span class="rvc-k"><i style="background:var(' + col + ')"></i>' + title + '</span>' +
       '<span class="rvc-n">' + n + '</span>' +
       '<span class="rvc-s">' + note + '</span>' +
-      '<button class="rvc-btn" ' + (n ? 'onclick="' + go + '"' : 'disabled') + '>' + (n ? L('Повторить','Review') : L('Всё повторено','All done')) + '</button>' +
+      (n ? '<button class="rvc-btn" onclick="' + go + '">' + L('Повторить','Review') + '</button>' : '<span class="rvc-none">' + L('Всё повторено','All done') + '</span>') +
     '</div>';
   }
   const review =
@@ -2609,7 +2625,7 @@ function renderCourses(){
     const learned = all.filter(function(w){ return (w.s||0) >= 3; }).length;
     const pct = all.length ? Math.round(learned/all.length*100) : null;
     return tile('renderMyDecks()', 'img/cover-cards.webp', '', L('Мои карточки','My Cards'),
-      all.length ? all.length + L(' слов',' words') + (due ? L(' · к повтору ',' · to review ') + due : '') + ' · ' + sets.length + (sets.length===1?L(' раздел',' section'):L(' разделов',' sections'))
+      all.length ? nWords(all.length) + (due ? L(' · к повтору ',' · to review ') + due : '') + ' · ' + sets.length + (sets.length===1?L(' раздел',' section'):L(' разделов',' sections'))
                  : L('Добавляй слова с курсов','Add words from your courses'), pct, false);
   })();
 
@@ -2661,9 +2677,8 @@ function renderCourses(){
       '<div class="hs-h"><span>' + L('Фраз за день','Phrases per day') + '</span><span>' + L('серия ','streak ') + '<b>' + sc + ' ' + dayWord(sc) + '</b></span></div>' +
       chart +
       '<div class="hs-path">' +
-        '<div class="hs-lbl"><span>' + L('Путь до A2','Road to A2') + '</span><span>' + ph + L(' из ',' of ') + phT + L(' фраз',' phrases') + '</span></div>' +
-        '<div class="hs-bar"><i style="width:' + a2 + '%"></i><em style="left:50%"></em></div>' +
-        '<div class="hs-lbl"><span>0</span><span>A1</span><span>A2</span></div>' +
+        '<div class="hs-lbl"><span>' + L('Путь до A2','Road to A2') + '</span><span>' + ph + L(' из ',' of ') + nPhrases(phT) + '</span></div>' +
+        '<div class="hs-bar"><i style="width:' + Math.max(a2 ? 1 : 0, a2) + '%"></i></div>' +
       '</div>' +
       '<div class="hs-more">' + L('Вся статистика','All stats') + ' ›</div>' +
     '</div>' +
@@ -3365,7 +3380,7 @@ function renderGoals(back, step){
     body = '<h2 class="s-h2">' + (enLang()?'How many phrases a day?':'Сколько фраз в день?') + '</h2>' +
       '<p class="s-mut">' + (enLang()?'You can change your goal any time':'Норму можно поменять в любой момент') + '</p>' +
       '<div class="s-opts">' + GOAL_OPTS.map(function(o){
-        return optCard(g===o.ph, o.ph + (enLang()?' phrases':' фраз'), '~' + o.min, o.d, 'setGoal(' + o.ph + ',' + (back?1:0) + ')');
+        return optCard(g===o.ph, nPhrases(o.ph), '~' + o.min, o.d, 'setGoal(' + o.ph + ',' + (back?1:0) + ')');
       }).join('') + '</div>';
     btn = '<button class="welcome-btn" onclick="renderGoals(' + (back?1:0) + ',1)">' + (enLang()?'Next':'Дальше') + '</button>';
   } else {
@@ -3433,7 +3448,7 @@ function renderLoadPick(){
       '<p class="s-mut">' + (enLang()?'The three rings on the home screen are counted against it. Change it whenever you like, nothing resets.':'По нему считаются три кольца на главной. Менять можно когда угодно, прогресс не сбросится.') + '</p>' +
       '<div class="s-opts">' + LOAD_PRESETS.map(function(o,i){
         const on = cur.p===o.p && cur.a===o.a && cur.w===o.w;
-        return optCard(on, o.min, '', o.p + (enLang()?' phrases · ':' фраз · ') + o.a + (enLang()?' min · ':' мин · ') + o.w + (enLang()?' words':' слов') + '<br>' + o.d, 'setLoadPreset(' + i + ')');
+        return optCard(on, o.min, '', nPhrases(o.p) + ' · ' + o.a + (enLang()?' min · ':' мин · ') + nWords(o.w) + '<br>' + o.d, 'setLoadPreset(' + i + ')');
       }).join('') + '</div>' +
     '</div>' +
     scrDock(null, [ic('target',15) + (enLang()?' Set it manually':' Настроить вручную'), 'goalManualOn()']);
@@ -3479,7 +3494,7 @@ function renderGoalEdit(keep){
     scrTop('goalManual=false;renderGoalEdit()', enLang()?'Manual':'Вручную') +
     '<p class="s-mut" style="margin-bottom:var(--sp-4)">' + (enLang()?'Every setting moves in steps of 10. Zero switches the ring off — it\'ll count as closed.':'Каждый параметр меняется шагом в 10. Ноль выключает кольцо — оно будет считаться закрытым.') + '</p>' +
     '<div class="card" style="margin-top:1.25rem">' +
-      '<div class="gset-preview"><div class="rings-wrap" style="width:144px;height:144px">' + preview +
+      '<div class="gset-preview night-card"><div class="rings-wrap" style="width:144px;height:144px">' + preview +
         '<div class="rings-center"><div class="gset-now">' + todayCount() + '</div>' +
         (enLang()?'<div class="gset-of">of ':'<div class="gset-of">из ') + goalDraft.p + '</div></div></div></div>' +
       rows +
@@ -3640,7 +3655,7 @@ function renderLesson(i){
   const wt = wordsTotal(i), wk = Math.min(wordsKnown(i).length, wt), wfull = wk >= wt;
   const words = part({ cls: wfull ? 'done' : '', go:'startWords(' + i + ')',
     icon: wfull ? '<span class="s-ok">' + ic('check',14) + '</span>' : '<span class="s-num ghost">' + ic('book',14) + '</span>',
-    t: t('w_card').replace(/<[^>]+>/g,'').trim(), sub: wk + L(' из ',' of ') + wt + L(' слов',' words'), pct: wfull ? null : Math.round(wk/wt*100) });
+    t: t('w_card').replace(/<[^>]+>/g,'').trim(), sub: wk + L(' из ',' of ') + nWords(wt), pct: wfull ? null : Math.round(wk/wt*100) });
   const parts = l.parts.map(function(p,pi){
     const passed = partPassed(i,pi), open = partUnlocked(i,pi), sz = p.q.length, done = partProgress(i,pi);
     const isCur = pi === np;
@@ -3757,7 +3772,7 @@ function render(){
   if(phase==="done"){
     const L = function(ru,en){ return enLang() ? en : ru; };
     const app = document.getElementById("app");
-    const kps3 = function(){ return [[state.correctCount, t('st_ok')],[total-state.correctCount, t('st_err')],[Math.round(state.correctCount/total*100) + '%', t('st_acc')]]; };
+    const kps3 = function(){ const e = total-state.correctCount; return [[state.correctCount, t('st_ok')],[e, plural(e,'Ошибка','Ошибки','Ошибок','Mistake','Mistakes')],[Math.round(state.correctCount/total*100) + '%', t('st_acc')]]; };
     if(state.ai){
       app.innerHTML = stateScreen({ img:'S-words-practice', h:L('Тренировка завершена!','Practice complete!'),
         p: state.correctCount + L(' из ',' of ') + total + L(' фраз с твоими словами. Каждый раз — новые фразы',' phrases with your words. New phrases every time'),
@@ -4371,7 +4386,6 @@ function renderSchedule(){
             ? (enLang()?"Your Telegram doesn't support this mode — you need Bot API 8.0 or newer.":'Твой Telegram не поддерживает этот режим — нужен Bot API 8.0 и новее.')
             : (enLang()?"On a computer you don't need it: the Telegram window is big enough as it is, and full screen would stretch the app across the whole monitor.":'На компьютере режим не нужен: окно Telegram и так большое, а полный экран растянул бы приложение на весь монитор.')) +
       '</div>' +
-      '<div class="deck-count" style="text-align:left;margin-top:8px;opacity:.55">' + fsDiag() + '</div>' +
     '</div>' +
     (enLang()?'<div class="section-label" style="margin-bottom:10px">Backup</div>':'<div class="section-label" style="margin-bottom:10px">Резервная копия</div>') +
     '<div class="s-card">' +
@@ -4484,7 +4498,7 @@ function renderDialogs(){
     const hrs = dlgHrs(d.id), st = dlgStat(d.id);
     const done = dlgDone(d.id), open = dlgUnlocked(i);
     const heard = hrs >= 1 ? hrs.toFixed(1) + (enLang()?' h':' ч') : Math.round((st.sec||0)/60) + (enLang()?' min':' мин');
-    return scrRow({ img:dlgCover(d.id), t:d.title, nbTitle:true,
+    return scrRow({ img:dlgCover(d.id), t:d.title.replace(/\s+[-–—]\s+(\d+)$/,'\u00a0·\u00a0$1').replace(/\s+(\d+)$/,'\u00a0$1'), nbTitle:true,
       sub: open ? tx(d,'sub') + (st.sec ? ' · ' + heard : '') : (enLang()?'Finish the previous one up to ':'Дослушай предыдущий до ') + DLG_HOURS + (enLang()?' hours':' часов'),
       state: done ? 'done' : !open ? 'lock' : i===cur ? 'cur' : '',
       pct: (open && !done && st.sec) ? Math.min(100, Math.round(hrs/DLG_HOURS*100)) : null,
@@ -4519,7 +4533,7 @@ function renderDialog(keepAudio){
   }).join('');
   const rate = meta.rate || 1;
   document.getElementById('app').innerHTML =
-    scrTop('closeDialog()', L('Диалог ','Dialogue ') + (curDlg+1), '<span id="dlg-chip">' + dlgHrs(d.id).toFixed(1) + ' / ' + DLG_HOURS + L(' ч',' h') + '</span>') +
+    scrTop('closeDialog()', L('Диалог ','Dialogue ') + (curDlg+1)) +
     '<div class="s-hero sm"><img src="' + dlgCover(d.id) + '" alt="" width="640" height="478"></div>' +
     '<h3 class="dl-title" lang="nb">' + d.title + '</h3>' +
     '<p class="s-mut" style="margin-bottom:var(--sp-3)">' + tx(d,'sub') + '</p>' +
@@ -4533,7 +4547,7 @@ function renderDialog(keepAudio){
       '<div class="dl-ctrls">' +
         '<button class="dl-c" id="pl-rate" onclick="toggleRate()" aria-label="' + L('Скорость','Speed') + '">' + (rate===1?'1×':'0.75×') + '</button>' +
         '<button class="dl-c" onclick="skip(-5)" aria-label="−5 s">−5</button>' +
-        '<button class="dl-play" id="pl-play" onclick="togglePlay()" aria-label="' + L('Играть','Play') + '">' + ic('sound',22) + '</button>' +
+        '<button class="dl-play" id="pl-play" onclick="togglePlay()" aria-label="' + L('Играть','Play') + '">' + PLAY_IC + '</button>' +
         '<button class="dl-c" onclick="skip(5)" aria-label="+5 s">+5</button>' +
         '<button class="dl-c' + (showRu?' on':'') + '" id="pl-tr" onclick="setRu(!showRu)" aria-pressed="' + (showRu?'true':'false') + '" aria-label="' + L('Перевод','Translation') + '">' + (enLang()?'EN':'RU') + '</button>' +
         '<button class="dl-c' + (meta.loop?' on':'') + '" id="pl-loop" onclick="toggleLoop()" aria-label="' + L('Повтор','Loop') + '">' + ic('redo',16) + '</button>' +
@@ -4542,6 +4556,7 @@ function renderDialog(keepAudio){
   if(!keepAudio) bindAudio();
   if(AU) AU.playbackRate = rate;
 }
+const PLAY_IC = '<svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></svg>';
 function toggleRate(){
   meta.rate = (meta.rate||1) === 1 ? 0.75 : 1; saveMeta();
   if(AU) AU.playbackRate = meta.rate;
@@ -4601,7 +4616,7 @@ function bindAudio(){
     dlgSave(d.id, { max: 1 });
     if(dlgDone(d.id)) buzz('win');
     const p = document.getElementById('pl-play');
-    if(p) p.innerHTML = ic('sound',22);
+    if(p) p.innerHTML = PLAY_IC;
   });
 }
 
@@ -4616,7 +4631,7 @@ function togglePlay(){
     if(p) p.innerHTML = '<span class="pl-pause"></span>';
   } else {
     AU.pause();
-    if(p) p.innerHTML = ic('sound',22);
+    if(p) p.innerHTML = PLAY_IC;
   }
 }
 function toggleLoop(){
@@ -4803,6 +4818,18 @@ async function aiPractice(){
     if(btn){ btn.disabled = false; btn.innerHTML = ic('star',16) + (enLang()?' Practise with phrases':' Тренировать фразами'); }
   }
 }
+
+// Plural forms: RU one/few/many, EN one/other.
+function plural(n, ru1, ru2, ru5, en1, enN){
+  if(enLang()) return n===1 ? en1 : enN;
+  const m = n % 10, h = n % 100;
+  if(h >= 11 && h <= 14) return ru5;
+  if(m === 1) return ru1;
+  if(m >= 2 && m <= 4) return ru2;
+  return ru5;
+}
+function nWords(n){ return n + ' ' + plural(n,'слово','слова','слов','word','words'); }
+function nPhrases(n){ return n + ' ' + plural(n,'фраза','фразы','фраз','phrase','phrases'); }
 
 // ─── Gå! v1.1: общие части экранов ───
 // Top bar: back chevron, title, optional right label.
@@ -5152,12 +5179,12 @@ function renderMyDecks(){
   const row = function(id, name){
     const ws = deckWords(id), due = myDue(ws).length, learned = deckLearned(id);
     return scrRow({ icon:ic('cards',18), t:name,
-      sub: ws.length + L(' слов',' words') + (due ? ' · ' + due + L(' к повтору',' to review') : L(' · всё повторено',' · all reviewed')),
+      sub: nWords(ws.length) + (due ? ' · ' + due + L(' к повтору',' to review') : L(' · всё повторено',' · all reviewed')),
       pct: ws.length ? Math.round(learned/ws.length*100) : null, go:"openDeck('" + id + "')" });
   };
   const dueAll = myDue(all).length;
   document.getElementById('app').innerHTML =
-    scrTop('renderCourses()', L('Мои карточки','My Cards'), all.length + L(' слов',' words')) +
+    scrTop('renderCourses()', L('Мои карточки','My Cards'), nWords(all.length)) +
     '<p class="s-mut" style="margin-bottom:var(--sp-3)">' + L('Разделы со своими словами и повторениями','Sections with your own words and reviews') + '</p>' +
     '<div class="s-list">' +
       sets.map(function(x){ return row(x.id, x.name); }).join('') +
@@ -5190,7 +5217,7 @@ function renderMyWords(){
                         '<button class="s-icbtn" aria-label="' + L('Удалить раздел','Delete section') + '" onclick="myDelSet(\'' + myCur + '\')">' + ic('cross',15) + '</button>' : '';
   document.getElementById('app').innerHTML =
     scrTop('renderMyDecks()', title, right) +
-    '<p class="s-mut" style="margin-bottom:var(--sp-3)">' + (due ? due + L(' слов ждут повторения',' words are due for review') : list.length ? L('Все слова повторены — добавь новые','All words reviewed — add some new ones') : L('Здесь пока пусто — добавь первое слово','Nothing here yet — add your first word')) + '</p>' +
+    '<p class="s-mut" style="margin-bottom:var(--sp-3)">' + (due ? nWords(due) + L(' ждут повторения',' due for review') : list.length ? L('Все слова повторены — добавь новые','All words reviewed — add some new ones') : L('Здесь пока пусто — добавь первое слово','Nothing here yet — add your first word')) + '</p>' +
     '<div class="s-card">' +
       '<input class="text-input" id="my-no" type="text" lang="nb" placeholder="' + L('Слово по-норвежски','Word in Norwegian') + '">' +
       '<input class="text-input" id="my-ru" type="text" placeholder="' + L('Перевод','Translation') + '" onkeydown="if(event.key===\'Enter\')myAdd()">' +
@@ -5321,22 +5348,20 @@ function renderStats(){
       '<button class="mode-btn' + (P==='year'?' active':'') + '" onclick="setStatPeriod(\'year\')">' + L('Год','Year') + '</button>' +
     '</div>' +
     '<div class="night-card s-night">' +
-      '<div class="hs-h"><span>' + (P==='week'?L('Эта неделя','This week'):P==='month'?L('30 дней','30 days'):L('12 месяцев','12 months')) + '</span>' +
+      '<div class="hs-h"><span>' + (P==='week'?L('Эта неделя','This week'):P==='month'?L('30 дней','30 days'):L('12 месяцев','12 months')) + ' · <b>' + nPhrases(ph) + '</b></span>' +
         (acc!==null ? '<span>' + L('точность ','accuracy ') + '<b>' + acc + '%</b></span>' : '') + '</div>' +
       chart +
     '</div>' +
     '<div class="s-kps g2 s-tiles">' +
-      tile(streakCount(), dayWord(streakCount()) + L(' подряд',' in a row')) +
-      tile(ph, L('фраз за период','phrases this period')) +
-      tile(wd, L('слов повторено','words reviewed')) +
-      tile(Math.round(au/60) + L(' мин',' min'), L('аудио','of audio')) +
-      tile(act, L('дней занятий','days practised')) +
+      tile(streakCount(), plural(streakCount(),'день подряд','дня подряд','дней подряд','day in a row','days in a row')) +
+      tile(wd, plural(wd,'слово повторено','слова повторено','слов повторено','word reviewed','words reviewed')) +
+      tile(Math.round(au/60), L('аудио, мин','audio, min')) +
       tile(avg, L('фраз в день','phrases a day')) +
     '</div>' +
     '<div class="night-card s-night">' +
       '<div class="hs-lbl"><span>' + L('Путь до A2','Road to A2') + '</span><span>' + cp + ' / ' + cpt + '</span></div>' +
-      '<div class="hs-bar"><i style="width:' + (cpt?Math.round(cp/cpt*100):0) + '%"></i><em style="left:50%"></em></div>' +
-      '<div class="hs-lbl"><span>' + L('слов курса ','course words ') + (cwt?Math.round(cw/cwt*100):0) + '%</span><span>' + L('аудио ','audio ') + (dsec/3600).toFixed(1) + L(' ч',' h') + '</span><span>' + L('лучшая неделя ','best week ') + bestWeek() + '</span></div>' +
+      '<div class="hs-bar"><i style="width:' + (cpt?Math.max(1,Math.round(cp/cpt*100)):0) + '%"></i></div>' +
+      '<div class="hs-lbl"><span>' + L('слов курса ','course words ') + (cwt?Math.round(cw/cwt*100):0) + '%</span><span>' + L('аудио ','audio ') + (dsec >= 360 ? (dsec/3600).toFixed(1) : 0) + L(' ч',' h') + '</span><span>' + L('лучшая неделя ','best week ') + bestWeek() + '</span></div>' +
     '</div>';
   try{ window.scrollTo(0,0); }catch(e){}
 }
@@ -5803,7 +5828,8 @@ function mountChatBtn(){
                || !!document.getElementById('chat-screen')
                || !!document.querySelector('.modal-back')
                || !!document.querySelector('.tour-mask')
-               || !!document.querySelector('.allwin');
+               || !!document.querySelector('.allwin')
+               || screen !== 'courses';                    // only on the home screen (design review v1.1)
   chatFab.className = 'ch-fab' + ((ready && !blocked) ? '' : ' off');
 }
 
@@ -6060,9 +6086,12 @@ const SEASON_SET = {
   summer:{ s:[2,3.6],  t:[24,44], o:[.16,.42], mx:[20,52], ts:[5,9]   },
   autumn:{ s:[14,34],  t:[.9,1.7],o:[.09,.3],  mx:[0,0],   ts:[1,1]   }
 };
+// Background effects are outside the Gå! design system (review v1.1): off until the owner decides.
+const BG_FX = false;
 function buildWeather(){
   const host = document.querySelector('.ambient');
   if(!host) return;
+  if(!BG_FX){ const o = host.querySelector('.season'); if(o) o.remove(); return; }
   const old = host.querySelector('.season');
   if(old && old.parentNode) old.parentNode.removeChild(old);
   try{ if(scReduced()) return; }catch(e){}
@@ -6122,7 +6151,7 @@ function fjH(x,z){
 
 
 function fjSync(){
-  const want = !!document.querySelector('.hero-stack');   // фьорд живёт только на главной
+  const want = BG_FX && !!document.querySelector('.hero-stack');   // фьорд живёт только на главной
   const live = want && fjState === 2;
   document.body.classList.toggle('fj-on', live);          // идемпотентно: класс могли стереть
   const cv = document.getElementById('fjord');
