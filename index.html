@@ -2870,13 +2870,15 @@ function buzz(kind){
       : [60,40,60]); }catch(e){}
   }
 }
+// Shared posts link to the app's bot so friends can open Gå! directly.
+const BOT_LINK = 'https://t.me/ganorsk_app';
 function canShare(){ return !!(TG || (typeof navigator!=="undefined" && navigator.share)); }
 function shareText(t){
   if(TG && TG.openTelegramLink){
-    TG.openTelegramLink("https://t.me/share/url?url=" + encodeURIComponent("https://t.me") + "&text=" + encodeURIComponent(t));
+    TG.openTelegramLink("https://t.me/share/url?url=" + encodeURIComponent(BOT_LINK) + "&text=" + encodeURIComponent(t));
     return;
   }
-  if(typeof navigator!=="undefined" && navigator.share){ navigator.share({text:t}).catch(function(){}); }
+  if(typeof navigator!=="undefined" && navigator.share){ navigator.share({text:t, url:BOT_LINK}).catch(function(){}); }
 }
 
 function ic(n,sz){
