@@ -1136,6 +1136,36 @@ body:not(.light) .dl-who{color:var(--ring-phrases)}
 .dl-c.on{color:var(--ink);background:var(--tint-2)}
 .dl-play{width:56px;height:56px;border-radius:50%;border:none;background:var(--accent);color:var(--on-accent);display:grid;place-items:center;cursor:pointer;flex:none}
 .dl-play .pl-pause{border-color:var(--on-accent)!important}
+
+/* ─── v1.1 этап 4: слова ─── */
+.s-li-ic{display:grid;place-items:center;width:48px;height:48px;border-radius:var(--r-chip);background:var(--tint-2);color:var(--ink);flex:none;font-size:var(--fs-20);font-weight:700}
+.s-li-add{background:transparent;border-style:dashed}
+.s-icbtn{display:grid;place-items:center;width:36px;height:36px;border:1px solid var(--line);border-radius:var(--r-chip);background:transparent;color:var(--ink);cursor:pointer;margin-left:var(--sp-1)}
+.s-top .s-r{display:flex;align-items:center}
+.s-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-card);padding:var(--sp-4);display:flex;flex-direction:column;gap:var(--sp-2);margin-bottom:var(--sp-3)}
+.s-card .text-input{margin:0}
+.s-link{align-self:flex-start;margin-top:var(--sp-1)}
+.s-strong{color:var(--ink)!important;border-color:var(--ink)!important}
+.s-words{padding:var(--sp-2) var(--sp-3)}
+.my-row{border-bottom:1px solid var(--line)!important}
+.my-row:last-child{border-bottom:none!important}
+.my-row .my-no{font-family:var(--f-no);font-size:var(--fs-16)!important}
+.my-row .my-ru,.my-when{color:var(--ink-2)!important}
+.s-pg.big{height:8px;margin:0 0 var(--sp-3)}
+.s-modes{margin-bottom:var(--sp-3)}
+.s-wcard{position:relative;background:var(--surface)!important;border:1px solid var(--line)!important;border-radius:var(--r-sheet)!important;padding:var(--sp-8) var(--sp-6)!important;display:flex;flex-direction:column;align-items:center;gap:var(--sp-3);text-align:center;min-height:260px;justify-content:center;box-shadow:none!important}
+.s-wlbl{font-size:var(--fs-12);font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
+.s-wcard .word-main{font-size:var(--fs-28);font-weight:800;line-height:1.2}
+.s-wans{font-family:var(--f-no);font-size:var(--fs-28)!important;font-weight:800;color:var(--accent)!important;border-top:1px dashed var(--line);padding-top:var(--sp-3);width:100%}
+body:not(.light) .s-wans{color:var(--ring-phrases)!important}
+.s-wans:not([lang]){font-family:var(--f-ui)}
+.s-audio{position:absolute;right:var(--sp-3);top:var(--sp-3);width:36px;height:36px;border-radius:50%;border:none;background:var(--accent);color:var(--on-accent);display:grid;place-items:center;cursor:pointer}
+.s-sem{max-width:600px;margin:0 auto;width:100%}
+.s-good,.s-bad{flex:1;min-height:56px;border:none;border-radius:var(--r-sheet);font:inherit;font-size:var(--fs-16);font-weight:800;color:var(--on-sem);cursor:pointer}
+.s-good{background:var(--ok)}
+.s-bad{background:var(--bad)}
+.allwin .s-awbox,body.light .allwin .s-awbox{background:var(--bg)!important;border:1px solid var(--line);border-radius:var(--r-sheet);padding:var(--sp-6);display:flex;flex-direction:column;align-items:center;gap:var(--sp-3);text-align:center}
+.allwin .s-awbox .welcome-btn{width:100%;border-radius:var(--r-sheet)!important}
 /* ═══ Gå! v1.0 — правила дизайн-системы (последний слой, перекрывает старые) ═══ */
 body{font-family:var(--f-ui)}
 [lang="nb"]{font-family:var(--f-no)}
@@ -2486,16 +2516,14 @@ function allRingsWin(){
   const el = document.createElement('div');
   el.className = 'allwin';
   el.id = 'allwin';
-  el.innerHTML = '<canvas id="fw2"></canvas>' +
-    '<div class="aw-box">' +
-      '<div class="aw-rings">' + trioRings(150) + '<div class="aw-center">' + ic('check',40) + '</div></div>' +
-      (enLang()?'<div class="aw-title">All rings closed!</div>':'<div class="aw-title">Все кольца закрыты!</div>') +
-      (enLang()?'<div class="aw-sub">Phrases, audio and words — a full day.<br>':'<div class="aw-sub">Фразы, аудио и слова — полный день.<br>') + streakCount() + ' ' + dayWord(streakCount()) + (enLang()?' in a row. Så bra!</div>':' подряд. Så bra!</div>') +
-      (enLang()?'<button class="submit-btn" onclick="closeAllWin()">Next</button>':'<button class="submit-btn" onclick="closeAllWin()">Дальше</button>') +
+  el.innerHTML = '<div class="aw-box s-awbox">' +
+      '<div class="s-art"><img src="img/s/S-daily-goal.webp" alt="" width="640" height="640"></div>' +
+      '<h2 class="s-h2">' + (enLang()?'Daily goal closed!':'Норма дня закрыта!') + '</h2>' +
+      '<p class="s-mut">' + (enLang()?'Phrases, audio and words — a full day. ':'Фразы, аудио и слова — полный день. ') + streakCount() + ' ' + dayWord(streakCount()) + (enLang()?' in a row. Så bra!':' подряд. Så bra!') + '</p>' +
+      '<button class="welcome-btn" onclick="closeAllWin()">' + (enLang()?'Next':'Дальше') + '</button>' +
     '</div>';
   document.body.appendChild(el);
   buzz('win');
-  setTimeout(function(){ animateRings(); launchFireworks('fw2'); }, 60);
 }
 function closeAllWin(){
   const el = document.getElementById('allwin');
@@ -4148,89 +4176,63 @@ function startWordsReview(){
 
 function renderWords(){
   const rev = wordsState.review;
+  const L = function(ru,en){ return enLang() ? en : ru; };
+  const backCall = wordsState.my ? 'renderMyWords()' : (rev ? 'renderCourses()' : 'renderLesson(' + currentLessonIdx + ')');
 
   if(wordsState.deck.length===0){
     const i = currentLessonIdx;
-    let btn, sub, icon, title;
+    let o;
     if(wordsState.my){
-      icon=ic('cards',44); title=(enLang()?'Words reviewed!':'Слова повторены!');
-      sub=(enLang()?'Great work on your own vocabulary.<br>Words come back at intervals of 1 · 3 · 7 · 14 · 30 days.':'Отличная работа со своим словарём.<br>Слова вернутся по интервалам 1 · 3 · 7 · 14 · 30 дней.');
-      btn=(enLang()?'<button class="restart-btn" onclick="renderMyWords()">To My Words</button>':'<button class="restart-btn" onclick="renderMyWords()">К моим словам</button>');
+      o = { img:'S-all-done', h:L('Слова повторены!','Words reviewed!'),
+        p:L('Отличная работа со своим словарём. Слова вернутся по интервалам 1 · 3 · 7 · 14 · 30 дней.','Great work on your own vocabulary. Words come back at intervals of 1 · 3 · 7 · 14 · 30 days.'),
+        pri:[L('К моим словам','To My Words'),'renderMyWords()'] };
     } else if(rev){
-      icon=ic('cards',44); title=t('w_rev_done');
-      sub=(enLang()?'Memory reinforced. Words come back<br>at intervals: 1 · 3 · 7 · 14 · 30 days.':'Память укреплена. Слова вернутся<br>по интервалам: 1 · 3 · 7 · 14 · 30 дней.');
-      btn=(enLang()?'<button class="restart-btn" onclick="renderCourses()">Home</button>':'<button class="restart-btn" onclick="renderCourses()">На главную</button>');
+      o = { img:'S-all-done', h:L('На сегодня всё','That’s all for today'),
+        p:L('Карточки разобраны. Слова вернутся по интервалам 1 · 3 · 7 · 14 · 30 дней.','Cards done. Words come back at intervals of 1 · 3 · 7 · 14 · 30 days.'),
+        pri:[L('На главную','Home'),'renderCourses()'] };
     } else {
       const np=(function(){for(let p=0;p<nParts(i);p++){if(!partDone(i,p))return p;}return 0;})();
-      icon=ic('book',44); title=t('w_done');
-      sub=(enLang()?'All ':'Все ')+WORDS[i].length+(enLang()?' words from the lesson "':' слов урока «')+lesTitle(LESSONS[i])+(enLang()?'" in the bag.<br>Now phrases will come together on their own!':'» в кармане.<br>Теперь фразы соберутся сами собой!');
-      btn='<button class="restart-btn" onclick="startPart('+i+','+np+(enLang()?')">To phrases: "':')">К фразам: «')+partTitle(LESSONS[i].parts[np])+'» →</button>';
+      o = { img:'S-lesson-done', h:t('w_done'),
+        p:L('Все ','All ') + WORDS[i].length + L(' слов урока «',' words from the lesson “') + lesTitle(LESSONS[i]) + L('» в кармане. Теперь фразы соберутся сами собой!','” in the bag. Now phrases will come together on their own!'),
+        pri:[L('К фразам · ','To phrases · ') + partTitle(LESSONS[i].parts[np]), 'startPart(' + i + ',' + np + ')'], sec:[L('К уроку','To the lesson'),'renderLesson(' + i + ')'] };
     }
-    document.getElementById("app").innerHTML =
-      '<canvas id="fw"></canvas>' +
-      '<div class="header">' +
-        '<div class="logo" onclick="renderCourses()">' + GA_LOGO + '</div>' +
-        '<div class="header-right"><button class="back-btn" onclick="' + (wordsState.my?'renderMyWords()':(rev?'renderCourses()':'renderLesson('+i+')')) + '">' + (wordsState.my?(enLang()?'← My Words':'← Мои слова'):(rev?(enLang()?'← Home':'← Главная'):(enLang()?'← Lesson':'← Урок'))) + '</button></div>' +
-      '</div>' +
-      '<div class="card complete" style="margin-top:2rem">' +
-        '<div class="words-done-icon">' + icon + '</div>' +
-        '<div class="complete-title">' + title + '</div>' +
-        '<div class="complete-sub">' + sub + '</div>' + btn +
-      '</div>';
+    document.getElementById("app").innerHTML = scrTop(backCall, '') + stateScreen(o);
     buzz("win");
-    setTimeout(launchFireworks, 60);
     return;
   }
 
   const cur = wordsState.deck[0];
   const w = cur.my ? cur.w : WORDS[cur.l][cur.wi];
-  const front = wordsState.mode==="no-ru" ? w.n : (cur.my ? w.r : wordSrc(w));
-  const back  = wordsState.mode==="no-ru" ? (cur.my ? w.r : wordSrc(w)) : w.n;
-  let headChip, metaSpan;
-  if(wordsState.my){
-    headChip = ic('cards',14) + ' ' + wordsState.deck.length;
-    metaSpan = (enLang()?'My Words':'Мои слова');
-  } else if(rev){
-    headChip = ic('cards',14) + (enLang()?' left ':' осталось ') + wordsState.deck.length;
-    metaSpan = t('w_srs');
-  } else {
-    const list = WORDS[currentLessonIdx];
-    const kc = Math.min(wordsKnown(currentLessonIdx).length, list.length);
-    headChip = '' + ic('book',14) + ' ' + kc + ' / ' + list.length;
-    metaSpan = t('w_of') + ' ' + (currentLessonIdx+1);
+  const noFirst = wordsState.mode==="no-ru";
+  const front = noFirst ? w.n : (cur.my ? w.r : wordSrc(w));
+  const back  = noFirst ? (cur.my ? w.r : wordSrc(w)) : w.n;
+  let title, right, pct = null;
+  if(wordsState.my){ title = L('Мои слова','My Words'); right = L('осталось ','left ') + wordsState.deck.length; }
+  else if(rev){ title = L('Повторение','Review'); right = L('осталось ','left ') + wordsState.deck.length; }
+  else {
+    const list = WORDS[currentLessonIdx], kc = Math.min(wordsKnown(currentLessonIdx).length, list.length);
+    title = t('w_of') + ' ' + (currentLessonIdx+1); right = kc + '/' + list.length; pct = Math.round(kc/list.length*100);
   }
-  const pct = (rev||wordsState.my) ? 0 : Math.round(Math.min(wordsKnown(currentLessonIdx).length,WORDS[currentLessonIdx].length)/WORDS[currentLessonIdx].length*100);
-
   document.getElementById("app").innerHTML =
-    '<div class="header">' +
-      '<div class="logo" onclick="renderCourses()">' + GA_LOGO + '</div>' +
-      '<div class="header-right">' +
-        '<div class="score-chip">' + headChip + '</div>' +
-        '<button class="back-btn" onclick="' + (wordsState.my?'renderMyWords()':(rev?'renderCourses()':'renderLesson('+currentLessonIdx+')')) + '">' + (wordsState.my?(enLang()?'← My Words':'← Мои слова'):(rev?(enLang()?'← Home':'← Главная'):(enLang()?'← Lesson':'← Урок'))) + '</button>' +
-      '</div>' +
+    scrTop(backCall, title, right) +
+    (pct !== null ? '<div class="s-pg big"><i style="width:' + pct + '%"></i></div>' : '') +
+    '<div class="mode-toggle s-modes">' +
+      '<button class="mode-btn ' + (noFirst?"active":"") + '" onclick="switchWordsMode(\'no-ru\')">NO → ' + helpLang() + '</button>' +
+      '<button class="mode-btn ' + (!noFirst?"active":"") + '" onclick="switchWordsMode(\'ru-no\')">' + helpLang() + ' → NO</button>' +
     '</div>' +
-    '<div class="progress-section">' +
-      '<div class="progress-meta"><span>' + metaSpan + '</span>' +
-        ((rev||wordsState.my) ? '<span>' + t('in_d') + ' ' + wordsState.deck.length + '</span>' : '<span>' + t('w_pct') + ' ' + pct + '%</span>') +
-      '</div>' +
-      ((rev||wordsState.my) ? '' : '<div class="progress-track"><div class="progress-fill" style="width:' + pct + '%"></div></div>') +
-    '</div>' +
-    '<div class="mode-toggle">' +
-      '<button class="mode-btn ' + (wordsState.mode==="no-ru"?"active":"") + '" onclick="switchWordsMode(\'no-ru\')">🇳🇴 NO → ' + helpLang() + '</button>' +
-      '<button class="mode-btn ' + (wordsState.mode==="ru-no"?"active":"") + '" onclick="switchWordsMode(\'ru-no\')">' + helpFlag() + ' ' + helpLang() + ' → NO</button>' +
-    '</div>' +
-    '<div class="word-stage" onclick="flipWord()">' +
-      '<div class="word-main"' + (wordsState.mode==="no-ru" ? ' lang="nb"' : '') + '>' + front + '</div>' +
+    '<div class="word-stage s-wcard" onclick="flipWord()">' +
+      '<span class="s-wlbl">' + (noFirst ? L('Что это значит?','What does it mean?') : L('Как сказать по-норвежски?','How do you say it in Norwegian?')) + '</span>' +
+      '<div class="word-main"' + (noFirst ? ' lang="nb"' : '') + '>' + front + '</div>' +
       (wordsState.flipped
-        ? '<div class="word-divider"></div><div class="word-back"' + (wordsState.mode==="no-ru" ? '' : ' lang="nb"') + '>' + back + '</div>'
+        ? '<div class="word-back s-wans"' + (noFirst ? '' : ' lang="nb"') + '>' + back + '</div>'
         : '<div class="word-hint">' + t('tap_f') + '</div>') +
-      '<button class="listen-btn" onclick="event.stopPropagation();speak(' + JSON.stringify(w.n) + ')">' + t('listen') + '</button>' +
+      '<button class="s-audio" aria-label="' + L('Послушать','Listen') + '" onclick="event.stopPropagation();speak(' + JSON.stringify(w.n).replace(/"/g,'&quot;') + ')">' + ic('sound',16) + '</button>' +
     '</div>' +
-    '<div class="btn-row">' +
-      '<button class="submit-btn retry-btn" onclick="wordAgain()">' + t('again') + '</button>' +
-      '<button class="submit-btn" onclick="wordKnow()">' + t('know') + '</button>' +
-    '</div>' +
-    '<div class="deck-count">' + t('deck') + ' ' + wordsState.deck.length + '</div>';
+    '<p class="s-mut" style="text-align:center;margin-top:var(--sp-3)">' + t('deck') + ' ' + wordsState.deck.length + '</p>' +
+    '<div class="dock-spacer s-spacer"></div><div class="dock s-dock"><div class="btn-row s-sem">' +
+      '<button class="s-bad" onclick="wordAgain()">' + L('Не помню','Forgot') + '</button>' +
+      '<button class="s-good" onclick="wordKnow()">' + L('Помню','Got it') + '</button>' +
+    '</div></div>';
 }
 
 function flipWord(){ wordsState.flipped = !wordsState.flipped; renderWords(); }
@@ -4822,7 +4824,7 @@ function stateScreen(o){
 function scrRow(o){
   const st = o.state || '';
   return '<div class="s-li' + (st?' '+st:'') + '"' + (o.go ? ' onclick="' + o.go + '"' : '') + '>' +
-    (o.img ? '<img src="' + o.img + '" alt="" width="64" height="48" loading="lazy">' : '') +
+    (o.img ? '<img src="' + o.img + '" alt="" width="64" height="48" loading="lazy">' : o.icon ? '<span class="s-li-ic">' + o.icon + '</span>' : '') +
     '<div class="s-lt"><b' + (o.nbTitle?' lang="nb"':'') + '>' + o.t + '</b>' +
       (o.sub ? '<span' + (o.nbSub?' lang="nb"':'') + '>' + o.sub + '</span>' : '') +
       (o.pct !== undefined && o.pct !== null ? '<div class="s-pg"><i style="width:' + o.pct + '%"></i></div>' : '') +
@@ -4935,26 +4937,22 @@ function parseWords(text){
 
 function renderImport(){
   screen = 'import';
-  const setName2 = myCur==='all' || myCur==='none' ? (enLang()?'No section':'Без раздела') : setName(myCur);
+  const L = function(ru,en){ return enLang() ? en : ru; };
+  const setName2 = myCur==='all' || myCur==='none' ? L('Без раздела','No section') : setName(myCur);
   document.getElementById('app').innerHTML =
-    '<div class="header">' +
-      (enLang()?'<button class="back-btn" onclick="renderMyWords()">← Section</button>':'<button class="back-btn" onclick="renderMyWords()">← Раздел</button>') +
-    '</div>' +
-    (enLang()?'<div class="detail-title">Import words</div>':'<div class="detail-title">Импорт слов</div>') +
-    (enLang()?'<div class="detail-sub">Paste a list or upload a file — they\'ll go into "':'<div class="detail-sub">Вставь список или загрузи файл — попадут в «') + setName2 + '»</div>' +
-    '<div class="card" style="margin-top:1rem">' +
-      (enLang()?'<div class="pool-label">Format: one word per line</div>':'<div class="pool-label">Формат: одно слово в строке</div>') +
-      (enLang()?'<div class="imp-hint">ei bok — book<br>å kjøre, to drive<br>melk: milk</div>':'<div class="imp-hint">ei bok — книга<br>å kjøre, водить<br>melk: молоко</div>') +
-      (enLang()?'<textarea class="text-input imp-area" id="imp-text" placeholder="Paste your list here…"></textarea>':'<textarea class="text-input imp-area" id="imp-text" placeholder="Вставь список сюда…"></textarea>') +
-      '<div class="btn-row" style="margin-top:12px">' +
-        '<button class="submit-btn retry-btn" onclick="pickFile()">' + ic('down',15) + (enLang()?' File</button>':' Файл</button>') +
-        (enLang()?'<button class="submit-btn" onclick="previewImport()">Parse</button>':'<button class="submit-btn" onclick="previewImport()">Разобрать</button>') +
-      '</div>' +
+    scrTop('renderMyWords()', L('Импорт слов','Import words')) +
+    '<p class="s-mut" style="margin-bottom:var(--sp-3)">' + L('Вставь список или загрузи файл — попадут в «','Paste a list or upload a file — they\'ll go into “') + setName2 + L('»','”') + '</p>' +
+    '<div class="s-card">' +
+      '<div class="pool-label">' + L('Формат: одно слово в строке','Format: one word per line') + '</div>' +
+      '<div class="imp-hint" lang="nb">' + (enLang()?'ei bok — book<br>å kjøre, to drive<br>melk: milk':'ei bok — книга<br>å kjøre, водить<br>melk: молоко') + '</div>' +
+      '<textarea class="text-input imp-area" id="imp-text" lang="nb" placeholder="' + L('Вставь список сюда…','Paste your list here…') + '"></textarea>' +
+      '<button class="submit-btn retry-btn" onclick="pickFile()">' + ic('down',15) + L(' Загрузить файл',' Upload a file') + '</button>' +
       '<input type="file" id="imp-file" accept=".txt,.csv,text/plain,text/csv" style="display:none" onchange="loadFile(event)">' +
     '</div>' +
     '<div id="imp-preview"></div>' +
-    (enLang()?'<div class="section-label" style="margin-top:22px">Backup</div>':'<div class="section-label" style="margin-top:22px">Резервная копия</div>') +
-    '<button class="continue-btn" style="margin-top:10px" onclick="exportWords()">' + ic('share',16) + (enLang()?' Export vocabulary to a file</button>':' Выгрузить словарь в файл</button>');
+    '<div class="section-label" style="margin-top:var(--sp-6)">' + L('Резервная копия','Backup') + '</div>' +
+    '<button class="submit-btn retry-btn" style="margin-top:var(--sp-2)" onclick="exportWords()">' + ic('share',16) + L(' Выгрузить словарь в файл',' Export vocabulary to a file') + '</button>' +
+    scrDock([L('Разобрать список','Parse the list'), 'previewImport()']);
 }
 
 function pickFile(){ const f = document.getElementById('imp-file'); if(f && f.click) f.click(); }
@@ -5124,95 +5122,71 @@ function deckLearned(id){ return deckWords(id).filter(function(w){ return (w.s||
 
 function renderMyDecks(){
   screen = 'mydecks';
-  const all = myList();
-  const sets = mySets();
-  const noneN = deckWords('none').length;
-
-  const card = function(id, name){
-    const ws = deckWords(id);
-    const due = myDue(ws).length;
-    const learned = deckLearned(id);
-    const pct = ws.length ? Math.round(learned/ws.length*100) : 0;
-    return '<div class="lesson-card" onclick="openDeck(\'' + id + '\')">' +
-      '<div class="lesson-num">' + ic('cards',16) + '</div>' +
-      '<div class="lesson-info">' +
-        '<div class="lesson-title">' + name + '</div>' +
-        '<div class="lesson-sub">' + ws.length + (enLang()?' words':' слов') + (due ? ' · ' + due + (enLang()?' to review':' к повтору') : (enLang()?' · all reviewed':' · всё повторено')) + '</div>' +
-      '</div>' +
-      '<div class="lesson-mini">' +
-        '<div class="lesson-mini-bar"><div class="lesson-mini-fill" style="width:' + pct + '%"></div></div>' +
-        '<div class="lesson-mini-pct">' + pct + '%</div>' +
-      '</div>' +
-    '</div>';
+  const L = function(ru,en){ return enLang() ? en : ru; };
+  const all = myList(), sets = mySets(), noneN = deckWords('none').length;
+  if(!all.length && !sets.length){
+    document.getElementById('app').innerHTML =
+      scrTop('renderCourses()', L('Мои карточки','My Cards')) +
+      stateScreen({ img:'S-empty-words', h:L('Здесь будут твои слова','Your words will live here'),
+        p:L('Добавь слово вручную или импортируй список — повторять будем по интервалам','Add a word by hand or import a list — we will review them at intervals'),
+        pri:[L('Добавить слово','Add a word'), "myCur='none';renderMyWords()"], sec:[L('Импорт списка','Import a list'), "myCur='none';renderImport()"] });
+    return;
+  }
+  const row = function(id, name){
+    const ws = deckWords(id), due = myDue(ws).length, learned = deckLearned(id);
+    return scrRow({ icon:ic('cards',18), t:name,
+      sub: ws.length + L(' слов',' words') + (due ? ' · ' + due + L(' к повтору',' to review') : L(' · всё повторено',' · all reviewed')),
+      pct: ws.length ? Math.round(learned/ws.length*100) : null, go:"openDeck('" + id + "')" });
   };
-
-  const decks = sets.map(function(s){ return card(s.id, s.name); }).join('') +
-    (noneN ? card('none', (enLang()?'No section':'Без раздела')) : '');
   const dueAll = myDue(all).length;
-
   document.getElementById('app').innerHTML =
-    '<div class="header">' +
-      '<button class="back-btn" onclick="renderCourses()">' + t('back_h') + '</button>' +
-      '<div class="header-right"><div class="score-chip">' + ic('cards',14) + ' ' + all.length + '</div></div>' +
+    scrTop('renderCourses()', L('Мои карточки','My Cards'), all.length + L(' слов',' words')) +
+    '<p class="s-mut" style="margin-bottom:var(--sp-3)">' + L('Разделы со своими словами и повторениями','Sections with your own words and reviews') + '</p>' +
+    '<div class="s-list">' +
+      sets.map(function(x){ return row(x.id, x.name); }).join('') +
+      (noneN ? row('none', L('Без раздела','No section')) : '') +
+      '<div class="s-li s-li-add" onclick="myAddSet()"><span class="s-li-ic">+</span><div class="s-lt"><b>' + L('Новый раздел','New section') + '</b><span>' + L('Например: урок 5, еда, работа','E.g. lesson 5, food, work') + '</span></div></div>' +
     '</div>' +
-    (enLang()?'<div class="lessons-title">My Cards</div>':'<div class="lessons-title">Мои карточки</div>') +
-    (enLang()?'<div class="lessons-sub">Sections with your own words and reviews</div>':'<div class="lessons-sub">Разделы со своими словами и повторениями</div>') +
-    (all.length ? '<button class="continue-btn" onclick="openDeck(\'all\')">' + ic('cards',16) + (enLang()?' Learn everything':' Учить всё') + (dueAll ? ' · ' + dueAll + (enLang()?' to review':' к повтору') : '') + '</button>' : '') +
-    '<div class="lesson-list">' + decks +
-      '<div class="lesson-card" style="border-style:dashed;--dim:.75;opacity:var(--dim)" onclick="myAddSet()">' +
-        '<div class="lesson-num">+</div>' +
-        (enLang()?'<div class="lesson-info"><div class="lesson-title">New section</div>':'<div class="lesson-info"><div class="lesson-title">Новый раздел</div>') +
-        (enLang()?'<div class="lesson-sub">E.g. lesson 5, food, work</div></div>':'<div class="lesson-sub">Например: урок 5, еда, работа</div></div>') +
-      '</div>' +
-    '</div>' +
-    (all.length ? '' : (enLang()?'<div class="deck-count" style="margin-top:1.25rem">Create a section and add your first words</div>':'<div class="deck-count" style="margin-top:1.25rem">Создай раздел и добавь первые слова</div>'));
+    (all.length ? scrDock([L('Учить всё','Learn everything') + (dueAll ? ' · ' + dueAll : ''), "openDeck('all')"]) : '');
 }
 
 function openDeck(id){ myCur = id; renderMyWords(); }
 
 function renderMyWords(){
   screen = 'mywords';
+  const L = function(ru,en){ return enLang() ? en : ru; };
   const list = myFiltered();
   const due = myDue(list).length;
   const isSet = myCur!=='all' && myCur!=='none';
-  const title = myCur==='all' ? (enLang()?'All words':'Все слова') : myCur==='none' ? (enLang()?'No section':'Без раздела') : setName(myCur);
-
+  const title = myCur==='all' ? L('Все слова','All words') : myCur==='none' ? L('Без раздела','No section') : setName(myCur);
   const rows = list.map(function(w,i){
     const left = w.d===undefined ? 0 : Math.max(0, w.d - dnum());
     return '<div class="my-row">' +
-      '<div class="my-txt"><div class="my-no">' + w.n + '</div>' +
+      '<div class="my-txt"><div class="my-no" lang="nb">' + w.n + '</div>' +
         '<div class="my-ru">' + w.r + (myCur==='all' && w.set ? ' · ' + setName(w.set) : '') + '</div></div>' +
-      '<div class="my-when">' + (left===0 ? (enLang()?'to review':'к повтору') : (enLang()?'in ':'через ') + left + (enLang()?' d':' д')) + '</div>' +
-      '<button class="my-del" onclick="myMove(' + i + ')">' + ic('share',15) + '</button>' +
-      '<button class="my-del" onclick="myDel(' + i + ')">' + ic('cross',15) + '</button>' +
+      '<div class="my-when">' + (left===0 ? L('к повтору','to review') : L('через ','in ') + left + L(' д',' d')) + '</div>' +
+      '<button class="my-del" aria-label="' + L('Переместить','Move') + '" onclick="myMove(' + i + ')">' + ic('share',15) + '</button>' +
+      '<button class="my-del" aria-label="' + L('Удалить','Delete') + '" onclick="myDel(' + i + ')">' + ic('cross',15) + '</button>' +
     '</div>';
   }).join('');
-
+  const right = isSet ? '<button class="s-icbtn" aria-label="' + L('Переименовать','Rename') + '" onclick="myRenameSet(\'' + myCur + '\')">' + ic('pencil',15) + '</button>' +
+                        '<button class="s-icbtn" aria-label="' + L('Удалить раздел','Delete section') + '" onclick="myDelSet(\'' + myCur + '\')">' + ic('cross',15) + '</button>' : '';
   document.getElementById('app').innerHTML =
-    '<div class="header">' +
-      (enLang()?'<button class="back-btn" onclick="renderMyDecks()">← Sections</button>':'<button class="back-btn" onclick="renderMyDecks()">← Разделы</button>') +
-      '<div class="header-right">' +
-        (isSet ? '<button class="back-btn" onclick="myRenameSet(\'' + myCur + '\')">' + ic('pencil',15) + '</button>' +
-                 '<button class="back-btn" onclick="myDelSet(\'' + myCur + '\')">' + ic('cross',15) + '</button>' : '') +
-        '<div class="score-chip">' + ic('cards',14) + ' ' + list.length + '</div>' +
-      '</div>' +
-    '</div>' +
-    '<div class="detail-title"' + (isSet ? ' onclick="myRenameSet(\'' + myCur + '\')" style="cursor:pointer"' : '') + '>' + title + (isSet ? '<span class="edit-hint">' + ic('pencil',13) + '</span>' : '') + '</div>' +
-    '<div class="detail-sub">' + (due ? due + (enLang()?' words are due for review':' слов ждут повторения') : (enLang()?'All words reviewed — add some new ones':'Все слова повторены — добавь новые')) + '</div>' +
-    '<div class="card" style="margin-top:1rem">' +
-      (enLang()?'<input class="text-input" id="my-no" type="text" placeholder="Word in Norwegian" style="margin-bottom:8px">':'<input class="text-input" id="my-no" type="text" placeholder="Слово по-норвежски" style="margin-bottom:8px">') +
-      (enLang()?'<input class="text-input" id="my-ru" type="text" placeholder="Translation" style="margin-bottom:12px" onkeydown="if(event.key===\'Enter\')myAdd()">':'<input class="text-input" id="my-ru" type="text" placeholder="Перевод" style="margin-bottom:12px" onkeydown="if(event.key===\'Enter\')myAdd()">') +
+    scrTop('renderMyDecks()', title, right) +
+    '<p class="s-mut" style="margin-bottom:var(--sp-3)">' + (due ? due + L(' слов ждут повторения',' words are due for review') : list.length ? L('Все слова повторены — добавь новые','All words reviewed — add some new ones') : L('Здесь пока пусто — добавь первое слово','Nothing here yet — add your first word')) + '</p>' +
+    '<div class="s-card">' +
+      '<input class="text-input" id="my-no" type="text" lang="nb" placeholder="' + L('Слово по-норвежски','Word in Norwegian') + '">' +
+      '<input class="text-input" id="my-ru" type="text" placeholder="' + L('Перевод','Translation') + '" onkeydown="if(event.key===\'Enter\')myAdd()">' +
       '<div class="btn-row">' +
-        '<button class="submit-btn retry-btn" id="ai-fill" onclick="aiFillWord()">' + ic('star',15) + (enLang()?' Fill in</button>':' Заполнить</button>') +
-        (enLang()?'<button class="submit-btn" onclick="myAdd()">Add</button>':'<button class="submit-btn" onclick="myAdd()">Добавить</button>') +
+        '<button class="submit-btn retry-btn" id="ai-fill" onclick="aiFillWord()">' + ic('star',15) + L(' Заполнить',' Fill in') + '</button>' +
+        '<button class="submit-btn retry-btn s-strong" onclick="myAdd()">' + L('Добавить','Add') + '</button>' +
       '</div>' +
-      '<button class="submit-btn retry-btn" style="margin-top:10px" onclick="renderImport()">' + ic('cards',15) + (enLang()?' Import a list</button>':' Импорт списком</button>') +
+      '<button class="back-btn s-link" onclick="renderImport()">' + ic('cards',15) + L(' Импорт списком',' Import a list') + '</button>' +
     '</div>' +
-    (list.length ?
-      '<button class="continue-btn" onclick="startMyWords()">' + ic('cards',16) + (enLang()?' Learn the cards':' Учить карточки') + (due ? ' · ' + due : '') + '</button>' +
-      (list.length >= 3 ? '<button class="continue-btn" style="background:var(--surface);color:var(--ink);border:1px solid var(--line)" id="ai-prac" onclick="aiPractice()">' + ic('star',16) + (enLang()?' Practise with phrases</button>':' Тренировать фразами</button>') : '') +
-      '<div class="card" style="padding:.6rem .8rem">' + rows + '</div>'
-      : (enLang()?'<div class="deck-count" style="margin-top:1.5rem">Nothing here yet. Add a word above.</div>':'<div class="deck-count" style="margin-top:1.5rem">Здесь пока пусто. Добавь слово выше.</div>'));
+    (list.length ? '<div class="s-card s-words">' + rows + '</div>' : '') +
+    (list.length ? scrDock([L('Учить карточки','Learn the cards') + (due ? ' · ' + due : ''), 'startMyWords()'],
+                           list.length >= 3 ? [ic('star',16) + L(' Тренировать фразами',' Practise with phrases'), 'aiPractice()'] : null) : '');
+  const prac = document.querySelector('.s-dock .retry-btn'); if(prac) prac.id = 'ai-prac';
 }
 
 function startMyWords(){
