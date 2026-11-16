@@ -933,6 +933,68 @@ body.light .dw.correct{color:var(--ok)!important}
 body.light .builder-answer.correct-state,body.light .text-input.correct-state{border-color:var(--ok)!important;background:rgba(21,128,61,0.06)!important}
 body.light .builder-answer.wrong-state,body.light .text-input.wrong-state{border-color:var(--bad)!important;background:rgba(201,42,42,0.05)!important}
 
+
+/* ─── главный экран Gå! v1.0 ─── */
+.home-top{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3);margin-bottom:var(--sp-4)}
+.home-top .header-right{display:flex;align-items:center;gap:var(--sp-2);flex-wrap:wrap;justify-content:flex-end}
+.streak-pill{display:inline-flex;align-items:center;gap:var(--sp-1);font-size:var(--fs-14);font-weight:700;color:var(--ink-2);margin-right:var(--sp-1)}
+.streak-pill b{color:var(--ink)}
+.home-greet{font-size:var(--fs-20);font-weight:700;margin-bottom:var(--sp-4);cursor:pointer}
+.day-card{border:1px solid var(--night);padding:var(--sp-4);display:flex;flex-direction:column;align-items:center;gap:var(--sp-4);margin-bottom:var(--sp-6)}
+.home-rings{display:flex;justify-content:center}
+.home-rings .rings-wrap{width:216px;max-width:100%;aspect-ratio:1}
+.day-card .ring-halo{display:none}
+.day-card{--rtrack:var(--night-line);--rdone:var(--night-line)}
+.home-legend{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--sp-2);width:100%;border-top:1px solid var(--night-line);padding-top:var(--sp-3)}
+.hl{display:flex;flex-direction:column;gap:2px;min-width:0}
+.hl span{display:flex;align-items:center;gap:6px;font-size:var(--fs-12);font-weight:700;color:var(--night-ink-2)}
+.hl i,.rvc-k i{width:8px;height:8px;border-radius:50%;flex:none}
+.hl b{font-family:var(--f-no);font-size:var(--fs-20);font-weight:800;line-height:1.1;color:var(--night-ink);overflow-wrap:anywhere}
+.hl b small{font-family:var(--f-ui);font-size:var(--fs-14);font-weight:700;color:var(--night-ink-2)}
+.hl b.off{font-family:var(--f-ui);font-size:var(--fs-14);color:var(--night-ink-2)}
+.home-go{width:100%;display:flex!important;justify-content:space-between;align-items:center;gap:var(--sp-3);text-align:left;border-radius:var(--r-sheet)!important;padding:14px var(--sp-4)!important;font-size:var(--fs-16)!important;font-weight:700;min-height:56px}
+.home-go small{display:block;font-size:var(--fs-12);font-weight:500;opacity:.8}
+.sec-h{display:flex;justify-content:space-between;align-items:baseline;gap:var(--sp-3);margin:0 0 var(--sp-3)}
+.sec-h h3{font-size:var(--fs-20);font-weight:700}
+.sec-h span{font-size:var(--fs-14);color:var(--ink-2)}
+.home-rev{display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));gap:var(--sp-3);margin-bottom:var(--sp-6)}
+.rvc{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-card);padding:14px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.rvc-k{display:flex;align-items:center;gap:6px;font-size:var(--fs-12);font-weight:700;color:var(--ink-2)}
+.rvc-n{font-family:var(--f-no);font-size:var(--fs-40);font-weight:800;line-height:1}
+.rvc-s{font-size:var(--fs-12);color:var(--ink-2);line-height:1.35}
+.rvc-s b{color:var(--ink)}
+.rvc-btn{margin-top:6px;font:inherit;font-size:var(--fs-14);font-weight:700;color:var(--ink);background:transparent;border:1px solid var(--ink);border-radius:var(--r-chip);padding:var(--sp-2) var(--sp-3);cursor:pointer}
+.rvc-btn:disabled{border-color:var(--line);color:var(--ink-3);cursor:default}
+.home-rail{display:flex;flex-direction:column;gap:var(--sp-3);margin-bottom:var(--sp-6)}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-card);overflow:hidden;display:flex;min-height:126px;cursor:pointer}
+.tile.soon{opacity:.5;cursor:default}
+.tile-tx{flex:1;min-width:0;padding:14px var(--sp-3) 14px var(--sp-4);display:flex;flex-direction:column;justify-content:center;gap:2px}
+.tile-tx h4{font-size:var(--fs-16);font-weight:700;line-height:1.25}
+.tile-tx p{font-size:var(--fs-14);color:var(--ink-2)}
+.tile-prog{height:4px;border-radius:2px;background:var(--line);margin-top:var(--sp-2);overflow:hidden}
+.tile-prog i{display:block;height:100%;background:var(--ink)}
+.tile-img{flex:0 0 168px;background:var(--paper)}
+.tile-img img{display:block;width:100%;height:100%;object-fit:cover}
+@media (max-width:360px){.tile-img{flex-basis:128px}}
+.home-stats{border:1px solid var(--night);border-radius:var(--r-card);padding:14px var(--sp-4);display:flex;flex-direction:column;gap:var(--sp-3);margin-bottom:var(--sp-6);cursor:pointer}
+.hs-h{display:flex;justify-content:space-between;align-items:baseline;gap:var(--sp-2);flex-wrap:wrap;font-size:var(--fs-12);font-weight:700;color:var(--night-ink-2)}
+.hs-h b{color:var(--night-ink)}
+.wk-chart{display:grid;grid-template-columns:repeat(7,1fr);gap:var(--sp-2);align-items:end;height:64px;border-bottom:1px solid var(--night-line)}
+.wk-c{position:relative;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%}
+.wk-c i{display:block;width:100%;max-width:20px;background:var(--ring-phrases);opacity:.45;border-radius:4px 4px 0 0}
+.wk-c.today i{opacity:1}
+.wk-c.zero i{background:var(--night-line);opacity:1;border-radius:0}
+.wk-c.future i{opacity:0}
+.wk-v{font-size:var(--fs-12);font-weight:700;color:var(--night-ink);margin-bottom:var(--sp-1)}
+.wk-days{display:grid;grid-template-columns:repeat(7,1fr);gap:var(--sp-2)}
+.wk-days span{text-align:center;font-size:var(--fs-12);font-weight:700;color:var(--night-ink-2)}
+.wk-days span.t{color:var(--night-ink)}
+.hs-path{display:flex;flex-direction:column;gap:6px;border-top:1px solid var(--night-line);padding-top:var(--sp-3)}
+.hs-lbl{display:flex;justify-content:space-between;gap:var(--sp-2);font-size:var(--fs-12);font-weight:700;color:var(--night-ink-2)}
+.hs-bar{position:relative;height:8px;border-radius:4px;background:var(--night-line)}
+.hs-bar i{position:absolute;left:0;top:0;bottom:0;border-radius:4px;background:var(--ring-phrases)}
+.hs-bar em{position:absolute;top:-3px;width:2px;height:14px;background:var(--night-ink-2)}
+.hs-more{font-size:var(--fs-14);font-weight:700;color:var(--night-ink);text-align:right}
 /* ═══ Gå! v1.0 — правила дизайн-системы (последний слой, перекрывает старые) ═══ */
 body{font-family:var(--f-ui)}
 [lang="nb"]{font-family:var(--f-no)}
@@ -2301,139 +2363,121 @@ function closeAllWin(){
 
 function renderCourses(){
   screen = 'courses';
-  const cards = COURSES.map((c,i) => {
-    const st = courseStats(i);
-    return '<div class="course-card' + (c.soon?' soon':'') + '" onclick="openCourse(' + i + ')">' +
-      '<div class="course-top">' +
-        '<div class="course-title">' + tx(c,'title') + '</div>' +
-        (c.soon ? (enLang()?'<div class="course-badge">soon</div>':'<div class="course-badge">скоро</div>') : '<div class="course-pct">' + st.pct + '%</div>') +
-      '</div>' +
-      '<div class="course-sub">' + tx(c,'sub') + '</div>' +
-      (c.soon ? '' :
-        '<div class="lesson-mini-bar" style="width:100%;margin-top:12px"><div class="lesson-mini-fill" style="width:' + st.pct + '%"></div></div>' +
-        '<div class="course-meta">' + st.total + (c.audio ? (st.total===1?(enLang()?' dialogue':' диалог'):(enLang()?' dialogues':' диалогов')) : (st.total===1?(enLang()?' lesson':' урок'):(enLang()?' lessons':' уроков'))) + (enLang()?' · completed ':' · пройдено ') + st.done + '</div>') +
-    '</div>';
-  }).join('');
-
-  const tc = todayCount(), sc = streakCount(), goalHit = tc >= DAILY_GOAL;
-  const lm = listenToday(), listenHit = lm >= LISTEN_GOAL;
+  const L = function(ru, en){ return enLang() ? en : ru; };
+  const tc = todayCount(), sc = streakCount();
+  const lm = listenToday(), wd0 = dayLog().w || 0;
   const sL = LESSONS, sW = WORDS, sci = ci;
   ci = 0; LESSONS = COURSES[0].L; WORDS = COURSES[0].W;
-  let ph = 0, phT = 0, wk = 0, wT = 0;
-  for(let l=0;l<LESSONS.length;l++){ ph += lessonSolved(l); phT += lessonTotal(l); wk += Math.min(wordsKnown(l).length, WORDS[l].length); wT += WORDS[l].length; }
+  let ph = 0, phT = 0;
+  for(let l=0;l<LESSONS.length;l++){ ph += lessonSolved(l); phT += lessonTotal(l); }
+  // «Продолжить»: последний урок, иначе первый незавершённый
+  let cont = null;
+  if(meta.last && (meta.last.c||0)===0 && lessonUnlocked(meta.last.l) && !lessonDone(meta.last.l)){
+    cont = { go:'resumeLast()', sub: L('Урок ','Lesson ') + (meta.last.l+1) + ' · ' + lesTitle(LESSONS[meta.last.l]) };
+  } else {
+    for(let l=0;l<LESSONS.length;l++) if(lessonUnlocked(l) && !lessonDone(l)){ cont = { go:'openCourse(0)', sub: L('Урок ','Lesson ') + (l+1) + ' · ' + lesTitle(LESSONS[l]) }; break; }
+  }
   ci = sci; LESSONS = sL; WORDS = sW;
-  const phPct = Math.round(ph/phT*100), wPct = Math.round(wk/wT*100);
+  const a2 = phT ? Math.round(ph/phT*100) : 0;
+
+  // повторение
+  const dueAll = srsDueAll(); let dueN = 0; for(const k in dueAll) dueN += dueAll[k];
+  const rq = reviewQueue(), badN = Math.min(mistakesDue().length, MIST_MAX);
+  function revCard(col, title, n, note, go, cls){
+    return '<div class="rvc ' + cls + '">' +
+      '<span class="rvc-k"><i style="background:var(' + col + ')"></i>' + title + '</span>' +
+      '<span class="rvc-n">' + n + '</span>' +
+      '<span class="rvc-s">' + note + '</span>' +
+      '<button class="rvc-btn" ' + (n ? 'onclick="' + go + '"' : 'disabled') + '>' + (n ? L('Повторить','Review') : L('Всё повторено','All done')) + '</button>' +
+    '</div>';
+  }
+  const review =
+    '<div class="sec-h"><h3>' + L('Повторение','Review') + '</h3><span>' + L('на сегодня','for today') + '</span></div>' +
+    '<div class="home-rev">' +
+      revCard('--ring-phrases', L('Фразы курса','Course phrases'), rq.length,
+        rq.length ? (badN ? L('С ошибками: <b>','With mistakes: <b>') + badN + '</b>' : L('Из пройденных уроков','From completed lessons')) : L('Пока нечего','Nothing yet'),
+        'startMistakes()', 'rvc-p') +
+      revCard('--ring-words', L('Слова','Words'), dueN,
+        dueN ? L('Подошёл срок','Due now') : L('Новые появятся завтра','New ones tomorrow'), 'openSrsAll()', 'rvc-w') +
+    '</div>';
+
+  // разделы
+  const COVER = { a1:'img/cover-course.webp', dlg:'img/cover-dialogs.webp' };
+  function tile(go, cover, alt, title, sub, pct, soon){
+    return '<div class="tile' + (soon?' soon':'') + '"' + (soon ? '' : ' onclick="' + go + '"') + '>' +
+      '<div class="tile-tx"><h4>' + title + '</h4><p>' + sub + '</p>' +
+        (pct === null ? '' : '<div class="tile-prog"><i style="width:' + pct + '%"></i></div>') + '</div>' +
+      (cover ? '<div class="tile-img"><img src="' + cover + '" alt="' + alt + '" width="168" height="126" loading="lazy"></div>' : '') +
+    '</div>';
+  }
+  const tiles = COURSES.map(function(c,i){
+    const st = courseStats(i);
+    const unit = c.audio ? (st.total===1?L(' диалог',' dialogue'):L(' диалогов',' dialogues')) : (st.total===1?L(' урок',' lesson'):L(' уроков',' lessons'));
+    return tile('openCourse(' + i + ')', COVER[c.id], '', tx(c,'title'),
+      c.soon ? L('скоро','soon') : st.total + unit + L(' · пройдено ',' · completed ') + st.done, c.soon ? null : st.pct, c.soon);
+  }).join('') + (function(){
+    const all = myList(), sets = mySets(), due = myDue(all).length;
+    const learned = all.filter(function(w){ return (w.s||0) >= 3; }).length;
+    const pct = all.length ? Math.round(learned/all.length*100) : null;
+    return tile('renderMyDecks()', 'img/cover-cards.webp', '', L('Мои карточки','My Cards'),
+      all.length ? all.length + L(' слов',' words') + (due ? L(' · к повтору ',' · to review ') + due : '') + ' · ' + sets.length + (sets.length===1?L(' раздел',' section'):L(' разделов',' sections'))
+                 : L('Добавляй слова с курсов','Add words from your courses'), pct, false);
+  })();
+
+  // статистика недели
+  const days = weekDays(), vals = days.map(function(d){ return logOf(d).p||0; });
+  const mx = Math.max(DAILY_GOAL, Math.max.apply(null, vals)) || 1, wdn = t('wd');
+  const chart = '<div class="wk-chart" role="img" aria-label="' + L('Фраз за день: ','Phrases per day: ') + days.map(function(d,i){ return wdn[i] + ' ' + vals[i]; }).join(', ') + '">' +
+    days.map(function(d,i){
+      const v = vals[i], h = Math.round(v/mx*48), today = dstrOf(d) === dstr(0);
+      return '<div class="wk-c' + (today?' today':'') + (v?'':' zero') + (isFuture(d)?' future':'') + '">' +
+        (today && v ? '<span class="wk-v">' + v + '</span>' : '') +
+        '<i style="height:' + Math.max(2,h) + 'px"></i></div>';
+    }).join('') + '</div>' +
+    '<div class="wk-days">' + days.map(function(d,i){ return '<span' + (dstrOf(d)===dstr(0)?' class="t"':'') + '>' + wdn[i] + '</span>'; }).join('') + '</div>';
+
+  function lg(col, name, v, goal, unit){
+    return '<div class="hl"><span><i style="background:var(' + col + ')"></i>' + name + '</span>' +
+      (goal ? '<b>' + v + '<small> / ' + goal + (unit||'') + '</small></b>' : '<b class="off">' + L('выкл.','off') + '</b>') + '</div>';
+  }
 
   document.getElementById('app').innerHTML =
-    '<div class="header head-card">' +
-      '<div class="head-greet" onclick="renderName()">' + (meta.name ? 'Hei, ' + meta.name + '!' : 'Hei!') + '<span class="edit-hint">' + ic('pencil',13) + '</span></div>' +
+    '<div class="home-top">' +
+      '<div class="logo">' + GA_LOGO + '</div>' +
       '<div class="header-right">' +
-        '<button class="back-btn" onclick="toggleTheme()">' + ic(themeIsLight()?'moon':'sun',17) + '</button>' +
-        (enLang()?'<button class="back-btn" aria-label="Daily load" onclick="renderGoalEdit()">':'<button class="back-btn" aria-label="Нагрузка" onclick="renderGoalEdit()">') + ic('target',17) + '</button>' +
-        '<button class="back-btn" id="sched-btn" onclick="renderSchedule()">' + ic('cal',17) + '</button>' +
+        '<span class="streak-pill">' + ic('fire',14) + '<b>' + sc + '</b> ' + dayWord(sc) + '</span>' +
+        '<button class="back-btn" aria-label="' + L('Тема','Theme') + '" onclick="toggleTheme()">' + ic(themeIsLight()?'moon':'sun',17) + '</button>' +
+        '<button class="back-btn" id="sched-btn" aria-label="' + L('Расписание','Schedule') + '" onclick="renderSchedule()">' + ic('cal',17) + '</button>' +
       '</div>' +
     '</div>' +
+    '<div class="home-greet" onclick="renderName()">' + (meta.name ? 'Hei, ' + meta.name + '!' : 'Hei!') + '<span class="edit-hint">' + ic('pencil',13) + '</span></div>' +
     (isPlannedToday() && (tc < DAILY_GOAL || lm < LISTEN_GOAL)
-      ? '<div class="plan-banner" onclick="renderSchedule()">' + t('plan') + ' ' + sched().time + '</div>'
-      : '') +
-    '<div class="hero-stack">' +
-      (enLang()?'<div class="rings-hero" onclick="renderGoalEdit()" title="Edit goals">':'<div class="rings-hero" onclick="renderGoalEdit()" title="Изменить цели">') +
-        '<div class="rings-wrap">' + trioRings(288) +
-          '<div class="rings-center">' +
-            '<div class="rings-big' + (String(tc).length > 3 ? ' long' : '') + '">' + tc + '</div>' +
-            '<div class="rings-small">/ ' + DAILY_GOAL + '</div>' +   // та же дробь, что в легенде справа: в кружок слова не влезают
-          '</div>' +
-        '</div>' +
-        '<div class="stat-float">' +
-          '<div class="rings-legend">' +
-            (enLang()?'<div class="lg"><span class="lg-dot" style="background:var(--ring-phrases)"></span><span class="lg-t">Phrases</span><span class="lg-v':'<div class="lg"><span class="lg-dot" style="background:var(--ring-phrases)"></span><span class="lg-t">Фразы</span><span class="lg-v') + (tc>=DAILY_GOAL?' over':'') + '">' + tc + ' / ' + DAILY_GOAL + lapBadge(DAILY_GOAL?tc/DAILY_GOAL*100:0) + '</span></div>' +
-            (enLang()?'<div class="lg"><span class="lg-dot" style="background:var(--ring-audio)"></span><span class="lg-t">Audio</span>':'<div class="lg"><span class="lg-dot" style="background:var(--ring-audio)"></span><span class="lg-t">Аудио</span>') + (LISTEN_GOAL ? '<span class="lg-v' + (lm>=LISTEN_GOAL?' over':'') + '">' + lm + ' / ' + LISTEN_GOAL + (enLang()?' min':' мин') + lapBadge(lm/LISTEN_GOAL*100) + '</span>' : (enLang()?'<span class="lg-v off">off</span>':'<span class="lg-v off">выключено</span>')) + '</div>' +
-            (enLang()?'<div class="lg"><span class="lg-dot" style="background:var(--ring-words)"></span><span class="lg-t">Words</span>':'<div class="lg"><span class="lg-dot" style="background:var(--ring-words)"></span><span class="lg-t">Слова</span>') + (WORD_GOAL ? '<span class="lg-v' + ((dayLog().w||0)>=WORD_GOAL?' over':'') + '">' + (dayLog().w||0) + ' / ' + WORD_GOAL + lapBadge((dayLog().w||0)/WORD_GOAL*100) + '</span>' : (enLang()?'<span class="lg-v off">off</span>':'<span class="lg-v off">выключено</span>')) + '</div>' +
-          '</div>' +
-        '</div>' +
+      ? '<div class="plan-banner" onclick="renderSchedule()">' + t('plan') + ' ' + sched().time + '</div>' : '') +
+    '<div class="night-card day-card">' +
+      '<div class="rings-hero home-rings" onclick="renderGoalEdit()" title="' + L('Изменить цели','Edit goals') + '">' +
+        '<div class="rings-wrap">' + trioRings(216, 20, 24, true) + '</div>' +
       '</div>' +
-      '<div class="hero">' +
-      (function(){
-        const days = weekDays();
-        const vals = days.map(function(d){ return logOf(d).p||0; });
-        const mx = Math.max(DAILY_GOAL, Math.max.apply(null, vals));
-        const wd = t('wd');
-        return '<div class="week-strip">' + days.map(function(d,i){
-          const v = vals[i];
-          const h = Math.max(4, Math.round(v/mx*52));
-          const today = dstrOf(d) === dstr(0);
-          const future = isFuture(d);
-          const hit = v >= DAILY_GOAL;
-          return '<div class="wk-col' + (future?' future':'') + '">' +
-            '<div class="wk-bar-bg"><div class="wk-bar' + (hit?' hit':'') + (today?' today':'') + '" style="height:' + h + 'px"></div></div>' +
-            '<div class="wk-lbl' + (today?' today':'') + '">' + wd[i] + '</div>' +
-          '</div>';
-        }).join('') + '</div>';
-      })() +
-      '<div class="hero-foot">' +
-        '<span class="hf-item">' + ic('fire',13) + ' ' + sc + ' ' + dayWord(sc) + '</span>' +
-        '<span class="hf-sep"></span>' +
-        (enLang()?'<span class="hf-item" onclick="event.stopPropagation();renderStats()">All stats ›</span>':'<span class="hf-item" onclick="event.stopPropagation();renderStats()">Вся статистика ›</span>') +
-        '</div>' +
+      '<div class="home-legend">' +
+        lg('--ring-phrases', L('Фразы','Phrases'), tc, DAILY_GOAL) +
+        lg('--ring-words', L('Слова','Words'), wd0, WORD_GOAL) +
+        lg('--ring-audio', L('Аудио','Audio'), lm, LISTEN_GOAL, L(' мин',' min')) +
       '</div>' +
+      (cont ? '<button class="continue-btn home-go" onclick="' + cont.go + '"><span>' + L('Продолжить','Continue') + '<small>' + cont.sub + '</small></span><span aria-hidden="true">→</span></button>' : '') +
     '</div>' +
-    (function(){
-      let out = '';
-      const dueAll = srsDueAll();
-      let dueN = 0; for(const k in dueAll) dueN += dueAll[k];
-      if(dueN > 0){
-        out += '<div class="block-card live" style="margin-bottom:10px" onclick="openSrsAll()">' +
-          '<div class="block-num">' + ic('cards',17) + '</div>' +
-          '<div class="block-title">' + t('srs_rev') + '</div>' +
-          '<div class="score-chip">' + dueN + '</div>' +
-        '</div>';
-      }
-      const rq = reviewQueue();
-      if(rq.length > 0){
-        const badAll = mistakesDue().length;          // всего созрело
-        const bad = Math.min(badAll, MIST_MAX);       // столько берём сейчас
-        const oldN = rq.length - bad;                 // добор из пройденного
-        // Если в колоде больше, чем влезает в заход, честно пишем «20 из 48» —
-        // иначе цифра на плашке не сходилась бы с подписью.
-        const note = badAll > bad
-          ? bad + (enLang()?' of ':' из ') + badAll + ' ' + mistWordOf(badAll)
-          : bad + ' ' + mistWord(bad) + (enLang()?' due':' по сроку');
-        out += '<div class="block-card live" style="margin-bottom:10px" onclick="startMistakes()">' +
-          '<div class="block-num">' + ic('redo',17) + '</div>' +
-          '<div class="block-title">' + t('mist') +
-            (bad ? '<div class="lock-note">' + note +
-                   (oldN > 0 ? ' · ' + oldN + (enLang()?' from completed lessons':' из пройденного') : '') + '</div>'
-                 : (enLang()?'<div class="lock-note">Phrases from completed lessons</div>':'<div class="lock-note">Фразы из пройденных уроков</div>')) +
-          '</div>' +
-          '<div class="score-chip">' + rq.length + '</div>' +
-        '</div>';
-      }
-      return out ? out + '<div style="height:6px"></div>' : '';
-    })() +
-    (enLang()?'<div class="lessons-title">Courses</div>':'<div class="lessons-title">Курсы</div>') +
-    (enLang()?'<div class="lessons-sub">Pick a track — each has its own progress</div>':'<div class="lessons-sub">Выбери направление — прогресс у каждого свой</div>') +
-    '<div class="lesson-list">' + cards + '</div>' +
-    (function(){
-      const all = myList(), sets = mySets(), due = myDue(all).length;
-      const learned = all.filter(function(w){ return (w.s||0) >= 3; }).length;
-      const pct = all.length ? Math.round(learned/all.length*100) : 0;
-      return '<div class="section-label" style="margin-top:26px">' + ic('pencil',13) + (enLang()?' Personal vocabulary</div>':' Личный словарь</div>') +
-        '<div class="lesson-list" style="margin-top:10px">' +
-          '<div class="course-card" onclick="renderMyDecks()">' +
-            '<div class="course-top">' +
-              (enLang()?'<div class="course-title">My Cards</div>':'<div class="course-title">Мои карточки</div>') +
-              (all.length ? '<div class="course-pct">' + pct + '%</div>' : (enLang()?'<div class="course-badge">create</div>':'<div class="course-badge">создать</div>')) +
-            '</div>' +
-            '<div class="course-sub">' + (all.length
-              ? sets.length + (sets.length===1?(enLang()?' section':' раздел'):(enLang()?' sections':' разделов')) + ' · ' + all.length + (enLang()?' words':' слов') + (due ? ' · ' + due + (enLang()?' to review':' к повтору') : '')
-              : (enLang()?'Add words from your courses and sort them into sections':'Добавляй слова с курсов и раскладывай по разделам')) + '</div>' +
-            (all.length
-              ? '<div class="lesson-mini-bar" style="width:100%;margin-top:12px"><div class="lesson-mini-fill" style="width:' + pct + '%"></div></div>' +
-                (enLang()?'<div class="course-meta">learned ':'<div class="course-meta">выучено ') + learned + (enLang()?' of ':' из ') + all.length + '</div>'
-              : '') +
-          '</div>' +
-        '</div>';
-    })() +
+    review +
+    '<div class="sec-h"><h3>' + L('Разделы','Sections') + '</h3><span>' + (COURSES.length + 1) + '</span></div>' +
+    '<div class="home-rail">' + tiles + '</div>' +
+    '<div class="sec-h"><h3>' + L('Статистика','Stats') + '</h3><span>' + L('эта неделя','this week') + '</span></div>' +
+    '<div class="night-card home-stats" onclick="renderStats()">' +
+      '<div class="hs-h"><span>' + L('Фраз за день','Phrases per day') + '</span><span>' + L('серия ','streak ') + '<b>' + sc + ' ' + dayWord(sc) + '</b></span></div>' +
+      chart +
+      '<div class="hs-path">' +
+        '<div class="hs-lbl"><span>' + L('Путь до A2','Road to A2') + '</span><span>' + ph + L(' из ',' of ') + phT + L(' фраз',' phrases') + '</span></div>' +
+        '<div class="hs-bar"><i style="width:' + a2 + '%"></i><em style="left:50%"></em></div>' +
+        '<div class="hs-lbl"><span>0</span><span>A1</span><span>A2</span></div>' +
+      '</div>' +
+      '<div class="hs-more">' + L('Вся статистика','All stats') + ' ›</div>' +
+    '</div>' +
     (enLang()?'<div class="footer"><a class="tour-link" onclick="startTour()">How it works</a>':'<div class="footer"><a class="tour-link" onclick="startTour()">Как это работает</a>') + '<span class="foot-dot">·</span><a class="tour-link" onclick="renderLangSelect(1)">' + langName(meta.lang) + '</a><br>' + t('footer') + ' <a href="https://t.me/nikolaiholub" target="_blank" rel="noopener">@nikolaiholub</a></div>';
   setTimeout(animateRings, 20);
 }
@@ -2990,7 +3034,7 @@ function animateRings(){
     })(arcs[i]);
   }
 }
-function trioRings(size, stroke, gap){
+function trioRings(size, stroke, gap, flat){
   stroke = stroke || Math.round(size*0.050); gap = gap || Math.round(size*0.075);
   const pPct = DAILY_GOAL ? Math.round(todayCount()/DAILY_GOAL*100) : 0;
   const aPct = LISTEN_GOAL ? Math.round(listenToday()/LISTEN_GOAL*100) : 0;
@@ -3004,7 +3048,7 @@ function trioRings(size, stroke, gap){
   function layer(i, inner){ return '<g class="ring-l ring-l' + i + '"><g' + rot + '>' + inner + '</g></g>'; }
   // Кольца отодвинуты от края рамки: в этом зазоре живёт свечение. Иначе ореол
   // и пылинки упираются в скруглённый край карточки и обрезаются.
-  const pad = size >= 118 ? Math.round(size * 0.035) : 0;
+  const pad = (!flat && size >= 118) ? Math.round(size * 0.035) : 0;
   // Ореол — та же дуга под основной, но без дорожки и с размытием от CSS.
   function set(i, pct, col, off){
     const o = pad + off;
@@ -3013,10 +3057,10 @@ function trioRings(size, stroke, gap){
   }
   return '<svg width="' + size + '" height="' + size + '" viewBox="0 0 ' + size + ' ' + size + '">' +
     layer(0, set(0, pPct, 'var(--ring-phrases)', 0)) +
-    layer(1, LISTEN_GOAL ? set(1, aPct, 'var(--ring-audio)', gap)
-                         : ringArc(100,size,stroke,'var(--rdone)',pad+gap,1)) +
-    layer(2, wGoal ? set(2, wPct, 'var(--ring-words)', gap*2)
-                   : ringArc(100,size,stroke,'var(--rdone)',pad+gap*2,2)) +
+    layer(1, wGoal ? set(1, wPct, 'var(--ring-words)', gap)
+                   : ringArc(100,size,stroke,'var(--rdone)',pad+gap,1)) +
+    layer(2, LISTEN_GOAL ? set(2, aPct, 'var(--ring-audio)', gap*2)
+                         : ringArc(100,size,stroke,'var(--rdone)',pad+gap*2,2)) +
   '</svg>';
 }
 
@@ -5266,12 +5310,12 @@ function setStatPeriod(p){ statPeriod = p; renderStats(); }
 // ─── ЗНАКОМСТВО С ИНТЕРФЕЙСОМ ───
 const TOUR = [
   { sel:'.rings-hero', t:(enLang()?'Three rings of the day':'Три кольца дня'),
-    d:(enLang()?'The outer ring is phrases from exercises, the middle one is listening, the inner one is words from cards. Three different axes: you can know plenty of words and still not be building sentences out of them. Every correct answer counts — blocks, exam, review. Tap the rings to change the goals.':'Внешнее кольцо — фразы из упражнений, среднее — аудирование, внутреннее — слова из карточек. Это три разные оси: можно знать много слов, но ещё не собирать из них предложения. Считаются любые верные ответы: блоки, экзамен, работа над ошибками. Нажми на кольца, чтобы изменить цели.') },
-  { sel:'.week-strip', t:(enLang()?'Your week':'Твоя неделя'),
+    d:(enLang()?'The outer ring is phrases from exercises, the middle one is words from cards, the inner one is listening. Three different axes: you can know plenty of words and still not be building sentences out of them. Every correct answer counts — blocks, exam, review. Tap the rings to change the goals.':'Внешнее кольцо — фразы из упражнений, среднее — слова из карточек, внутреннее — аудирование. Это три разные оси: можно знать много слов, но ещё не собирать из них предложения. Считаются любые верные ответы: блоки, экзамен, работа над ошибками. Нажми на кольца, чтобы изменить цели.') },
+  { sel:'.wk-chart', t:(enLang()?'Your week':'Твоя неделя'),
     d:(enLang()?'A column for each day: how many phrases you got through. The bar fills to the daily goal, and the days in a row are counted just below.':'Столбик на каждый день — сколько фраз ты прошёл. Полоска заполняется до дневной цели, а чуть ниже считаются дни подряд.') },
-  { sel:'.course-card', t:(enLang()?'Courses':'Курсы'),
+  { sel:'.tile', t:(enLang()?'Courses':'Курсы'),
     d:(enLang()?'Each course — its own programme, its own progress. Inside, lessons unlock one at a time: the next one opens after a 100% exam. In the audio course — after 9 hours of listening.':'Каждый курс — своя программа и свой прогресс. Внутри уроки открываются по очереди: следующий даётся после экзамена на 100%. В аудиокурсе — после 9 часов прослушивания.') },
-  { sel:'.block-card', t:(enLang()?'Review and your own words':'Повторение и свои слова'),
+  { sel:'.home-rev', t:(enLang()?'Review and your own words':'Повторение и свои слова'),
     d:(enLang()?'Cards for words that are due for review show up here, along with explanations of your mistakes and your personal vocabulary, "My Words".':'Здесь появляются карточки со словами, у которых подошёл срок повторения, разбор твоих ошибок и личный словарь «Мои слова».') },
   { sel:'#sched-btn', t:(enLang()?'Schedule':'Расписание'),
     d:(enLang()?'Here you pick your study days and add them to your phone calendar, so the reminder arrives on its own. The calendar is right there too: the days you studied are marked in green.':'Здесь выбираешь дни занятий и добавляешь их в календарь телефона, чтобы напоминание приходило само. Там же виден календарь: зелёным отмечены дни, когда ты занимался.') }
