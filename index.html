@@ -1114,6 +1114,28 @@ body:has(.dock) .ch-fab{bottom:calc(var(--dock-h,96px) + 8px)!important}
 .s-num.ghost{background:var(--tint-2);color:var(--ink)}
 .plan-banner{margin-bottom:var(--sp-3)}
 .s-share{margin-top:var(--sp-2)}
+
+/* ─── v1.1 этап 3: диалоги ─── */
+.dl-title{font-family:var(--f-no);font-size:var(--fs-20);font-weight:700;margin:0}
+.dl-box{display:flex;flex-direction:column;gap:var(--sp-1)}
+.dl-line{border-radius:var(--r-chip);padding:var(--sp-2) var(--sp-3);border:1px solid transparent;display:flex;flex-direction:column;gap:2px;transition:background .2s,border-color .2s}
+.dl-line.on{background:var(--surface);border-color:var(--accent)}
+.dl-who{font-size:var(--fs-12);font-weight:800;color:var(--accent)}
+body:not(.light) .dl-who{color:var(--ring-phrases)}
+.dl-no{font-family:var(--f-no);font-size:var(--fs-16);font-weight:600;line-height:1.3;margin:0}
+.dl-ru{display:none;font-size:var(--fs-14);color:var(--ink-2);margin:0}
+.dl-box.ru .dl-ru{display:block}
+.dl-dock{gap:var(--sp-3)!important}
+.dl-track{display:flex;align-items:center;gap:var(--sp-2);max-width:600px;width:100%;margin:0 auto}
+.dl-track .pl-track{flex:1;margin:0;height:6px;border-radius:3px;background:var(--line);cursor:pointer;position:relative;overflow:hidden}
+.dl-track .pl-fill{height:100%;background:var(--accent)!important;border-radius:3px}
+.dl-t{font-size:var(--fs-12);color:var(--ink-2);font-variant-numeric:tabular-nums;min-width:36px}
+.dl-t:last-child{text-align:right}
+.dl-ctrls{display:flex;justify-content:space-between;align-items:center;gap:var(--sp-1);max-width:600px;width:100%;margin:0 auto}
+.dl-c{min-width:44px;height:44px;padding:0 var(--sp-2);border-radius:var(--r-chip);border:none;background:transparent;color:var(--ink-2);font:inherit;font-size:var(--fs-14);font-weight:800;cursor:pointer;display:grid;place-items:center}
+.dl-c.on{color:var(--ink);background:var(--tint-2)}
+.dl-play{width:56px;height:56px;border-radius:50%;border:none;background:var(--accent);color:var(--on-accent);display:grid;place-items:center;cursor:pointer;flex:none}
+.dl-play .pl-pause{border-color:var(--on-accent)!important}
 /* ═══ Gå! v1.0 — правила дизайн-системы (последний слой, перекрывает старые) ═══ */
 body{font-family:var(--f-ui)}
 [lang="nb"]{font-family:var(--f-no)}
@@ -4428,40 +4450,32 @@ function dlgLockHint(i){
   alert((enLang()?'Dialogue ':'Диалог ') + (i+1) + (enLang()?' is locked.\n\nMatrix listening: keep playing the current dialogue until you reach ':' закрыт.\n\nМетод матричного аудирования: слушай текущий диалог, пока не наберётся ') + DLG_HOURS + (enLang()?' hours. The sound settles in, and the next one comes easier.':' часов. Так звучание закрепится, и следующий пойдёт легче.'));
 }
 
+// Dialogue covers: multi-part dialogues share one picture (Art Director's mapping).
+function dlgCover(id){
+  const n = parseInt(id,10);
+  const pairs = [[2,3],[9,10],[17,18],[20,24],[27,28]];
+  for(const pr of pairs) if(n>=pr[0] && n<=pr[1]) return 'img/d/D' + String(pr[0]).padStart(2,'0') + '-' + String(pr[1]).padStart(2,'0') + '.webp';
+  return 'img/d/D' + String(n).padStart(2,'0') + '.webp';
+}
 function renderDialogs(){
   screen = 'dialogs';
-  const cards = DIALOGS.map(function(d,i){
-    const st = dlgStat(d.id);
-    const hrs = dlgHrs(d.id);
-    const pct = Math.min(100, Math.round(hrs / DLG_HOURS * 100));
-    const done = dlgDone(d.id);
-    const open = dlgUnlocked(i);
-    return '<div class="lesson-card' + (done?' done':'') + (open?'':' locked') + '" onclick="' + (open ? 'openDialog(' + i + ')' : 'dlgLockHint(' + i + ')') + '">' +
-      '<div class="lesson-num">' + (done ? ic('check',16) : open ? (i+1) : ic('lock',16)) + '</div>' +
-      '<div class="lesson-info">' +
-        '<div class="lesson-title">' + d.title + '</div>' +
-        (open
-          ? '<div class="lesson-sub">' + tx(d,'sub') + '</div>'
-          : (enLang()?'<div class="lock-note">Finish the previous dialogue up to ':'<div class="lock-note">Дослушай предыдущий диалог до ') + DLG_HOURS + (enLang()?' hours</div>':' часов</div>')) +
-      '</div>' +
-      '<div class="lesson-mini">' +
-        '<div class="lesson-mini-bar"><div class="lesson-mini-fill" style="width:' + pct + '%"></div></div>' +
-        '<div class="lesson-mini-pct">' + (hrs >= 1 ? hrs.toFixed(1) : Math.round(st.sec/60) + (enLang()?'m':'м')) + (hrs >= 1 ? (enLang()?' h':' ч') : '') + '</div>' +
-      '</div>' +
-    '</div>';
+  let cur = -1, nDone = 0;
+  DIALOGS.forEach(function(d,i){ if(dlgDone(d.id)) nDone++; else if(cur<0 && dlgUnlocked(i)) cur = i; });
+  const rows = DIALOGS.map(function(d,i){
+    const hrs = dlgHrs(d.id), st = dlgStat(d.id);
+    const done = dlgDone(d.id), open = dlgUnlocked(i);
+    const heard = hrs >= 1 ? hrs.toFixed(1) + (enLang()?' h':' ч') : Math.round((st.sec||0)/60) + (enLang()?' min':' мин');
+    return scrRow({ img:dlgCover(d.id), t:d.title, nbTitle:true,
+      sub: open ? tx(d,'sub') + (st.sec ? ' · ' + heard : '') : (enLang()?'Finish the previous one up to ':'Дослушай предыдущий до ') + DLG_HOURS + (enLang()?' hours':' часов'),
+      state: done ? 'done' : !open ? 'lock' : i===cur ? 'cur' : '',
+      pct: (open && !done && st.sec) ? Math.min(100, Math.round(hrs/DLG_HOURS*100)) : null,
+      go: open ? 'openDialog(' + i + ')' : 'dlgLockHint(' + i + ')' });
   }).join('');
-
-  let totalSec = 0;
-  for(const d of DIALOGS) totalSec += dlgStat(d.id).sec;
-
   document.getElementById('app').innerHTML =
-    '<div class="header">' +
-      '<button class="back-btn" onclick="renderCourses()">' + t('back_h') + '</button>' +
-      '<div class="header-right"><div class="score-chip">' + ic('head',14) + ' ' + Math.round(totalSec/60) + (enLang()?' min</div></div>':' мин</div></div>') +
-    '</div>' +
-    (enLang()?'<div class="lessons-title">Listening dialogues</div>':'<div class="lessons-title">Диалоги на слух</div>') +
-    (enLang()?'<div class="lessons-sub">Listen to one dialogue for ':'<div class="lessons-sub">Слушай один диалог по ') + DLG_HOURS + (enLang()?' hours — the next opens by itself</div>':' часов — следующий откроется сам</div>') +
-    '<div class="lesson-list">' + cards + '</div>';
+    scrTop('renderCourses()', enLang()?'Listening dialogues':'Диалоги на слух', nDone + '/' + DIALOGS.length) +
+    '<p class="s-mut" style="margin-bottom:var(--sp-3)">' + (enLang()?'Listen to one dialogue for ':'Слушай один диалог по ') + DLG_HOURS + (enLang()?' hours — the next opens by itself':' часов — следующий откроется сам') + '</p>' +
+    '<div class="s-list">' + rows + '</div>' +
+    (cur >= 0 ? scrDock([(enLang()?'Listen · ':'Слушать · ') + DIALOGS[cur].title, 'openDialog(' + cur + ')']) : '');
 }
 
 let AU = null, curDlg = 0, showRu = false, tickAcc = 0, dlgPrevT = -1;
@@ -4475,39 +4489,53 @@ function openDialog(i){
 
 function renderDialog(keepAudio){
   const d = DIALOGS[curDlg];
-  const st = dlgStat(d.id);
-  const lines = d.lines.map(function(l){
-    return '<div class="dl-line">' +
-      '<div class="dl-no">' + l.no + '</div>' +
-      '<div class="dl-ru">' + srcText(l) + '</div>' +
+  const L = function(ru,en){ return enLang() ? en : ru; };
+  const lines = d.lines.map(function(l,k){
+    const m = /^([^:]{1,24}):\s*(.*)$/.exec(l.no), mt = /^([^:]{1,24}):\s*(.*)$/.exec(srcText(l));
+    return '<div class="dl-line" data-t="' + (l.t||0) + '" data-k="' + k + '">' +
+      (m ? '<span class="dl-who">' + m[1] + '</span>' : '') +
+      '<p class="dl-no" lang="nb">' + (m ? m[2] : l.no) + '</p>' +
+      '<p class="dl-ru">' + (mt ? mt[2] : srcText(l)) + '</p>' +
     '</div>';
   }).join('');
-
+  const rate = meta.rate || 1;
   document.getElementById('app').innerHTML =
-    '<div class="header">' +
-      (enLang()?'<button class="back-btn" onclick="closeDialog()">← Dialogues</button>':'<button class="back-btn" onclick="closeDialog()">← Диалоги</button>') +
-      '<div class="header-right"><div class="score-chip" id="dlg-chip">' + dlgHrs(d.id).toFixed(1) + ' / ' + DLG_HOURS + (enLang()?' h</div></div>':' ч</div></div>') +
-    '</div>' +
-    '<div class="detail-title">' + d.title + '</div>' +
-    '<div class="detail-sub">' + tx(d,'sub') + '</div>' +
-    '<div class="card" style="margin-top:1rem">' +
+    scrTop('closeDialog()', L('Диалог ','Dialogue ') + (curDlg+1), '<span id="dlg-chip">' + dlgHrs(d.id).toFixed(1) + ' / ' + DLG_HOURS + L(' ч',' h') + '</span>') +
+    '<div class="s-hero sm"><img src="' + dlgCover(d.id) + '" alt="" width="640" height="478"></div>' +
+    '<h3 class="dl-title" lang="nb">' + d.title + '</h3>' +
+    '<p class="s-mut" style="margin-bottom:var(--sp-3)">' + tx(d,'sub') + '</p>' +
+    '<div class="dl-box' + (showRu?' ru':'') + '">' + lines + '</div>' +
+    '<div class="dock-spacer s-spacer"></div>' +
+    '<div class="dock s-dock dl-dock">' +
       '<audio id="au" src="' + AUDIO_BASE + d.file + '" preload="metadata"></audio>' +
-      '<div class="pl-time"><span id="pl-cur">0:00</span><span id="pl-dur">--:--</span></div>' +
-      '<div class="pl-track" id="pl-track" onclick="seekPct(event)"><div class="pl-fill" id="pl-fill"></div></div>' +
-      '<div class="pl-row">' +
-        '<button class="pl-btn" onclick="skip(-5)">−5</button>' +
-        '<button class="pl-play" id="pl-play" onclick="togglePlay()">' + ic('sound',22) + '</button>' +
-        '<button class="pl-btn" onclick="skip(5)">+5</button>' +
-        '<button class="pl-btn' + (meta.loop?' on':'') + '" id="pl-loop" onclick="toggleLoop()">' + ic('redo',16) + '</button>' +
+      '<div class="dl-track"><span class="dl-t" id="pl-cur">0:00</span>' +
+        '<div class="pl-track" id="pl-track" onclick="seekPct(event)"><div class="pl-fill" id="pl-fill"></div></div>' +
+        '<span class="dl-t" id="pl-dur">--:--</span></div>' +
+      '<div class="dl-ctrls">' +
+        '<button class="dl-c" id="pl-rate" onclick="toggleRate()" aria-label="' + L('Скорость','Speed') + '">' + (rate===1?'1×':'0.75×') + '</button>' +
+        '<button class="dl-c" onclick="skip(-5)" aria-label="−5 s">−5</button>' +
+        '<button class="dl-play" id="pl-play" onclick="togglePlay()" aria-label="' + L('Играть','Play') + '">' + ic('sound',22) + '</button>' +
+        '<button class="dl-c" onclick="skip(5)" aria-label="+5 s">+5</button>' +
+        '<button class="dl-c' + (showRu?' on':'') + '" id="pl-tr" onclick="setRu(!showRu)" aria-pressed="' + (showRu?'true':'false') + '" aria-label="' + L('Перевод','Translation') + '">' + (enLang()?'EN':'RU') + '</button>' +
+        '<button class="dl-c' + (meta.loop?' on':'') + '" id="pl-loop" onclick="toggleLoop()" aria-label="' + L('Повтор','Loop') + '">' + ic('redo',16) + '</button>' +
       '</div>' +
-    '</div>' +
-    '<div class="mode-toggle" style="margin-bottom:1rem">' +
-      '<button class="mode-btn' + (showRu?'':' active') + (enLang()?'" onclick="setRu(false)">Norwegian only</button>':'" onclick="setRu(false)">Только норвежский</button>') +
-      '<button class="mode-btn' + (showRu?' active':'') + (enLang()?'" onclick="setRu(true)">With translation</button>':'" onclick="setRu(true)">С переводом</button>') +
-    '</div>' +
-    '<div class="card dl-box' + (showRu?' ru':'') + '">' + lines + '</div>';
-
+    '</div>';
   if(!keepAudio) bindAudio();
+  if(AU) AU.playbackRate = rate;
+}
+function toggleRate(){
+  meta.rate = (meta.rate||1) === 1 ? 0.75 : 1; saveMeta();
+  if(AU) AU.playbackRate = meta.rate;
+  const b = document.getElementById('pl-rate'); if(b) b.textContent = meta.rate===1 ? '1×' : '0.75×';
+  buzz('ok');
+}
+// Highlight the line being spoken (timestamps from the dialogue data).
+function dlgHighlight(){
+  if(!AU) return;
+  const t = AU.currentTime, ls = document.querySelectorAll('.dl-line');
+  let on = -1;
+  for(let k=0;k<ls.length;k++){ if(parseFloat(ls[k].getAttribute('data-t')) <= t + 0.05) on = k; }
+  for(let k=0;k<ls.length;k++) ls[k].classList.toggle('on', k===on && (AU.currentTime>0));
 }
 
 function dlgProgress(){
@@ -4516,6 +4544,7 @@ function dlgProgress(){
   const f = document.getElementById('pl-fill'), c = document.getElementById('pl-cur');
   if(f) f.style.width = (cur/dur*100) + '%';
   if(c) c.textContent = mmss(cur);
+  dlgHighlight();
 }
 
 // Прослушанное считаем по реально проигранному времени и отдельно от кадров: кадры
@@ -4590,11 +4619,10 @@ function seekPct(e){
 function setRu(v){
   showRu = v;
   const box = document.querySelector('.dl-box');
-  const btns = document.querySelectorAll('.mode-toggle .mode-btn');
-  if(!box || btns.length < 2){ renderDialog(true); return; }
-  box.className = 'card dl-box' + (v ? ' ru' : '');
-  btns[0].className = 'mode-btn' + (v ? '' : ' active');
-  btns[1].className = 'mode-btn' + (v ? ' active' : '');
+  if(!box){ renderDialog(true); return; }
+  box.className = 'dl-box' + (v ? ' ru' : '');
+  const b = document.getElementById('pl-tr');
+  if(b){ b.className = 'dl-c' + (v ? ' on' : ''); b.setAttribute('aria-pressed', v ? 'true' : 'false'); }
 }
 function closeDialog(){ if(AU){ AU.pause(); AU = null; } renderDialogs(); }
 
