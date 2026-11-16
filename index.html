@@ -1033,6 +1033,70 @@ body.light .builder-answer.wrong-state,body.light .text-input.wrong-state{border
 .fb-sheet .feedback,.fb-sheet .feedback.ok,.fb-sheet .feedback.err,.fb-sheet .feedback.v2,body.light .fb-sheet .feedback.ok,body.light .fb-sheet .feedback.err,body.light .fb-sheet .feedback.v2{background:transparent!important;border:none!important;padding:0!important;margin:0 auto var(--sp-4)!important;max-width:600px;animation:none}
 .fb-sheet .diff-view{font-size:var(--fs-20);font-weight:700;line-height:1.8}
 @media (prefers-reduced-motion:reduce){.fb-sheet{animation:none}}
+
+/* ─── Gå! v1.1: общие компоненты экранов ─── */
+.s-top{display:flex;align-items:center;gap:var(--sp-2);min-height:44px;margin-bottom:var(--sp-4)}
+.s-back{display:grid;place-items:center;width:36px;height:36px;margin-left:-8px;background:none;border:none;color:var(--ink);cursor:pointer;border-radius:var(--r-chip)}
+.s-back:focus-visible{outline:2px solid var(--accent)}
+.s-ttl{flex:1;min-width:0;font-weight:800;font-size:var(--fs-16);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.s-r{font-size:var(--fs-12);font-weight:700;color:var(--ink-2);white-space:nowrap}
+.s-h2{font-size:var(--fs-28);font-weight:800;line-height:1.2;text-wrap:balance;margin:0}
+.s-mut{font-size:var(--fs-14);color:var(--ink-2);margin:0}
+.s-pad{display:flex;flex-direction:column;gap:var(--sp-3);min-width:0}
+.s-state{display:flex;flex-direction:column;align-items:center;text-align:center;gap:var(--sp-3);padding-top:var(--sp-6)}
+.s-art{width:100%;max-width:240px;aspect-ratio:1/1;border-radius:var(--r-card);overflow:hidden;background:var(--paper)}
+.s-art img,.s-hero img{display:block;width:100%;height:100%;object-fit:cover}
+.s-hero{margin:0 calc(-1 * var(--sp-4)) var(--sp-4);aspect-ratio:16/9;overflow:hidden;background:var(--paper)}
+.s-hero.sm{aspect-ratio:2/1}
+.s-kps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--sp-2);width:100%;margin-top:var(--sp-1)}
+.s-kps.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.s-kp{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-chip);padding:var(--sp-3);display:flex;flex-direction:column;gap:2px;text-align:left;min-width:0}
+.s-kp b{font-size:var(--fs-20);font-weight:800;line-height:1.1}
+.s-kp span{font-size:var(--fs-12);color:var(--ink-2);font-weight:700}
+.s-dock{display:flex;flex-direction:column;gap:var(--sp-2)}
+.s-dock .submit-btn{width:100%;max-width:600px;margin:0 auto}
+.s-list{display:flex;flex-direction:column;gap:var(--sp-2)}
+.s-li{display:flex;gap:var(--sp-3);align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-card);padding:var(--sp-2) var(--sp-3) var(--sp-2) var(--sp-2);cursor:pointer;min-height:64px}
+.s-li img{width:64px;height:48px;object-fit:cover;border-radius:var(--r-chip);flex:none;background:var(--paper)}
+.s-li.lock{cursor:default}
+.s-li.lock img{filter:grayscale(.6);opacity:.7}
+.s-li.cur{border:2px solid var(--accent);padding:calc(var(--sp-2) - 1px) calc(var(--sp-3) - 1px) calc(var(--sp-2) - 1px) calc(var(--sp-2) - 1px)}
+.s-lt{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1}
+.s-lt b{font-size:var(--fs-14);font-weight:700;line-height:1.25}
+.s-lt span{font-size:var(--fs-12);color:var(--ink-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.s-pg{height:6px;border-radius:3px;background:var(--line);overflow:hidden;margin-top:var(--sp-1)}
+.s-pg i{display:block;height:100%;background:var(--accent);border-radius:3px}
+.s-ok{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--ok);color:var(--on-sem);flex:none}
+.s-lock{color:var(--ink-2);flex:none;display:grid;place-items:center}
+/* модалка — шит снизу со стеклом */
+.modal-back,body.light .modal-back{align-items:flex-end;padding:0;background:rgba(10,10,14,.45);backdrop-filter:none}
+.modal-box,body.light .modal-box{width:100%;max-width:600px;background:var(--glass-bg);border:none;border-top:1px solid var(--glass-line);border-radius:var(--r-sheet) var(--r-sheet) 0 0;
+  padding:var(--sp-6) var(--sp-4) calc(var(--sp-6) + env(safe-area-inset-bottom));-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);box-shadow:none;animation:sheetUp .25s ease;max-height:86vh;overflow-y:auto}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.modal-box,body.light .modal-box{background:var(--surface)}}
+.modal-title{font-size:var(--fs-20);font-weight:800}
+.modal-row .submit-btn{border-radius:var(--r-sheet)!important;min-height:52px}
+
+/* ─── v1.1 этап 1: вход ─── */
+.wl-body{flex:1;display:flex;flex-direction:column;padding-top:var(--sp-4)}
+.wl-center{display:flex;flex-direction:column;align-items:center;text-align:center;gap:var(--sp-3)}
+.wl-mark svg{display:block;height:34px;width:auto;color:var(--ink)}
+.wl-form{padding-top:var(--sp-2)}
+.welcome.wl .onb-bottom{gap:var(--sp-2)}
+.welcome.wl .onb-dots{margin-bottom:var(--sp-2)}
+.wl-sec{width:100%;border-radius:var(--r-sheet)!important;min-height:52px;font-weight:800}
+.s-field,body.light .s-field{width:100%;margin:var(--sp-2) 0 0;border:2px solid var(--accent)!important;border-radius:var(--r-card);padding:14px var(--sp-4);font-size:var(--fs-20);font-weight:700;background:var(--surface)!important;color:var(--ink)!important;text-align:left;font-family:var(--f-ui)}
+.s-field:focus{outline:none;box-shadow:0 0 0 4px rgba(90,87,224,.2)}
+.s-opts{display:flex;flex-direction:column;gap:var(--sp-2);margin-top:var(--sp-2)}
+.s-opt,body.light .s-opt{display:flex;flex-direction:column;gap:2px;width:100%;text-align:left;font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:var(--r-card);padding:var(--sp-3) var(--sp-4);cursor:pointer}
+.s-opt.on,body.light .s-opt.on{border:2px solid var(--accent);padding:calc(var(--sp-3) - 1px) calc(var(--sp-4) - 1px)}
+.s-opt-h{display:flex;justify-content:space-between;align-items:baseline;gap:var(--sp-3);flex-wrap:wrap}
+.s-opt-h b{font-size:var(--fs-16);font-weight:800}
+.s-opt.on .s-opt-h b{color:var(--accent)}
+body:not(.light) .s-opt.on .s-opt-h b{color:var(--ring-phrases)}
+.s-opt-h small{font-size:var(--fs-14);color:var(--ink-2);font-weight:500}
+.s-opt-d{font-size:var(--fs-14);color:var(--ink-2);line-height:1.4}
+/* кнопка ИИ-чата над нижним доком */
+body:has(.dock) .ch-fab{bottom:calc(100px + env(safe-area-inset-bottom))!important}
 /* ═══ Gå! v1.0 — правила дизайн-системы (последний слой, перекрывает старые) ═══ */
 body{font-family:var(--f-ui)}
 [lang="nb"]{font-family:var(--f-no)}
@@ -2715,6 +2779,7 @@ function ic(n,sz){
     book:'<path d="M4 5a2 2 0 0 1 2-2h9v16H6a2 2 0 0 0-2 2z"/><path d="M15 3h3a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1h-3"/>',
     cap:'<path d="M12 4 2 9l10 5 10-5z"/><path d="M6 11.5V16c0 1.5 2.7 3 6 3s6-1.5 6-3v-4.5"/>',
     lock:'<rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>',
+    chev:'<path d="M15 5l-7 7 7 7"/>',
     clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
     sound:'<path d="M4 9v6h4l5 4V5L8 9z"/><path d="M17 8.5a5 5 0 0 1 0 7"/>',
     mic:'<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v3"/>',
@@ -3170,19 +3235,18 @@ function tgLang(){
 function renderLangSelect(back){
   if(back) langFrom = (screen === 'lessons') ? renderLessons : renderCourses;
   screen = "lang";
-  const old = document.querySelector(".welcome");
-  if(old) old.remove();
-  const w = document.createElement("div");
-  w.className = "welcome";
-  w.innerHTML = '<div class="welcome-content" style="margin-top:calc(14vh + env(safe-area-inset-top))">' +
-      '<div class="welcome-logo">' + GA_LOGO + '</div>' +
-      '<div class="onb-title">Velg språk · Choose language</div>' +
-      '<div class="lang-list">' + LANGS.map(l =>
-        '<button class="lang-btn' + (meta.lang===l[0] || (!meta.lang && tgLang()===l[0]) ? ' on' : '') +
-        '" onclick="setLang(\'' + l[0] + '\',' + (back?1:0) + ')">' + l[1] + '</button>').join('') +
-      '</div>' +
-    '</div>';
-  document.body.appendChild(w);
+  // Primary = the language we would pick anyway (saved, Telegram, else Russian). Flags removed (rule).
+  const prim = meta.lang || tgLang() || 'ru';
+  const order = LANGS.slice().sort(function(a,b){ return (a[0]===prim?-1:0) - (b[0]===prim?-1:0); });
+  const label = function(l){ return l[1].replace(/\s*[\u{1F1E6}-\u{1F1FF}]{2}\s*/gu,'').trim(); };
+  overlayScreen(back ? wlBack("document.querySelector('.welcome').remove();langBack()") : '',
+    '<div class="wl-center"><div class="wl-mark">' + GA_LOGO + '</div>' +
+      '<div class="s-art"><img src="img/s/S-welcome.webp" alt="" width="640" height="640"></div>' +
+      '<h2 class="s-h2">' + (prim==='en' ? 'Norwegian from zero to A2' : 'Норвежский с нуля до A2') + '</h2>' +
+      '<p class="s-mut">Velg språk · ' + (prim==='en' ? 'Choose your language' : 'Выбери язык интерфейса') + '</p></div>',
+    order.map(function(l,i){
+      return '<button class="' + (i===0 ? 'welcome-btn' : 'submit-btn retry-btn wl-sec') + '" onclick="setLang(\'' + l[0] + '\',' + (back?1:0) + ')">' + label(l) + '</button>';
+    }).join(''));
 }
 function setLang(l, back){
   meta.lang = l; saveMeta();
@@ -3207,43 +3271,25 @@ function goToLessons(){
 function renderGoals(back, step){
   screen = 'goals';
   step = step || 0;
-  const old = document.querySelector('.welcome');
-  if(old) old.remove();
   const g = meta.goal || 75, lg = (meta.lgoal===undefined ? 60 : meta.lgoal);
   const dots = '<div class="onb-dots">' + [0,1].map(function(i){ return '<div class="onb-dot' + (i===step?' active':'') + '"></div>'; }).join('') + '</div>';
-  let body;
-
+  let body, btn;
   if(step === 0){
-    body = dots +
-      (enLang()?'<div class="onb-title">How much time a day?</div>':'<div class="onb-title">Сколько времени в день?</div>') +
-      (enLang()?'<div class="onb-sub">Pick a pace that suits you — you can change your goal any time.</div>':'<div class="onb-sub">Выбери комфортный ритм — цель можно поменять в любой момент.</div>') +
-      '<div class="goal-list">' +
-        GOAL_OPTS.map(function(o){
-          return '<button class="goal-btn' + (g===o.ph?' on':'') + '" onclick="setGoal(' + o.ph + ',' + (back?1:0) + ')">' +
-            '<span class="goal-time">' + o.min + '</span>' +
-            '<span class="goal-desc">' + o.d + '</span>' +
-            '<span class="goal-ph">' + o.ph + (enLang()?' phrases</span>':' фраз</span>') +
-          '</button>';
-        }).join('') +
-      '</div>' +
-      '<button class="welcome-btn" style="margin-top:22px" onclick="renderGoals(' + (back?1:0) + (enLang()?',1)">Next</button>':',1)">Далее</button>');
+    body = '<h2 class="s-h2">' + (enLang()?'How many phrases a day?':'Сколько фраз в день?') + '</h2>' +
+      '<p class="s-mut">' + (enLang()?'You can change your goal any time':'Норму можно поменять в любой момент') + '</p>' +
+      '<div class="s-opts">' + GOAL_OPTS.map(function(o){
+        return optCard(g===o.ph, o.ph + (enLang()?' phrases':' фраз'), '~' + o.min, o.d, 'setGoal(' + o.ph + ',' + (back?1:0) + ')');
+      }).join('') + '</div>';
+    btn = '<button class="welcome-btn" onclick="renderGoals(' + (back?1:0) + ',1)">' + (enLang()?'Next':'Дальше') + '</button>';
   } else {
-    body = dots +
-      (enLang()?'<div class="onb-title">Audio every day?</div>':'<div class="onb-title">Аудио каждый день?</div>') +
-      (enLang()?'<div class="onb-sub">Listening dialogues — the fastest way to understand real speech.</div>':'<div class="onb-sub">Диалоги на слух — самый быстрый путь к пониманию живой речи.</div>') +
-      '<div class="lang-list">' +
-        LISTEN_OPTS.map(function(m){
-          return '<button class="lang-btn' + (lg===m?' on':'') + '" onclick="setLGoal(' + m + ',' + (back?1:0) + ')">' + (m===0 ? (enLang()?'No audio for now':'Пока без аудио') : m + (enLang()?' minutes a day':' минут в день')) + '</button>';
-        }).join('') +
-      '</div>' +
-      '<button class="welcome-btn" style="margin-top:22px" onclick="finishGoals(' + (back?1:0) + ')">' + (back?(enLang()?'Done':'Готово'):(enLang()?'Start':'Начать')) + '</button>' +
-      '<button class="skip-link" onclick="renderGoals(' + (back?1:0) + (enLang()?',0)">Back</button>':',0)">Назад</button>');
+    body = '<h2 class="s-h2">' + (enLang()?'Audio every day?':'Аудио каждый день?') + '</h2>' +
+      '<p class="s-mut">' + (enLang()?'Listening dialogues — the fastest way to understand real speech':'Диалоги на слух — самый быстрый путь к пониманию живой речи') + '</p>' +
+      '<div class="s-opts">' + LISTEN_OPTS.map(function(m){
+        return optCard(lg===m, m===0 ? (enLang()?'No audio for now':'Пока без аудио') : m + (enLang()?' minutes a day':' минут в день'), '', '', 'setLGoal(' + m + ',' + (back?1:0) + ')');
+      }).join('') + '</div>';
+    btn = '<button class="welcome-btn" onclick="finishGoals(' + (back?1:0) + ')">' + (back?(enLang()?'Done':'Готово'):(enLang()?'Start':'Начать')) + '</button>';
   }
-
-  const w = document.createElement('div');
-  w.className = 'welcome scroll';
-  w.innerHTML = '<div class="welcome-content" style="margin-top:calc(11vh + env(safe-area-inset-top))">' + body + '</div>';
-  document.body.appendChild(w);
+  overlayScreen(step ? wlBack('renderGoals(' + (back?1:0) + ',0)') : '', '<div class="s-pad wl-form">' + body + '</div>', dots + btn);
 }
 
 // ─── ДНЕВНЫЕ ЦЕЛИ: ОТДЕЛЬНЫЙ ЭКРАН СО СТУПЕНЯМИ ───────
@@ -3294,23 +3340,16 @@ function renderLoadPick(){
   screen = 'goaledit'; scSub = 'pick';
   const cur = { p:goalCur('p'), a:goalCur('a'), w:goalCur('w') };
   document.getElementById('app').innerHTML =
-    '<div class="header">' +
-      '<div class="logo" onclick="renderCourses()">' + GA_LOGO + '</div>' +
-      (enLang()?'<div class="header-right"><button class="back-btn" onclick="goalDraft=null;renderCourses()">← Home</button></div>':'<div class="header-right"><button class="back-btn" onclick="goalDraft=null;renderCourses()">← Главная</button></div>') +
-    '</div>' +
-    (enLang()?'<div class="detail-title">Daily load</div>':'<div class="detail-title">Нагрузка на день</div>') +
-    (enLang()?'<div class="detail-sub">Pick your pace — the three rings on the home screen are counted against it. Change it whenever you like, nothing resets.</div>':'<div class="detail-sub">Выбери ритм — по нему считаются три кольца на главной. Менять можно в любой момент, прогресс не сбросится.</div>') +
-    '<div class="goal-list" style="margin-top:1.25rem">' +
-      LOAD_PRESETS.map(function(o,i){
+    scrTop('goalDraft=null;renderCourses()', enLang()?'Daily load':'Нагрузка на день') +
+    '<div class="s-pad">' +
+      '<h2 class="s-h2">' + (enLang()?'Pick your pace':'Выбери ритм') + '</h2>' +
+      '<p class="s-mut">' + (enLang()?'The three rings on the home screen are counted against it. Change it whenever you like, nothing resets.':'По нему считаются три кольца на главной. Менять можно когда угодно, прогресс не сбросится.') + '</p>' +
+      '<div class="s-opts">' + LOAD_PRESETS.map(function(o,i){
         const on = cur.p===o.p && cur.a===o.a && cur.w===o.w;
-        return '<button class="goal-btn' + (on?' on':'') + '" onclick="setLoadPreset(' + i + ')">' +
-          '<span class="goal-time">' + o.min + '</span>' +
-          '<span class="goal-desc">' + o.d + '</span>' +
-          '<span class="goal-ph">' + o.p + (enLang()?' phrases · ':' фраз · ') + o.a + (enLang()?' min · ':' мин · ') + o.w + (enLang()?' words</span>':' слов</span>') +
-        '</button>';
-      }).join('') +
+        return optCard(on, o.min, '', o.p + (enLang()?' phrases · ':' фраз · ') + o.a + (enLang()?' min · ':' мин · ') + o.w + (enLang()?' words':' слов') + '<br>' + o.d, 'setLoadPreset(' + i + ')');
+      }).join('') + '</div>' +
     '</div>' +
-    '<button class="submit-btn retry-btn" style="margin-top:14px" onclick="goalManualOn()">' + ic('target',15) + (enLang()?' Set it manually</button>':' Настроить вручную</button>');
+    scrDock(null, [ic('target',15) + (enLang()?' Set it manually':' Настроить вручную'), 'goalManualOn()']);
   try{ window.scrollTo(0,0); }catch(e){}
 }
 function setLoadPreset(i){
@@ -3350,21 +3389,17 @@ function renderGoalEdit(keep){
   }).join('');
 
   document.getElementById('app').innerHTML =
-    '<div class="header">' +
-      '<div class="logo" onclick="renderCourses()">' + GA_LOGO + '</div>' +
-      (enLang()?'<div class="header-right"><button class="back-btn" onclick="goalManual=false;renderGoalEdit()">← Pace</button></div>':'<div class="header-right"><button class="back-btn" onclick="goalManual=false;renderGoalEdit()">← Ритм</button></div>') +
-    '</div>' +
-    (enLang()?'<div class="detail-title">Manual</div>':'<div class="detail-title">Вручную</div>') +
-    (enLang()?'<div class="detail-sub">Every setting moves in steps of 10. Zero switches the ring off — it\'ll count as closed.</div>':'<div class="detail-sub">Каждый параметр меняется шагом в 10. Ноль выключает кольцо — оно будет считаться закрытым.</div>') +
+    scrTop('goalManual=false;renderGoalEdit()', enLang()?'Manual':'Вручную') +
+    '<p class="s-mut" style="margin-bottom:var(--sp-4)">' + (enLang()?'Every setting moves in steps of 10. Zero switches the ring off — it\'ll count as closed.':'Каждый параметр меняется шагом в 10. Ноль выключает кольцо — оно будет считаться закрытым.') + '</p>' +
     '<div class="card" style="margin-top:1.25rem">' +
       '<div class="gset-preview"><div class="rings-wrap" style="width:144px;height:144px">' + preview +
         '<div class="rings-center"><div class="gset-now">' + todayCount() + '</div>' +
         (enLang()?'<div class="gset-of">of ':'<div class="gset-of">из ') + goalDraft.p + '</div></div></div></div>' +
       rows +
     '</div>' +
-    '<button class="submit-btn" style="margin-top:4px" onclick="goalSave()"' + (changed?'':' disabled') + '>' +
-      (changed ? (enLang()?'Save goals':'Сохранить цели') : (enLang()?'Goals unchanged':'Цели не изменились')) + '</button>' +
-    (enLang()?'<button class="back-btn" style="margin:10px auto 0;display:block" onclick="goalReset()">Reset to default · 75 / 60 / 10</button>':'<button class="back-btn" style="margin:10px auto 0;display:block" onclick="goalReset()">Вернуть по умолчанию · 75 / 60 / 10</button>');
+    '<button class="back-btn" style="margin:var(--sp-3) auto 0;display:block" onclick="goalReset()">' + (enLang()?'Reset to default · 75 / 60 / 10':'Вернуть по умолчанию · 75 / 60 / 10') + '</button>' +
+    '<div class="dock-spacer s-spacer"></div><div class="dock s-dock"><button class="submit-btn" onclick="goalSave()"' + (changed?'':' disabled') + '>' +
+      (changed ? (enLang()?'Save goals':'Сохранить цели') : (enLang()?'Goals unchanged':'Цели не изменились')) + '</button></div>';
   // дуги ставим сразу, без проигрывания анимации на каждое нажатие
   const arcs = document.querySelectorAll('.ring-arc');
   for(let i=0;i<arcs.length;i++){
@@ -3424,18 +3459,15 @@ function finishOnb(){
 function renderName(){
   screen = "name";
   document.getElementById("app").innerHTML = "";
-  const old = document.querySelector(".welcome");
-  if(old) old.remove();
-  const w = document.createElement("div");
-  w.className = "welcome";
-  w.innerHTML = '<div class="welcome-content">' +
-      '<div class="welcome-logo">Hei! </div>' +
-      '<div class="welcome-tagline">' + t('n_q') + '</div>' +
-      '<input class="name-input" id="name-inp" type="text" maxlength="20" placeholder="'+t('n_ph')+'" value="' + (meta.name||"") + '"' +
+  const edit = !!meta.onb;   // from the home screen: back returns there
+  overlayScreen(edit ? wlBack("document.querySelector('.welcome').remove();renderCourses()") : '',
+    '<div class="s-pad wl-form">' +
+      '<h2 class="s-h2">' + (enLang()?'What is your name?':'Как тебя зовут?') + '</h2>' +
+      '<p class="s-mut">' + (enLang()?'Your name will appear on the home screen':'Имя появится на главном экране') + '</p>' +
+      '<input class="name-input s-field" id="name-inp" type="text" maxlength="20" autocomplete="given-name" placeholder="'+t('n_ph')+'" value="' + (meta.name||"") + '"' +
       ' onkeydown="if(event.key===\'Enter\')saveName()">' +
-      '<br><button class="welcome-btn" onclick="saveName()">' + t('save') + '</button>' +
-    '</div>';
-  document.body.appendChild(w);
+    '</div>',
+    '<button class="welcome-btn" onclick="saveName()">' + (edit ? t('save') : (enLang()?'Next':'Дальше')) + '</button>');
   const inp = document.getElementById("name-inp");
   if(inp && inp.focus) setTimeout(()=>inp.focus(), 100);
 }
@@ -4817,6 +4849,67 @@ async function aiPractice(){
     alert((e && e.message ? e.message : aiErrText('other')));
     if(btn){ btn.disabled = false; btn.innerHTML = ic('star',16) + (enLang()?' Practise with phrases':' Тренировать фразами'); }
   }
+}
+
+// ─── Gå! v1.1: общие части экранов ───
+// Top bar: back chevron, title, optional right label.
+function scrTop(back, title, right){
+  return '<div class="s-top">' +
+    (back ? '<button class="s-back" aria-label="' + (enLang()?'Back':'Назад') + '" onclick="' + back + '">' + ic('chev',22) + '</button>' : '') +
+    '<div class="s-ttl">' + (title||'') + '</div>' +
+    (right ? '<div class="s-r">' + right + '</div>' : '') + '</div>';
+}
+// Bottom dock: one primary action (accent), optional secondary (outline). Rule 10.
+function scrDock(pri, sec){
+  return '<div class="dock-spacer s-spacer"></div><div class="dock s-dock">' +
+    (pri ? '<button class="submit-btn" onclick="' + pri[1] + '">' + pri[0] + '</button>' : '') +
+    (sec ? '<button class="submit-btn retry-btn" onclick="' + sec[1] + '">' + sec[0] + '</button>' : '') + '</div>';
+}
+function fitScrDock(){
+  const d = document.querySelector('.s-dock'), sp = document.querySelector('.s-spacer');
+  if(d && sp) sp.style.height = d.offsetHeight + 'px';
+}
+// Keep the dock spacer in sync whatever screen renders it.
+try{ new MutationObserver(function(){ fitScrDock(); }).observe(document.getElementById('app') || document.body, {childList:true}); }catch(e){}
+// Result / state screen with an illustration on paper.
+function stateScreen(o){
+  return '<div class="s-state">' +
+    (o.img ? '<div class="s-art"><img src="img/s/' + o.img + '.webp" alt="" width="640" height="640"></div>' : '') +
+    '<h2 class="s-h2">' + o.h + '</h2>' +
+    (o.p ? '<p class="s-mut">' + o.p + '</p>' : '') +
+    (o.kps ? '<div class="s-kps' + (o.kps.length===2?' g2':'') + '">' + o.kps.map(function(k){ return '<div class="s-kp"><b>' + k[0] + '</b><span>' + k[1] + '</span></div>'; }).join('') + '</div>' : '') +
+    (o.extra || '') +
+  '</div>' + scrDock(o.pri, o.sec);
+}
+// List row with a cover; state: 'done' | 'cur' | 'lock' | ''.
+function scrRow(o){
+  const st = o.state || '';
+  return '<div class="s-li' + (st?' '+st:'') + '"' + (o.go ? ' onclick="' + o.go + '"' : '') + '>' +
+    (o.img ? '<img src="' + o.img + '" alt="" width="64" height="48" loading="lazy">' : '') +
+    '<div class="s-lt"><b' + (o.nbTitle?' lang="nb"':'') + '>' + o.t + '</b>' +
+      (o.sub ? '<span' + (o.nbSub?' lang="nb"':'') + '>' + o.sub + '</span>' : '') +
+      (o.pct !== undefined && o.pct !== null ? '<div class="s-pg"><i style="width:' + o.pct + '%"></i></div>' : '') +
+    '</div>' +
+    (st==='done' ? '<span class="s-ok">' + ic('check',14) + '</span>' : st==='lock' ? '<span class="s-lock">' + ic('lock',18) + '</span>' : (o.right||'')) +
+  '</div>';
+}
+
+// Full-screen overlay used before the app is set up (language, name, goals).
+function overlayScreen(top, body, bottom){
+  const old = document.querySelector('.welcome'); if(old) old.remove();
+  const w = document.createElement('div');
+  w.className = 'welcome onb wl';
+  w.innerHTML = '<div class="onb-top">' + (top||'<span></span>') + '</div>' +
+    '<div class="wl-body">' + body + '</div>' +
+    '<div class="onb-bottom">' + bottom + '</div>';
+  document.body.appendChild(w);
+  return w;
+}
+function wlBack(call){ return '<button class="s-back" aria-label="' + (enLang()?'Back':'Назад') + '" onclick="' + call + '">' + ic('chev',22) + '</button>'; }
+function optCard(on, title, small, desc, go){
+  return '<button class="s-opt' + (on?' on':'') + '" onclick="' + go + '" aria-pressed="' + (on?'true':'false') + '">' +
+    '<span class="s-opt-h"><b>' + title + '</b>' + (small ? '<small>' + small + '</small>' : '') + '</span>' +
+    (desc ? '<span class="s-opt-d">' + desc + '</span>' : '') + '</button>';
 }
 
 // ─── МОДАЛЬНЫЕ ОКНА (prompt/confirm блокируются в Telegram) ───
