@@ -995,6 +995,24 @@ body.light .builder-answer.wrong-state,body.light .text-input.wrong-state{border
 .hs-bar i{position:absolute;left:0;top:0;bottom:0;border-radius:4px;background:var(--ring-phrases)}
 .hs-bar em{position:absolute;top:-3px;width:2px;height:14px;background:var(--night-ink-2)}
 .hs-more{font-size:var(--fs-14);font-weight:700;color:var(--night-ink);text-align:right}
+
+/* ─── онбординг Gå! v1.0 ─── */
+.welcome.onb{display:flex;flex-direction:column;align-items:stretch;text-align:left;
+  padding:calc(var(--tg-top,0px) + env(safe-area-inset-top) + var(--sp-4)) var(--sp-6) 0;overflow-y:auto;overscroll-behavior:contain}
+.onb-top{display:flex;justify-content:space-between;align-items:center;min-height:28px}
+.onb-wm svg{display:block;height:24px;width:auto;color:var(--ink)}
+.onb-skip{margin:0!important;padding:var(--sp-1) 0!important;font-size:var(--fs-14)!important;font-weight:700;color:var(--ink-2)!important}
+.onb-art{margin:var(--sp-4) calc(-1 * var(--sp-6)) 0;background:var(--paper);display:flex;justify-content:center;flex:none}
+.onb-art img{display:block;width:100%;max-width:480px;aspect-ratio:1/1;max-height:46vh;object-fit:cover}
+.onb-tx{display:flex;flex-direction:column;gap:var(--sp-2);padding-top:var(--sp-6)}
+.welcome.onb .onb-title{font-size:var(--fs-28);font-weight:800;line-height:1.2;margin:0;text-align:left;color:var(--ink);text-wrap:balance}
+.onb-ga{font-family:var(--f-no)}
+.welcome.onb .onb-sub{font-size:var(--fs-16);color:var(--ink-2);margin:0;text-align:left;max-width:none;line-height:1.5}
+.onb-bottom{margin-top:auto;padding:var(--sp-4) 0 calc(var(--sp-6) + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:var(--sp-4)}
+.welcome.onb .onb-dots{display:flex;gap:6px;justify-content:center;margin:0}
+.welcome.onb .onb-dot{width:8px;height:8px;border-radius:4px;background:var(--line)}
+.welcome.onb .onb-dot.active{width:24px;background:var(--accent)}
+.welcome.onb .welcome-btn{width:100%;border-radius:var(--r-sheet)!important;padding:var(--sp-4)!important;font-size:var(--fs-16)!important;font-weight:800}
 /* ═══ Gå! v1.0 — правила дизайн-системы (последний слой, перекрывает старые) ═══ */
 body{font-family:var(--f-ui)}
 [lang="nb"]{font-family:var(--f-no)}
@@ -3097,53 +3115,18 @@ let state = {
 // ─── SCREENS ──────────────────────────────────────────
 const GA_LOGO = '<svg role="img" aria-label="Gå!" xmlns="http://www.w3.org/2000/svg" viewBox="83.4 -191.3 290.3 124.4"><path fill="currentColor" fill-rule="evenodd" d="M83.35 -123.70 C83.35 -154.74 113.12 -174.91 157.84 -174.91 C173.65 -174.91 188.60 -172.09 202.14 -167.58 L194.67 -149.80 C183.10 -153.75 171.81 -156.15 159.40 -156.15 C131.18 -156.15 113.83 -144.02 113.83 -123.70 C113.83 -103.39 131.74 -90.97 149.66 -90.97 C163.21 -90.97 176.33 -98.02 178.58 -111.29 L147.97 -111.29 L147.97 -129.49 L208.21 -129.49 L208.21 -74.32 L185.92 -74.32 L185.92 -97.74 C180.98 -84.76 168.99 -72.21 144.44 -72.21 C112.98 -72.21 83.35 -92.80 83.35 -123.70 Z"/><path fill="currentColor" fill-rule="evenodd" d="M283.41 -166.31 C290.32 -166.31 295.26 -169.55 296.10 -174.21 C296.95 -179.01 293.14 -182.11 286.23 -182.11 C279.46 -182.11 274.52 -179.01 273.67 -174.21 C272.83 -169.55 276.64 -166.31 283.41 -166.31 Z M258.86 -174.21 C260.69 -184.37 272.54 -191.28 287.64 -191.28 C303.16 -191.28 312.61 -184.37 310.78 -174.21 C309.08 -164.05 297.09 -157.14 281.72 -157.14 C266.48 -157.14 257.17 -164.05 258.86 -174.21 Z M261.96 -107.19 C251.80 -104.23 242.49 -99.86 241.51 -93.93 C240.66 -88.99 245.88 -86.31 251.95 -86.31 C265.91 -86.31 281.15 -97.04 284.54 -110.86 L284.96 -112.70 C277.06 -110.86 268.73 -109.17 261.96 -107.19 Z M312.33 -89.70 C317.41 -89.70 324.18 -92.38 325.59 -92.94 C325.17 -90.40 323.19 -79.40 322.77 -76.86 C316.70 -72.77 304.71 -72.06 298.64 -72.35 C281.15 -72.49 279.88 -84.20 279.88 -84.62 L281.86 -95.06 C271.42 -82.08 254.77 -72.21 237.84 -72.21 C225.85 -72.21 212.87 -77.14 214.98 -89.84 C217.38 -103.24 234.59 -110.02 251.10 -114.95 C261.54 -117.92 272.97 -120.60 283.97 -122.85 C281.72 -127.23 276.64 -129.63 270.01 -130.47 C256.04 -132.17 236.43 -127.79 229.80 -124.12 L226.97 -140.49 C233.04 -143.45 249.83 -146.84 266.90 -146.84 C270.29 -146.84 273.67 -146.70 277.06 -146.41 C298.36 -144.30 315.86 -135.13 311.76 -112.13 L307.96 -90.83 C308.94 -89.98 310.50 -89.70 312.33 -89.70 Z"/><path fill="currentColor" fill-rule="evenodd" d="M368.68 -174.91 L365.99 -108.31 L342.29 -108.31 L339.75 -174.91 Z M334.60 -83.51 C335.97 -91.13 344.86 -96.31 356.18 -96.31 C367.82 -96.31 374.91 -91.13 373.54 -83.51 C372.27 -75.89 363.27 -70.71 351.74 -70.71 C340.31 -70.71 333.33 -75.89 334.60 -83.51 Z"/></svg>';
 const ONB = [
-  {
-    t: (enLang()?'Gå! — Norwegian for “Go!”':"Gå! — по-норвежски «Вперёд!»"),
-    s: (enLang()?'Every day is a step forward.':"Каждый день — шаг вперёд."),
-    svg: '<div class="onb-mark">' + GA_LOGO + '</div>'
-  },
-  {
-    t: (enLang()?'1200 phrases — from zero to A2':"1200 фраз — с нуля до A2"),
-    s: (enLang()?'16 lessons — from basic verbs to phrasal ones. Build sentences out of words until the V2 rule becomes a reflex.':"16 уроков — от базовых глаголов до фразовых. Собирай предложения из слов, а правило V2 станет рефлексом."),
-    svg: '<svg width="230" height="170" viewBox="0 0 230 170" fill="none">' +
-      '<rect x="18" y="18" width="86" height="40" rx="14" fill="#7aa2f7"/><text x="61" y="44" text-anchor="middle" font-family="Manrope,sans-serif" font-size="17" font-weight="700" fill="#000001">Hei!</text>' +
-      '<path d="M40 58 l8 12 l6 -12 z" fill="#7aa2f7"/>' +
-      '<rect x="118" y="40" width="96" height="40" rx="14" fill="#f87171"/><text x="166" y="66" text-anchor="middle" font-family="Manrope,sans-serif" font-size="17" font-weight="700" fill="#000001">Hallo!</text>' +
-      '<path d="M188 80 l6 12 l8 -12 z" fill="#f87171"/>' +
-      '<rect x="24" y="112" width="52" height="30" rx="9" fill="#161616" stroke="#3a3a3a"/><text x="50" y="132" text-anchor="middle" font-family="Manrope,sans-serif" font-size="13" fill="#f5f5f5">Jeg</text>' +
-      '<rect x="84" y="112" width="66" height="30" rx="9" fill="#fff"/><text x="117" y="132" text-anchor="middle" font-family="Manrope,sans-serif" font-size="13" font-weight="600" fill="#000001">lærer</text>' +
-      '<rect x="158" y="112" width="56" height="30" rx="9" fill="#161616" stroke="#3a3a3a"/><text x="186" y="132" text-anchor="middle" font-family="Manrope,sans-serif" font-size="13" fill="#f5f5f5">norsk</text>' +
-    '</svg>'
-  },
-  {
-    t: (enLang()?"Words you won't forget":"Слова, которые не забудутся"),
-    s: (enLang()?'352 words on flashcards with spaced repetition at 1·3·7·14·30 days — like Anki, only cosier.':"352 слова на флэш-карточках с интервальными повторениями 1·3·7·14·30 дней — как в Anki, только уютнее."),
-    svg: '<svg width="230" height="170" viewBox="0 0 230 170" fill="none">' +
-      '<rect x="52" y="38" width="126" height="84" rx="16" fill="#1c1c1c" stroke="#3a3a3a" transform="rotate(-6 115 80)"/>' +
-      '<rect x="52" y="30" width="126" height="84" rx="16" fill="#232323" stroke="#3a3a3a" transform="rotate(4 115 72)"/>' +
-      '<rect x="52" y="26" width="126" height="88" rx="16" fill="#fff"/>' +
-      '<text x="115" y="62" text-anchor="middle" font-family="Manrope,sans-serif" font-size="20" font-weight="700" fill="#000001">ei bok</text>' +
-      '<rect x="88" y="72" width="54" height="2" rx="1" fill="#d4d4d4"/>' +
-      (enLang()?'<text x="115" y="98" text-anchor="middle" font-family="Manrope,sans-serif" font-size="14" fill="#666">book</text>':'<text x="115" y="98" text-anchor="middle" font-family="Manrope,sans-serif" font-size="14" fill="#666">книга</text>') +
-      '<circle cx="60" cy="140" r="13" fill="#0d2818" stroke="#1d5c34"/><text x="60" y="145" text-anchor="middle" font-size="12" fill="#4ade80"><CK></text>' +
-      '<circle cx="96" cy="140" r="13" fill="#0d2818" stroke="#1d5c34"/><text x="96" y="145" text-anchor="middle" font-size="12" fill="#4ade80"><CK></text>' +
-      (enLang()?'<circle cx="132" cy="140" r="13" fill="#2b2210" stroke="#6b5a10"/><text x="132" y="145" text-anchor="middle" font-size="11" fill="#fbbf24">3d</text>':'<circle cx="132" cy="140" r="13" fill="#2b2210" stroke="#6b5a10"/><text x="132" y="145" text-anchor="middle" font-size="11" fill="#fbbf24">3д</text>') +
-      (enLang()?'<circle cx="168" cy="140" r="13" fill="#2b2210" stroke="#6b5a10"/><text x="168" y="145" text-anchor="middle" font-size="11" fill="#fbbf24">7d</text>':'<circle cx="168" cy="140" r="13" fill="#2b2210" stroke="#6b5a10"/><text x="168" y="145" text-anchor="middle" font-size="11" fill="#fbbf24">7д</text>') +
-    '</svg>'
-  },
-  {
-    t: (enLang()?'Listen, speak, pass':"Слушай, говори, сдавай"),
-    s: (enLang()?'Listening mode, pronunciation checks through the mic, lesson exams, a streak and a daily goal — the habit builds itself.':"Режим на слух, проверка произношения через микрофон, экзамены по урокам, стрик и дневная цель — привычка сложится сама."),
-    svg: '<svg width="230" height="170" viewBox="0 0 230 170" fill="none">' +
-      '<path d="M60 92 a55 55 0 0 1 110 0" stroke="#7aa2f7" stroke-width="9" stroke-linecap="round" fill="none"/>' +
-      '<rect x="48" y="88" width="22" height="38" rx="9" fill="#7aa2f7"/>' +
-      '<rect x="160" y="88" width="22" height="38" rx="9" fill="#7aa2f7"/>' +
-      '<rect x="103" y="76" width="24" height="42" rx="12" fill="#fff"/>' +
-      '<path d="M96 104 a19 19 0 0 0 38 0" stroke="#fff" stroke-width="5" fill="none" stroke-linecap="round"/>' +
-      '<rect x="112" y="126" width="6" height="12" fill="#fff"/><rect x="102" y="138" width="26" height="5" rx="2.5" fill="#fff"/>' +
-      
-    '</svg>'
-  }
+  { img:'img/onboarding-1.webp', name:true,
+    alt:(enLang()?'A guy steps off a train and waves':'Парень выходит из поезда и машет рукой'),
+    t:(enLang()?'<span lang="nb" class="onb-ga">Gå!</span> — Norwegian for “Go!”':'<span lang="nb" class="onb-ga">Gå!</span> — по‑норвежски «Вперёд!»'),
+    s:(enLang()?'Every day is a step forward. 1200 phrases from zero to A2.':'Каждый день — шаг вперёд. 1200 фраз от нуля до A2.') },
+  { img:'img/onboarding-2.webp',
+    alt:(enLang()?'A girl speaking confidently':'Девушка уверенно говорит'),
+    t:(enLang()?'Phrases from day one':'Фразы с первого дня'),
+    s:(enLang()?'Not rules, but ready-made phrases for work, the doctor and your neighbours.':'Не правила, а готовые фразы для работы, врача и соседей.') },
+  { img:'img/onboarding-3.webp',
+    alt:(enLang()?'A guy riding a bike with a phone':'Парень едет на велосипеде с телефоном'),
+    t:(enLang()?'5–15 minutes a day':'5–15 минут в день'),
+    s:(enLang()?'Practise on the go: phrase by phrase, with audio.':'Занимайся в дороге: фраза за фразой, с аудио.') }
 ];
 
 // Язык интерфейса Telegram — только подсказка: кнопка подсвечена, но нажать нужно самому.
@@ -3392,16 +3375,19 @@ function renderOnboarding(step){
   const o = ONB[step];
   const last = step === ONB.length-1;
   const w = document.createElement("div");
-  w.className = "welcome scroll";
-  w.innerHTML = '<div class="welcome-content" style="margin-top:calc(7vh + env(safe-area-inset-top))">' +
-      '<div class="onb-illo">' + o.svg + '</div>' +
+  w.className = "welcome onb";
+  w.innerHTML =
+    '<div class="onb-top">' + (o.name ? '<div class="onb-wm">' + GA_LOGO + '</div>' : '<span></span>') +
+      (last ? '' : '<button class="skip-link onb-skip" onclick="finishOnb()">' + t('skip') + '</button>') + '</div>' +
+    '<div class="onb-art"><img src="' + o.img + '" alt="' + o.alt + '" width="640" height="640"></div>' +
+    '<div class="onb-tx"><h2 class="onb-title">' + o.t + '</h2><p class="onb-sub">' + o.s + '</p></div>' +
+    '<div class="onb-bottom">' +
       '<div class="onb-dots">' + ONB.map((_,i)=>'<div class="onb-dot' + (i===step?' active':'') + '"></div>').join('') + '</div>' +
-      '<div class="onb-title">' + o.t + '</div>' +
-      '<div class="onb-sub">' + o.s + '</div>' +
-      '<button class="welcome-btn" onclick="' + (last ? 'finishOnb()' : 'renderOnboarding(' + (step+1) + ')') + '">' + (last ? t('start') : t('next')) + '</button>' +
-      '<button class="skip-link" onclick="finishOnb()">' + t('skip') + '</button>' +
+      '<button class="welcome-btn" onclick="' + (last ? 'finishOnb()' : 'renderOnboarding(' + (step+1) + ')') + '">' + (last ? t('start') : (enLang()?'Next':'Дальше')) + '</button>' +
     '</div>';
   document.body.appendChild(w);
+  // preload the next illustration so the slide change does not flash
+  if(!last){ const im = new Image(); im.src = ONB[step+1].img; }
 }
 
 function finishOnb(){
