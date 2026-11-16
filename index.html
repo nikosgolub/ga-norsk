@@ -1013,6 +1013,26 @@ body.light .builder-answer.wrong-state,body.light .text-input.wrong-state{border
 .welcome.onb .onb-dot{width:8px;height:8px;border-radius:4px;background:var(--line)}
 .welcome.onb .onb-dot.active{width:24px;background:var(--accent)}
 .welcome.onb .welcome-btn{width:100%;border-radius:var(--r-sheet)!important;padding:var(--sp-4)!important;font-size:var(--fs-16)!important;font-weight:800}
+
+/* ─── урок Gå! v1.0: блоки норвежским шрифтом, нижний док, шит обратной связи ─── */
+.word-chip,.word-chip.pool,.word-chip.selected,body.light .word-chip.selected{
+  font-family:var(--f-no);font-weight:700;font-size:var(--fs-20);line-height:1;
+  background:var(--surface)!important;color:var(--ink)!important;border:1px solid var(--line)!important;box-shadow:0 2px 0 var(--line)}
+.builder-answer,.builder-answer.has-content,.builder-answer.hint-more,body.light .builder-answer{background:transparent!important;border:none!important;border-bottom:2px solid var(--line)!important;border-radius:0!important;padding:0 0 var(--sp-3)!important}
+.builder-answer.correct-state{border-bottom-color:var(--ok)!important}
+.builder-answer.wrong-state{border-bottom-color:var(--bad)!important}
+.builder-answer.correct-state,.builder-answer.wrong-state,body.light .builder-answer.correct-state,body.light .builder-answer.wrong-state{border-width:0 0 2px!important}
+.builder-answer.correct-state .word-chip,body.light .builder-answer.correct-state .word-chip.selected{background:var(--ok)!important;border-color:var(--ok)!important;color:var(--on-sem)!important;box-shadow:none}
+.text-input{font-family:var(--f-no);font-size:var(--fs-20)}
+.dock{position:fixed;left:0;right:0;bottom:0;z-index:20;padding:var(--sp-4) var(--sp-4) calc(var(--sp-6) + env(safe-area-inset-bottom));background:var(--bg)}
+.dock > .submit-btn,.dock .btn-row{max-width:600px;margin:0 auto}
+.dock > .submit-btn{display:block;width:100%}
+.dock .submit-btn{border-radius:var(--r-sheet)!important;min-height:56px;font-weight:800}
+.fb-sheet{border-radius:var(--r-sheet) var(--r-sheet) 0 0;padding-top:var(--sp-6);max-height:72vh;overflow-y:auto;overscroll-behavior:contain;animation:sheetUp .25s ease}
+@keyframes sheetUp{from{transform:translate3d(0,24px,0);opacity:0}to{transform:none;opacity:1}}
+.fb-sheet .feedback,.fb-sheet .feedback.ok,.fb-sheet .feedback.err,.fb-sheet .feedback.v2,body.light .fb-sheet .feedback.ok,body.light .fb-sheet .feedback.err,body.light .fb-sheet .feedback.v2{background:transparent!important;border:none!important;padding:0!important;margin:0 auto var(--sp-4)!important;max-width:600px;animation:none}
+.fb-sheet .diff-view{font-size:var(--fs-20);font-weight:700;line-height:1.8}
+@media (prefers-reduced-motion:reduce){.fb-sheet{animation:none}}
 /* ═══ Gå! v1.0 — правила дизайн-системы (последний слой, перекрывает старые) ═══ */
 body{font-family:var(--f-ui)}
 [lang="nb"]{font-family:var(--f-no)}
@@ -1026,8 +1046,8 @@ body.light .submit-btn:not(.retry-btn),body.light .continue-btn,body.light .rest
   background:var(--accent)!important;color:var(--on-accent)!important;border:none!important;box-shadow:none!important}
 .submit-btn.retry-btn{background:var(--surface)!important;color:var(--ink)!important;border:1px solid var(--line)!important}
 /* выбранные чипы — нейтрально, инверсией текста */
-.mode-btn.active,.word-chip.selected,.wd-chip.on,.set-chip.on,.goal-btn.on,.lang-btn.on,.pl-btn.on,.pl-play,
-body.light .mode-btn.active,body.light .word-chip.selected,body.light .wd-chip.on,body.light .set-chip.on,body.light .goal-btn.on,body.light .lang-btn.on,body.light .pl-btn.on,body.light .pl-play{
+.mode-btn.active,.wd-chip.on,.set-chip.on,.goal-btn.on,.lang-btn.on,.pl-btn.on,.pl-play,
+body.light .mode-btn.active,body.light body.light .wd-chip.on,body.light .set-chip.on,body.light .goal-btn.on,body.light .lang-btn.on,body.light .pl-btn.on,body.light .pl-play{
   background:var(--ink)!important;color:var(--bg)!important;border-color:var(--ink)!important}
 /* правило 3: цвет = тип практики */
 .progress-fill,body.light .progress-fill{background:var(--accent)!important}
@@ -3815,15 +3835,15 @@ function render(){
     } else if(feedback.type==="v2"){
       feedbackHTML = '<div class="feedback v2">' +
         '<div class="fb-title">' + (feedback.diag ? icp('<BT>') + feedback.diag.title : t('v2_t')) + '</div>' +
-        '<div class="diff-view"><span class="diff-label">' + t('corr') + '</span>' +
-          feedback.diff.map(d=>'<span class="dw ' + d.status + '">' + d.word + '</span>').join(" ") + '</div>' +
+        '<div class="diff-view"><span class="diff-label">' + t('corr') + '</span><span lang="nb">' +
+          feedback.diff.map(d=>'<span class="dw ' + d.status + '">' + d.word + '</span>').join(" ") + '</span></div>' +
         (state.exam ? '' : explainHTML(current)) +
         (state.exam ? '' : '<button class="listen-btn" id="ai-why" style="margin-top:10px" onclick="aiExplain()">' + ic('star',14) + (enLang()?' Why?</button><div class="pron-res" id="ai-exp"></div>':' Почему?</button><div class="pron-res" id="ai-exp"></div>')) +
       '</div>';
     } else {
       feedbackHTML = '<div class="feedback err">' +
         '<div class="fb-title">' + t('err_t') + '</div>' +
-        '<div class="diff-view">' + feedback.diff.map(d=>'<span class="dw ' + d.status + '">' + d.word + '</span>').join(" ") + '</div>' +
+        '<div class="diff-view" lang="nb">' + feedback.diff.map(d=>'<span class="dw ' + d.status + '">' + d.word + '</span>').join(" ") + '</div>' +
         (state.exam ? '' : explainHTML(current)) +
         (state.exam ? '' : '<button class="listen-btn" id="ai-why" style="margin-top:10px" onclick="aiExplain()">' + ic('star',14) + (enLang()?' Why?</button><div class="pron-res" id="ai-exp"></div>':' Почему?</button><div class="pron-res" id="ai-exp"></div>')) +
       '</div>';
@@ -3833,7 +3853,7 @@ function render(){
   const hintOn = phase==="answering" && state.hintAt!==undefined && state.hintAt!==null;
   const builderHTML =
     '<div class="pool-label">' + t('your') + '</div>' +
-    '<div class="builder-answer ' + inputCls + (hintOn && state.hintAt<0 ? ' hint-more' : '') + '" id="builder-ans">' +
+    '<div class="builder-answer ' + inputCls + (hintOn && state.hintAt<0 ? ' hint-more' : '') + '" id="builder-ans" lang="nb">' +
       (selected.length===0
         ? '<span class="placeholder">' + t('tap_w') + '</span>'
         : selected.map((w,i)=>'<span class="word-chip selected' + (hintOn && state.hintAt===i ? ' hint-bounce' : '') +
@@ -3845,12 +3865,12 @@ function render(){
         : (state.hintAt<0 ? (enLang()?'All correct so far, but not enough words':'Пока всё верно, но слов не хватает')
                           : (enLang()?"Here's what's off":'Вот здесь не так'))) + '</div>' : '') +
     '<div class="pool-label" style="margin-top:1rem">' + t('pool') + '</div>' +
-    '<div class="word-pool" id="word-pool">' +
+    '<div class="word-pool" id="word-pool" lang="nb">' +
       pool.map((w,i)=>'<span class="word-chip pool" data-src="pool" data-i="' + i + '" onclick="addWord(' + i + ')">' + w + '</span>').join("") +
     '</div>';
 
   const textHTML =
-    '<input id="text-inp" class="text-input ' + inputCls + '" type="text" placeholder="'+t('inp_ph')+'"' +
+    '<input id="text-inp" class="text-input ' + inputCls + '" type="text" lang="nb" autocapitalize="sentences" placeholder="'+t('inp_ph')+'"' +
     ' value="' + textVal.replace(/"/g,'&quot;') + '"' +
     (phase==="revealed"?" disabled":"") +
     ' oninput="onTextInput(this.value)"' +
@@ -3898,8 +3918,20 @@ function render(){
         : '<div class="q-ru">' + srcHTML(current) + '</div>') +
       (mode==="text" ? textHTML : builderHTML) +
     '</div>' +
-    feedbackHTML +
-    buttonsHTML;
+    '<div class="dock-spacer" id="dock-spacer"></div>' +
+    (phase==="revealed"
+      ? '<div class="dock fb-sheet glass" id="dock">' + feedbackHTML + buttonsHTML + '</div>'
+      : '<div class="dock" id="dock">' + buttonsHTML + '</div>');
+  fitDock();
+}
+// Bottom dock keeps the main button at one height in every lesson state;
+// the spacer lets the exercise scroll clear of it.
+function fitDock(){
+  const d = document.getElementById('dock'), sp = document.getElementById('dock-spacer');
+  if(!d || !sp) return;
+  sp.style.height = d.offsetHeight + 'px';
+  // the AI explanation loads later and grows the sheet
+  if(window.ResizeObserver) new ResizeObserver(function(){ sp.style.height = d.offsetHeight + 'px'; }).observe(d);
 }
 
 // ─── ACTIONS ──────────────────────────────────────────
@@ -4228,9 +4260,9 @@ function renderWords(){
       '<button class="mode-btn ' + (wordsState.mode==="ru-no"?"active":"") + '" onclick="switchWordsMode(\'ru-no\')">' + helpFlag() + ' ' + helpLang() + ' → NO</button>' +
     '</div>' +
     '<div class="word-stage" onclick="flipWord()">' +
-      '<div class="word-main">' + front + '</div>' +
+      '<div class="word-main"' + (wordsState.mode==="no-ru" ? ' lang="nb"' : '') + '>' + front + '</div>' +
       (wordsState.flipped
-        ? '<div class="word-divider"></div><div class="word-back">' + back + '</div>'
+        ? '<div class="word-divider"></div><div class="word-back"' + (wordsState.mode==="no-ru" ? '' : ' lang="nb"') + '>' + back + '</div>'
         : '<div class="word-hint">' + t('tap_f') + '</div>') +
       '<button class="listen-btn" onclick="event.stopPropagation();speak(' + JSON.stringify(w.n) + ')">' + t('listen') + '</button>' +
     '</div>' +
