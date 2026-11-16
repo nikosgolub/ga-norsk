@@ -4459,7 +4459,7 @@ function downloadICS(){
     const blob = new Blob([ics], {type:'text/calendar;charset=utf-8'});
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = url; a.download = 'ro-norsk.ics';
+    a.href = url; a.download = 'ga-norsk.ics';
     document.body.appendChild(a); a.click();
     setTimeout(function(){ a.remove(); URL.revokeObjectURL(url); }, 1500);
   }catch(e){
