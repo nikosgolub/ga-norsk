@@ -1166,6 +1166,26 @@ body:not(.light) .s-wans{color:var(--ring-phrases)!important}
 .s-bad{background:var(--bad)}
 .allwin .s-awbox,body.light .allwin .s-awbox{background:var(--bg)!important;border:1px solid var(--line);border-radius:var(--r-sheet);padding:var(--sp-6);display:flex;flex-direction:column;align-items:center;gap:var(--sp-3);text-align:center}
 .allwin .s-awbox .welcome-btn{width:100%;border-radius:var(--r-sheet)!important}
+
+/* ─── v1.1 этап 5: статистика, напоминания, чат, что нового ─── */
+.s-night{border:1px solid var(--night);border-radius:var(--r-card);padding:14px var(--sp-4);display:flex;flex-direction:column;gap:var(--sp-3);margin-bottom:var(--sp-3)}
+.s-night .heat-legend,.s-night .wk-lbl{color:var(--night-ink-2)}
+.s-night .yr-bar-bg,.s-night .ht.l0{background:var(--night-line)!important}
+.s-tiles{margin:0 0 var(--sp-3)}
+.s-tiles .s-kp b{font-family:var(--f-no)}
+.wd-chip,body.light .wd-chip{border-radius:var(--r-chip)}
+.wd-chip.on,body.light .wd-chip.on{background:var(--accent)!important;border-color:var(--accent)!important;color:var(--on-accent)!important}
+.time-input{font-family:var(--f-ui);font-size:var(--fs-16);font-weight:700;border-radius:var(--r-chip);min-width:120px;width:auto!important}
+.cal-d.hit{background:var(--ring-phrases);color:var(--on-sem)}
+.section-label{margin:var(--sp-4) 0 var(--sp-2)}
+.ch-art{max-width:150px;margin:0 0 var(--sp-3)}
+.ch-msg.me,body.light .ch-msg.me{background:var(--accent)!important;color:var(--on-accent)!important}
+.ch-msg.ai,body.light .ch-msg.ai{background:var(--surface)!important;color:var(--ink)!important;border:1px solid var(--line)!important}
+.ch-msg code[lang="nb"]{font-family:var(--f-no);font-weight:600;background:transparent;border:none;padding:0;color:inherit}
+.ch-send,body.light .ch-send{background:var(--accent)!important;color:var(--on-accent)!important}
+.ch-inp{border-radius:var(--r-sheet)!important;background:var(--surface)!important}
+.wn-c b{font-size:var(--fs-16);font-weight:800}
+.wn-c span{font-size:var(--fs-14);color:var(--ink-2);line-height:1.5}
 /* ═══ Gå! v1.0 — правила дизайн-системы (последний слой, перекрывает старые) ═══ */
 body{font-family:var(--f-ui)}
 [lang="nb"]{font-family:var(--f-no)}
@@ -4325,14 +4345,19 @@ function renderSchedule(){
   const monthName = t('mo')[m];
 
   document.getElementById("app").innerHTML =
-    '<div class="header">' +
-      '<div class="logo" onclick="renderCourses()">' + GA_LOGO + '</div>' +
-      '<div class="header-right"><button class="back-btn" onclick="renderLessons()">' + t('back_h') + '</button></div>' +
-    '</div>' +
-    '<div class="detail-title">' + t('sched') + '</div>' +
-    '<div class="detail-sub">' + t('sched_s') + '</div>' +
+    scrTop('renderCourses()', t('sched').replace(/<[^>]+>/g,'').trim()) +
+    '<h2 class="s-h2">' + (enLang()?'When do you study?':'Когда занимаешься?') + '</h2>' +
+    '<p class="s-mut" style="margin:var(--sp-2) 0 var(--sp-4)">' + t('sched_s') + '</p>' +
 
-    '<div class="card" style="margin-bottom:1.25rem">' +
+    '<div class="s-card">' +
+      '<div class="pool-label">' + t('days_t') + '</div>' +
+      '<div class="wd-row">' + WDl().map((w,i)=>'<div class="wd-chip'+(s.days.indexOf(i)>=0?' on':'')+'" onclick="toggleDay('+i+')">'+w+'</div>').join('') + '</div>' +
+      '<div class="sched-row"><span class="sched-label">' + t('time_t') + '</span>' +
+        '<input class="time-input" id="sched-time" type="time" value="'+s.time+'" onchange="setSchedTime(this.value)"></div>' +
+      (enLang()?'<div class="s-mut" style="margin-top:var(--sp-2)">Add your schedule to your phone calendar —<br>reminders arrive even when Gå! is closed.</div>':'<div class="s-mut" style="margin-top:var(--sp-2)">Добавь расписание в календарь телефона —<br>напоминания придут даже когда Gå! закрыт.</div>') +
+    '</div>' +
+    '<div class="section-label">' + (enLang()?'Screen':'Экран') + '</div>' +
+    '<div class="s-card">' +
       '<div class="sched-row" style="margin:0">' +
         (enLang()?'<span class="sched-label">Fullscreen</span>':'<span class="sched-label">Полный экран</span>') +
         (fsSupported()
@@ -4349,7 +4374,7 @@ function renderSchedule(){
       '<div class="deck-count" style="text-align:left;margin-top:8px;opacity:.55">' + fsDiag() + '</div>' +
     '</div>' +
     (enLang()?'<div class="section-label" style="margin-bottom:10px">Backup</div>':'<div class="section-label" style="margin-bottom:10px">Резервная копия</div>') +
-    '<div class="card" style="margin-bottom:1.25rem">' +
+    '<div class="s-card">' +
       (enLang()?'<div class="deck-count" style="text-align:left;margin:0 0 12px">Your progress is stored on this device. Save a copy — you can restore it after clearing your browser, or on another phone.</div>':'<div class="deck-count" style="text-align:left;margin:0 0 12px">Прогресс хранится на устройстве. Сохрани копию — восстановишь после чистки браузера или на другом телефоне.</div>') +
       '<div class="btn-row">' +
         (enLang()?'<button class="submit-btn retry-btn" onclick="pickBackup()">Restore</button>':'<button class="submit-btn retry-btn" onclick="pickBackup()">Восстановить</button>') +
@@ -4357,19 +4382,11 @@ function renderSchedule(){
       '</div>' +
       '<input type="file" id="bk-file" accept=".json,application/json" style="display:none" onchange="loadBackup(event)">' +
     '</div>' +
-    '<div class="card" style="margin-top:1rem">' +
-      '<div class="pool-label">' + monthName + ' ' + y + ' · <span style="color:var(--ok)">●</span> ' + t('cal_leg') + '</div>' +
+    '<div class="s-card">' +
+      '<div class="pool-label">' + monthName + ' ' + y + ' · <span style="color:var(--ring-phrases)">●</span> ' + t('cal_leg') + '</div>' +
       '<div class="cal-grid">' + cells + '</div>' +
     '</div>' +
-    '<div class="card">' +
-      '<div class="pool-label">' + t('days_t') + '</div>' +
-      '<div class="wd-row">' + WDl().map((w,i)=>'<div class="wd-chip'+(s.days.indexOf(i)>=0?' on':'')+'" onclick="toggleDay('+i+')">'+w+'</div>').join('') + '</div>' +
-      '<div class="sched-row"><span class="sched-label">' + t('time_t') + '</span>' +
-        '<input class="time-input" id="sched-time" type="time" value="'+s.time+'" onchange="setSchedTime(this.value)"></div>' +
-      '<button class="submit-btn" style="margin-bottom:10px" onclick="addToGoogleCal()">' + ic('cal',16) + (enLang()?' Add to Google Calendar</button>':' Добавить в Google Календарь</button>') +
-      '<button class="submit-btn retry-btn" onclick="downloadICS()">' + ic('down',16) + (enLang()?' Download .ics file (Apple Calendar)</button>':' Скачать файл .ics (Apple Календарь)</button>') +
-      (enLang()?'<div class="deck-count" style="margin-top:10px">Add your schedule to your phone calendar —<br>reminders arrive even when Gå! is closed.</div>':'<div class="deck-count" style="margin-top:10px">Добавь расписание в календарь телефона —<br>напоминания придут даже когда Gå! закрыт.</div>') +
-    '</div>';
+    scrDock([ic('cal',16) + (enLang()?' Add to Google Calendar':' Добавить в Google Календарь'), 'addToGoogleCal()'], [ic('down',16) + (enLang()?' Apple Calendar (.ics)':' Apple Календарь (.ics)'), 'downloadICS()']);
 }
 
 function toggleDay(i){
@@ -5222,18 +5239,12 @@ function renderWhatsNew(){
   const old = document.querySelector('.welcome');
   if(old) old.remove();
   document.getElementById('app').innerHTML =
-    '<div class="header">' +
-      '<div class="logo">' + GA_LOGO + '</div>' +
-      '<div class="header-right"><div class="score-chip">' + APP_VER + '</div></div>' +
-    '</div>' +
-    (enLang()?'<div class="detail-title">What\'s new</div>':'<div class="detail-title">Что нового</div>') +
-    (enLang()?'<div class="detail-sub">The app has grown a lot since last time</div>':'<div class="detail-sub">Приложение заметно подросло с прошлого раза</div>') +
-    '<div class="wn-list" style="margin-top:1.25rem">' +
-      WHATS_NEW.map(function(x){
-        return '<div class="wn-item"><div class="wn-t">' + x.t + '</div><div class="wn-d">' + x.d + '</div></div>';
-      }).join('') +
-    '</div>' +
-    (enLang()?'<button class="continue-btn" style="margin-top:1.25rem" onclick="closeWhatsNew()">Off we go</button>':'<button class="continue-btn" style="margin-top:1.25rem" onclick="closeWhatsNew()">Поехали</button>');
+    scrTop('', enLang()?"What's new":'Что нового', APP_VER) +
+    '<p class="s-mut" style="margin-bottom:var(--sp-4)">' + (enLang()?'The app has grown a lot since last time':'Приложение заметно подросло с прошлого раза') + '</p>' +
+    '<div class="s-list">' + WHATS_NEW.map(function(x){
+      return '<div class="s-card wn-c"><b>' + x.t + '</b><span>' + x.d + '</span></div>';
+    }).join('') + '</div>' +
+    scrDock([enLang()?'Off we go':'Поехали', 'closeWhatsNew()']);
   try{ window.scrollTo(0,0); }catch(e){}
 }
 
@@ -5259,13 +5270,12 @@ function renderStats(){
     const vals = days.map(function(d){ return logOf(d).p||0; });
     const mx = Math.max(DAILY_GOAL, Math.max.apply(null, vals));
     const wl = t('wd');
-    chart = '<div class="week-strip" style="border:none;padding:0;margin:0;gap:8px">' + days.map(function(d,i){
-      const h = Math.max(4, Math.round(vals[i]/mx*100));
-      const today = dstrOf(d) === dstr(0);
-      return '<div class="wk-col' + (isFuture(d)?' future':'') + '"><div class="wk-bar-bg" style="height:100px"><div class="wk-bar' + (vals[i]>=DAILY_GOAL?' hit':'') + (today?' today':'') + '" style="height:' + h + 'px"></div></div>' +
-        '<div class="wk-lbl' + (today?' today':'') + '">' + wl[i] + '</div>' +
-        '<div class="wk-lbl" style="color:var(--ink-2);font-weight:600">' + (vals[i]||'') + '</div></div>';
-    }).join('') + '</div>';
+    const tday = dstr(0);
+    chart = '<div class="wk-chart">' + days.map(function(d,i){
+      const v = vals[i], today = dstrOf(d) === tday;
+      return '<div class="wk-c' + (today?' today':'') + (v?'':' zero') + (isFuture(d)?' future':'') + '">' + (v ? '<span class="wk-v">' + v + '</span>' : '') +
+        '<i style="height:' + Math.max(2, Math.round(v/mx*40)) + 'px"></i></div>';
+    }).join('') + '</div><div class="wk-days">' + days.map(function(d,i){ return '<span' + (dstrOf(d)===tday?' class="t"':'') + '>' + wl[i] + '</span>'; }).join('') + '</div>';
   } else if(P==='month'){
     chart = '<div class="heat">' + days.map(function(d){
       const v = logOf(d).p||0;
@@ -5290,40 +5300,43 @@ function renderStats(){
     }).join('') + '</div>';
   }
 
+  const L = function(ru,en){ return enLang() ? en : ru; };
+  // course totals and average accuracy of the blocks already practised
+  const sL=LESSONS, sW=WORDS, sc2=ci;
+  ci=0; LESSONS=COURSES[0].L; WORDS=COURSES[0].W;
+  let cp=0,cpt=0,cw=0,cwt=0,accS=0,accN=0;
+  for(let l=0;l<LESSONS.length;l++){
+    cp+=lessonSolved(l); cpt+=lessonTotal(l); cw+=Math.min(wordsKnown(l).length,WORDS[l].length); cwt+=WORDS[l].length;
+    for(let q=0;q<nParts(l);q++){ const a2 = partAcc(l,q); if(a2){ accS+=a2; accN++; } }
+  }
+  ci=sc2; LESSONS=sL; WORDS=sW;
+  let dsec=0; for(const d of DIALOGS) dsec += dlgStat(d.id).sec||0;
+  const acc = accN ? Math.round(accS/accN) : null;
+  const tile = function(v,l){ return '<div class="s-kp"><b>' + v + '</b><span>' + l + '</span></div>'; };
   document.getElementById('app').innerHTML =
-    '<div class="header">' +
-      '<button class="back-btn" onclick="renderCourses()">' + t('back_h') + '</button>' +
-      '<div class="header-right"><div class="score-chip">' + ic('fire',14) + ' ' + streakCount() + '</div></div>' +
+    scrTop('renderCourses()', L('Статистика','Stats')) +
+    '<div class="mode-toggle s-modes">' +
+      '<button class="mode-btn' + (P==='week'?' active':'') + '" onclick="setStatPeriod(\'week\')">' + L('Неделя','Week') + '</button>' +
+      '<button class="mode-btn' + (P==='month'?' active':'') + '" onclick="setStatPeriod(\'month\')">' + L('Месяц','Month') + '</button>' +
+      '<button class="mode-btn' + (P==='year'?' active':'') + '" onclick="setStatPeriod(\'year\')">' + L('Год','Year') + '</button>' +
     '</div>' +
-    (enLang()?'<div class="detail-title">Stats</div>':'<div class="detail-title">Статистика</div>') +
-    (enLang()?'<div class="detail-sub">Pace beats volume — look at how regular you are</div>':'<div class="detail-sub">Ритм важнее объёма — смотри на регулярность</div>') +
-    '<div class="mode-toggle" style="margin:1rem 0">' +
-      '<button class="mode-btn' + (P==='week'?' active':'') + (enLang()?'" onclick="setStatPeriod(\'week\')">Week</button>':'" onclick="setStatPeriod(\'week\')">Неделя</button>') +
-      '<button class="mode-btn' + (P==='month'?' active':'') + (enLang()?'" onclick="setStatPeriod(\'month\')">Month</button>':'" onclick="setStatPeriod(\'month\')">Месяц</button>') +
-      '<button class="mode-btn' + (P==='year'?' active':'') + (enLang()?'" onclick="setStatPeriod(\'year\')">Year</button>':'" onclick="setStatPeriod(\'year\')">Год</button>') +
+    '<div class="night-card s-night">' +
+      '<div class="hs-h"><span>' + (P==='week'?L('Эта неделя','This week'):P==='month'?L('30 дней','30 days'):L('12 месяцев','12 months')) + '</span>' +
+        (acc!==null ? '<span>' + L('точность ','accuracy ') + '<b>' + acc + '%</b></span>' : '') + '</div>' +
+      chart +
     '</div>' +
-    '<div class="card">' + chart + '</div>' +
-    '<div class="stat-grid">' +
-      '<div class="sg"><div class="sg-v">' + ph + (enLang()?'</div><div class="sg-l">phrases</div></div>':'</div><div class="sg-l">фраз</div></div>') +
-      '<div class="sg"><div class="sg-v">' + Math.round(au/60) + (enLang()?'</div><div class="sg-l">minutes of audio</div></div>':'</div><div class="sg-l">минут аудио</div></div>') +
-      '<div class="sg"><div class="sg-v">' + wd + (enLang()?'</div><div class="sg-l">words</div></div>':'</div><div class="sg-l">слов</div></div>') +
-      '<div class="sg"><div class="sg-v">' + act + (enLang()?'</div><div class="sg-l">days practised</div></div>':'</div><div class="sg-l">дней занятий</div></div>') +
-      '<div class="sg"><div class="sg-v">' + avg + (enLang()?'</div><div class="sg-l">phrases a day</div></div>':'</div><div class="sg-l">фраз в день</div></div>') +
-      '<div class="sg"><div class="sg-v">' + bestWeek() + (enLang()?'</div><div class="sg-l">best week</div></div>':'</div><div class="sg-l">лучшая неделя</div></div>') +
+    '<div class="s-kps g2 s-tiles">' +
+      tile(streakCount(), dayWord(streakCount()) + L(' подряд',' in a row')) +
+      tile(ph, L('фраз за период','phrases this period')) +
+      tile(wd, L('слов повторено','words reviewed')) +
+      tile(Math.round(au/60) + L(' мин',' min'), L('аудио','of audio')) +
+      tile(act, L('дней занятий','days practised')) +
+      tile(avg, L('фраз в день','phrases a day')) +
     '</div>' +
-    (enLang()?'<div class="section-label" style="margin-top:24px">Course total</div>':'<div class="section-label" style="margin-top:24px">Всего за курс</div>') +
-    '<div class="stat-grid" style="margin-top:10px">' +
-      (function(){
-        const sL=LESSONS, sW=WORDS, sc2=ci;
-        ci=0; LESSONS=COURSES[0].L; WORDS=COURSES[0].W;
-        let p=0,pt=0,w=0,wt=0;
-        for(let l=0;l<LESSONS.length;l++){ p+=lessonSolved(l); pt+=lessonTotal(l); w+=Math.min(wordsKnown(l).length,WORDS[l].length); wt+=WORDS[l].length; }
-        ci=sc2; LESSONS=sL; WORDS=sW;
-        let hrs=0; for(const d of DIALOGS) hrs += dlgStat(d.id).sec||0;
-        return '<div class="sg"><div class="sg-v">' + Math.round(p/pt*100) + (enLang()?'%</div><div class="sg-l">of course phrases</div></div>':'%</div><div class="sg-l">фраз курса</div></div>') +
-          '<div class="sg"><div class="sg-v">' + Math.round(w/wt*100) + (enLang()?'%</div><div class="sg-l">of course words</div></div>':'%</div><div class="sg-l">слов курса</div></div>') +
-          '<div class="sg"><div class="sg-v">' + (hrs/3600).toFixed(1) + (enLang()?'</div><div class="sg-l">hours of audio</div></div>':'</div><div class="sg-l">часов аудио</div></div>');
-      })() +
+    '<div class="night-card s-night">' +
+      '<div class="hs-lbl"><span>' + L('Путь до A2','Road to A2') + '</span><span>' + cp + ' / ' + cpt + '</span></div>' +
+      '<div class="hs-bar"><i style="width:' + (cpt?Math.round(cp/cpt*100):0) + '%"></i><em style="left:50%"></em></div>' +
+      '<div class="hs-lbl"><span>' + L('слов курса ','course words ') + (cwt?Math.round(cw/cwt*100):0) + '%</span><span>' + L('аудио ','audio ') + (dsec/3600).toFixed(1) + L(' ч',' h') + '</span><span>' + L('лучшая неделя ','best week ') + bestWeek() + '</span></div>' +
     '</div>';
   try{ window.scrollTo(0,0); }catch(e){}
 }
@@ -5659,7 +5672,7 @@ function chatEsc(s){
 }
 function chatFmt(s){
   let h = chatEsc(s);
-  h = h.replace(/`([^`\n]+)`/g, '<code>$1</code>');
+  h = h.replace(/`([^`\n]+)`/g, '<code lang="nb">$1</code>');
   h = h.replace(/\*\*([^*\n]+)\*\*/g, '<b>$1</b>');
   h = h.replace(/^✓\s*(.+)$/gm, '<span class="ch-fix">✓ $1</span>');
   return h.replace(/\n/g, '<br>');
@@ -5692,7 +5705,7 @@ function renderChat(){
         return '<div class="' + cls + '">' + chatFmt(m.t) + say + '</div>';
       }).join('')
     : '<div class="ch-hero">' +
-        '<div class="ch-hero-mark">' + ic('ai',26) + '</div>' +
+        '<div class="s-art ch-art"><img src="img/s/S-ai-chat.webp" alt="" width="640" height="640"></div>' +
         '<div class="ch-hero-t">' + t2(mode==='talk' ? 'hero_t2' : 'hero_t') + '</div>' +
         '<div class="ch-hero-d">' + t2(mode==='talk' ? 'hero_d2' : 'hero_d') + '</div>' +
         '<div class="ch-tips">' + (t2(mode==='talk' ? 'tips2' : 'tips')||[]).map(function(x,i){
@@ -5702,13 +5715,8 @@ function renderChat(){
 
   document.getElementById('app').innerHTML =
     '<div id="chat-screen"' + (chatEnter ? ' class="ch-in"' : '') + '>' +
-      '<div class="header">' +
-        '<div class="logo" onclick="renderCourses()">' + GA_LOGO + '</div>' +
-        '<div class="header-right">' +
-          (chatLog.length ? '<button class="back-btn" onclick="chatClear()">' + t2('clear') + '</button>' : '') +
-          '<button class="back-btn" onclick="chatBack()">←</button>' +
-        '</div>' +
-      '</div>' +
+      scrTop('chatBack()', mode==='talk' ? (enLang()?'Talk in Norwegian':'Разговор по-норвежски') : (enLang()?'Ask about a rule':'Спроси про правило'),
+        chatLog.length ? '<button class="back-btn" onclick="chatClear()">' + t2('clear') + '</button>' : '') +
       '<div class="mode-toggle ch-switch">' +
         '<button class="mode-btn ' + (mode==='teach'?'active':'') + '" onclick="chatSetMode(\'teach\')">' + ic('book',15) + ' ' + t2('teach') + '</button>' +
         '<button class="mode-btn ' + (mode==='talk'?'active':'') + '" onclick="chatSetMode(\'talk\')">' + ic('chat',15) + ' ' + t2('talk') + '</button>' +
