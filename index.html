@@ -1096,7 +1096,24 @@ body:not(.light) .s-opt.on .s-opt-h b{color:var(--ring-phrases)}
 .s-opt-h small{font-size:var(--fs-14);color:var(--ink-2);font-weight:500}
 .s-opt-d{font-size:var(--fs-14);color:var(--ink-2);line-height:1.4}
 /* кнопка ИИ-чата над нижним доком */
-body:has(.dock) .ch-fab{bottom:calc(100px + env(safe-area-inset-bottom))!important}
+body:has(.dock) .ch-fab{bottom:calc(var(--dock-h,96px) + 8px)!important}
+
+/* ─── v1.1 этап 2: уроки ─── */
+.s-nbfont,.s-rows-nb .s-lt span{font-family:var(--f-no)}
+.s-parts{display:flex;flex-direction:column;gap:var(--sp-2);margin-top:var(--sp-2)}
+.s-part{display:flex;gap:var(--sp-3);align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-card);padding:var(--sp-3);cursor:pointer}
+.s-part.cur{border:2px solid var(--accent);padding:calc(var(--sp-3) - 1px)}
+.s-part.exam{background:transparent;border-style:dashed}
+.s-part.lock{cursor:default}
+.s-part.lock .s-part-t b{color:var(--ink-2)}
+.s-part-i{flex:none;display:grid;place-items:center;width:24px}
+.s-part-t{display:flex;flex-direction:column;flex:1;min-width:0}
+.s-part-t b{font-size:var(--fs-16);font-weight:700}
+.s-part-t span{font-size:var(--fs-12);color:var(--ink-2)}
+.s-num{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--accent);color:var(--on-accent);font-size:var(--fs-12);font-weight:800}
+.s-num.ghost{background:var(--tint-2);color:var(--ink)}
+.plan-banner{margin-bottom:var(--sp-3)}
+.s-share{margin-top:var(--sp-2)}
 /* ═══ Gå! v1.0 — правила дизайн-системы (последний слой, перекрывает старые) ═══ */
 body{font-family:var(--f-ui)}
 [lang="nb"]{font-family:var(--f-no)}
@@ -3490,74 +3507,33 @@ function saveName(){
 function renderLessons(){
   if(!LESSONS || !LESSONS.length){ renderCourses(); return; }   // курс без уроков
   screen = "lessons";
-  const grand = totalPhrases();
-  const solvedAll = totalSolved();
-  const overallPct = Math.round(solvedAll/grand*100);
-  const wTotal = wordsAllTotal();
-  const wKnown = wordsAllKnown();
-  const wPct = Math.round(wKnown/wTotal*100);
-
-  const cards = LESSONS.map((l,i) => {
-    const total = lessonTotal(i);
-    const solved = lessonSolved(i);
-    const pct = Math.round(solved/total*100);
-    const unlocked = lessonUnlocked(i);
-    const expired = isExpired(i);
-    const done = examPassed(i) && !expired;
-    let cls = 'lesson-card';
-    if(!unlocked) cls += ' locked';
-    else if(expired) cls += ' expired';
-    else if(done) cls += ' done';
-    const icon = !unlocked ? ic('lock',16) : expired ? ic('clock',16) : done ? ic('check',16) : (i+1);
-    const note = !unlocked
-      ? (enLang()?'<div class="lock-note">Pass the exam of lesson ':'<div class="lock-note">Сдай экзамен урока ') + i + (enLang()?' at 100%</div>':' на 100%</div>')
-      : expired
-        ? (enLang()?'<div class="expire-note">Passed — time to refresh</div>':'<div class="expire-note">Сдан — пора освежить</div>')
-        : '';
-    return '<div class="' + cls + '" onclick="' + (unlocked ? 'renderLesson(' + i + ')' : 'lockedHint(' + i + ')') + '">' +
-      '<div class="lesson-num">' + icon + '</div>' +
-      '<div class="lesson-info">' +
-        '<div class="lesson-title">' + lesTitle(l) + '</div>' +
-        (note || '<div class="lesson-sub">' + lesSub(l) + '</div>') +
-      '</div>' +
-      '<div class="lesson-mini">' +
-        '<div class="lesson-mini-bar"><div class="lesson-mini-fill" style="width:' + pct + '%"></div></div>' +
-        '<div class="lesson-mini-pct">' + pct + '%</div>' +
-      '</div>' +
-    '</div>';
-  }).join("");
-
-  const tc = todayCount();
-  const goalHit = tc >= DAILY_GOAL;
-  const sc = streakCount();
-  let continueBtn = '';
-  if(meta.last && (meta.last.c||0)===ci && lessonUnlocked(meta.last.l) && !lessonDone(meta.last.l)){
-    continueBtn = '<button class="continue-btn" onclick="resumeLast()">' + t('cont') + ' ' + (meta.last.l+1) + ' · ' + lesTitle(LESSONS[meta.last.l]) + '</button>';
-  }
-  // Один урок за раз: список из двенадцати дел закрыть невозможно, и он читается как упрёк.
+  const cover = function(i){ return ci===0 ? 'img/l/L' + String(i+1).padStart(2,'0') + '.webp' : ''; };
+  // current = the lesson the learner is on: last opened, else first open and not done
+  let cur = -1;
+  if(meta.last && (meta.last.c||0)===ci && lessonUnlocked(meta.last.l) && !lessonDone(meta.last.l)) cur = meta.last.l;
+  if(cur < 0) for(let k=0;k<LESSONS.length;k++) if(lessonUnlocked(k) && !examPassed(k)){ cur = k; break; }
+  let nDone = 0;
+  const rows = LESSONS.map(function(l,i){
+    const pct = Math.round(lessonSolved(i)/lessonTotal(i)*100);
+    const unlocked = lessonUnlocked(i), expired = isExpired(i), done = examPassed(i) && !expired;
+    if(examPassed(i)) nDone++;
+    const st = !unlocked ? 'lock' : done ? 'done' : i===cur ? 'cur' : '';
+    const sub = !unlocked ? (enLang()?'Pass the exam of lesson ':'Сдай экзамен урока ') + i + (enLang()?' at 100%':' на 100%')
+              : expired ? (enLang()?'Passed — time to refresh':'Сдан — пора освежить') : lesSub(l);
+    return scrRow({ img:cover(i), t:(i+1) + '. ' + lesTitle(l), sub:sub, state:st,
+      pct:(st==='cur' || (st==='' && pct>0 && !expired)) ? pct : null,
+      go: unlocked ? 'renderLesson(' + i + ')' : 'lockedHint(' + i + ')',
+      right: expired ? '<span class="s-lock">' + ic('clock',18) + '</span>' : '' });
+  }).join('');
   const stale = staleOne();
-  let expBanner = '';
-  if(stale >= 0){
-    expBanner = '<div class="plan-banner" onclick="renderLesson(' + stale + ')">⏳ ' +
-      (enLang()?'Refresh lesson ':'Освежи урок ') + (stale+1) + ' · ' + lesTitle(LESSONS[stale]) + '</div>';
-  }
-  let srsCard = '';
-  let mistakesCard = '';
+  const banner = stale >= 0 ? '<div class="plan-banner" onclick="renderLesson(' + stale + ')">' +
+      (enLang()?'Refresh lesson ':'Освежи урок ') + (stale+1) + ' · ' + lesTitle(LESSONS[stale]) + '</div>' : '';
   document.getElementById("app").innerHTML =
-    '<div class="header">' +
-      '<button class="back-btn" onclick="renderCourses()">' + t('back_h') + '</button>' +
-      '<div class="header-right">' +
-        '<button class="back-btn" onclick="toggleTheme()">' + ic(themeIsLight()?'moon':'sun',17) + '</button>' +
-        '<button class="back-btn" id="sched-btn" onclick="renderSchedule()">' + ic('cal',17) + '</button>' +
-      '</div>' +
-    '</div>' +
-    expBanner +
-    continueBtn + srsCard + mistakesCard +
-    '<div class="lessons-title">' + tx(COURSES[ci],'title') + '</div>' +
-    '<div class="lessons-sub">' + tx(COURSES[ci],'sub') + '</div>' +
-    '<div class="lesson-list">' + cards + '</div>' +
-
-    (enLang()?'<div class="footer"><a class="tour-link" onclick="startTour()">How it works</a>':'<div class="footer"><a class="tour-link" onclick="startTour()">Как это работает</a>') + '<span class="foot-dot">·</span><a class="tour-link" onclick="renderLangSelect(1)">' + langName(meta.lang) + '</a><br>' + t('footer') + ' <a href="https://t.me/nikolaiholub" target="_blank" rel="noopener">@nikolaiholub</a></div>';
+    scrTop('renderCourses()', tx(COURSES[ci],'title'), nDone + '/' + LESSONS.length) +
+    banner +
+    '<div class="s-list s-rows-nb">' + rows + '</div>' +
+    (cur >= 0 ? scrDock([(enLang()?'Continue · ':'Продолжить · ') + (cur+1) + '. ' + lesTitle(LESSONS[cur]), 'renderLesson(' + cur + ')']) : '');
+  try{ const c = document.querySelector('.s-li.cur'); if(c && c.offsetTop > window.innerHeight*0.6) window.scrollTo(0, c.offsetTop - 140); }catch(e){}
 }
 
 // ─── LESSON DETAIL PAGE ───
@@ -3576,77 +3552,59 @@ function renderLesson(i){
   screen = "lesson";
   currentLessonIdx = i;
   const l = LESSONS[i];
-  const total = lessonTotal(i);
-  const solved = lessonSolved(i);
+  const total = lessonTotal(i), solved = lessonSolved(i);
+  const L = function(ru,en){ return enLang() ? en : ru; };
+  const ph = function(n){ return n + (enLang() ? (n===1?' phrase':' phrases') : ' ' + (n%10===1&&n%100!==11?'фраза':(n%10>=2&&n%10<=4&&(n%100<10||n%100>=20))?'фразы':'фраз')); };
 
-  const wt = wordsTotal(i);
-  const wk = Math.min(wordsKnown(i).length, wt);
-  const wpct = Math.round(wk/wt*100);
-  const wfull = wk >= wt;
-  const wordsCard =
-    '<div class="block-card' + (wfull?' full':'') + '" onclick="startWords(' + i + ')">' +
-      '<div class="block-num">' + ic('book',17) + '</div>' +
-      '<div class="block-title">' + t('w_card') + (wfull?t('w_learned'):'') + '</div>' +
-      '<div class="lesson-mini">' +
-        '<div class="lesson-mini-bar"><div class="lesson-mini-fill" style="width:' + wpct + '%"></div></div>' +
-        '<div class="lesson-mini-pct"' + '' + '>' + wpct + '%</div>' +
-      '</div>' +
-    '</div>';
+  // next part to work on
+  let np = -1;
+  for(let p=0;p<nParts(i);p++){ if(!partPassed(i,p) && partUnlocked(i,p)){ np = p; break; } }
 
-  const blocks = l.parts.map((p,pi) => {
-    const sz = p.q.length;
-    const pd = partProgress(i,pi);
-    const acc = partAcc(i,pi);
-    const pct = acc;
-    const passed = partPassed(i,pi);
-    const full = passed;
-    const open = partUnlocked(i,pi);
-    return '<div class="block-card' + (full?' full':'') + (open?'':' locked') + '" onclick="' + (open ? 'startPart(' + i + ',' + pi + ')' : 'partLockHint(' + pi + ')') + '">' +
-      '<div class="block-num">' + (passed?ic('check',16):open?(pi+1):ic('lock',16)) + '</div>' +
-      '<div class="block-title">' + partTitle(p) + (open ? '' : (enLang()?' · locked':' · закрыт')) + '</div>' +
-      '<div class="lesson-mini">' +
-        '<div class="lesson-mini-bar"><div class="lesson-mini-fill" style="width:' + pct + '%"' + (full?' ':'') + '></div></div>' +
-        '<div class="lesson-mini-pct"' + '' + '>' + pct + '%</div>' +
-      '</div>' +
-    '</div>';
-  }).join("");
-
-  let continueBtn = '';
-  if(solved >= total){
-    continueBtn = '<button class="continue-btn" onclick="startPart(' + i + ',0)">' + t('repeat_l') + '</button>';
-  } else {
-    let np = 0;
-    for(let p=0;p<nParts(i);p++){ if(!partPassed(i,p) && partUnlocked(i,p)){ np = p; break; } }
-    continueBtn = '<button class="continue-btn" onclick="startPart(' + i + ',' + np + ')">' + (solved>0?t('cont_b') + ' «' + partTitle(l.parts[np]) + '»':t('start_l')) + '</button>';
+  function part(o){
+    return '<div class="s-part' + (o.cls?' '+o.cls:'') + '" onclick="' + o.go + '">' +
+      '<span class="s-part-i">' + o.icon + '</span>' +
+      '<div class="s-part-t"><b>' + o.t + '</b><span>' + o.sub + '</span>' +
+        (o.pct !== null && o.pct !== undefined ? '<div class="s-pg"><i style="width:' + o.pct + '%"></i></div>' : '') + '</div>' +
+      (o.right || '') + '</div>';
   }
+  const wt = wordsTotal(i), wk = Math.min(wordsKnown(i).length, wt), wfull = wk >= wt;
+  const words = part({ cls: wfull ? 'done' : '', go:'startWords(' + i + ')',
+    icon: wfull ? '<span class="s-ok">' + ic('check',14) + '</span>' : '<span class="s-num ghost">' + ic('book',14) + '</span>',
+    t: t('w_card').replace(/<[^>]+>/g,'').trim(), sub: wk + L(' из ',' of ') + wt + L(' слов',' words'), pct: wfull ? null : Math.round(wk/wt*100) });
+  const parts = l.parts.map(function(p,pi){
+    const passed = partPassed(i,pi), open = partUnlocked(i,pi), sz = p.q.length, done = partProgress(i,pi);
+    const isCur = pi === np;
+    return part({ cls: passed ? 'done' : !open ? 'lock' : isCur ? 'cur' : '',
+      go: open ? 'startPart(' + i + ',' + pi + ')' : 'partLockHint(' + pi + ')',
+      icon: passed ? '<span class="s-ok">' + ic('check',14) + '</span>' : !open ? '<span class="s-lock">' + ic('lock',18) + '</span>' : '<span class="s-num">' + (pi+1) + '</span>',
+      t: partTitle(p),
+      sub: passed ? ph(sz) + L(' · сдано',' · passed') : (open && done) ? done + L(' из ',' of ') + sz : ph(sz),
+      pct: (open && !passed && done) ? Math.round(done/sz*100) : null });
+  }).join('');
+  const es = examScore(i), exPassed = examPassed(i), exOpen = examUnlocked(i);
+  const exam = part({ cls:'exam' + (exPassed?' done':'') + (exOpen?'':' lock'), go: exOpen ? 'startExam(' + i + ')' : 'examLockHint()',
+    icon: exPassed ? '<span class="s-ok">' + ic('check',14) + '</span>' : exOpen ? '<span class="s-num ghost">' + ic('cap',14) + '</span>' : '<span class="s-lock">' + ic('lock',18) + '</span>',
+    t: t('exam'),
+    sub: !exOpen ? L('Сдай ' + nParts(i) + ' ' + blockWord(nParts(i)) + ' на ' + PART_PASS + '%', 'Pass all ' + nParts(i) + ' blocks at ' + PART_PASS + '%')
+       : exPassed ? (isExpired(i) ? L('Сдан — стоит освежить','Passed — worth refreshing') : L('Сдан','Passed') + (es ? ' · ' + es + '%' : ''))
+       : L('Прощается одна ошибка','One mistake is forgiven') });
+
+  let pri;
+  if(solved >= total) pri = [t('repeat_l'), 'startPart(' + i + ',0)'];
+  else if(np >= 0) pri = [(solved>0 ? L('Продолжить · ','Continue · ') : L('Начать · ','Start · ')) + partTitle(l.parts[np]), 'startPart(' + i + ',' + np + ')'];
+  else if(exOpen && !exPassed) pri = [t('exam'), 'startExam(' + i + ')'];
 
   document.getElementById("app").innerHTML =
-    '<div class="header">' +
-      '<div class="logo" onclick="renderCourses()">' + GA_LOGO + '</div>' +
-      '<div class="header-right"><button class="back-btn" onclick="renderLessons()">' + t('back_ls') + '</button></div>' +
+    scrTop('renderLessons()', t('lesson') + ' ' + (i+1), (i+1) + '/' + LESSONS.length) +
+    (ci===0 ? '<div class="s-hero"><img src="img/l/L' + String(i+1).padStart(2,'0') + '.webp" alt="" width="640" height="478"></div>' : '') +
+    '<div class="s-pad">' +
+      '<h2 class="s-h2">' + lesTitle(l) + '</h2>' +
+      '<p class="s-mut s-nbfont">' + lesSub(l) + '</p>' +
+      '<p class="s-mut">' + t('phr_done') + ' ' + solved + ' ' + t('of') + ' ' + total + ' ' + t('phrases') + '</p>' +
+      '<div class="s-parts">' + words + parts + exam + '</div>' +
     '</div>' +
-    '<div class="detail-label">' + t('lesson') + ' ' + (i+1) + ' ' + t('l_of') + ' ' + LESSONS.length + '</div>' +
-    '<div class="detail-title">' + lesTitle(l) + '</div>' +
-    '<div class="detail-sub">' + lesSub(l) + '</div>' +
-    '<div class="detail-count">' + t('phr_done') + ' ' + solved + ' ' + t('of') + ' ' + total + ' ' + t('phrases') + '</div>' +
-    continueBtn +
-    (function(){
-      const es = examScore(i);
-      const passed = examPassed(i);
-      const exOpen = examUnlocked(i);
-      return '<div class="block-list">' +
-        '<div class="section-label">' + t('sec1') + '</div>' +
-        wordsCard +
-        '<div class="section-label">' + t('sec2') + '</div>' +
-        blocks +
-        '<div class="section-label">' + t('sec3') + '</div>' +
-        '<div class="block-card exam-card' + (passed?' full':'') + (exOpen?'':' locked') + '" onclick="' + (exOpen ? 'startExam(' + i + ')' : 'examLockHint()') + '">' +
-          '<div class="block-num">' + (exOpen?ic('cap',17):ic('lock',17)) + '</div>' +
-          '<div class="block-title">' + t('exam') + (!exOpen ? (enLang()?' · pass all ' + nParts(i) + ' blocks at ':' · сдай ' + nParts(i) + ' ' + blockWord(nParts(i)) + ' на ') + PART_PASS + '%' : passed ? (isExpired(i) ? (enLang()?' — passed, worth refreshing':' — сдан, стоит освежить') : t('exam_ok')) : ' · ' + EXAM_N + (enLang()?' questions, one mistake allowed':' вопросов, одна ошибка допустима')) + '</div>' +
-          (es > 0 ? '<div class="lesson-mini-pct"' + '' + '>' + es + '%</div>' : '') +
-        '</div>' +
-      '</div>';
-    })();
+    (pri ? scrDock(pri) : '');
+  try{ window.scrollTo(0,0); }catch(e){}
 }
 
 function startNextPart(i){
@@ -3727,21 +3685,14 @@ function render(){
   const backCall = state.ai ? 'renderMyWords()' : state.review ? 'renderCourses()' : 'renderLesson(currentLessonIdx)';
 
   if(phase==="done"){
+    const L = function(ru,en){ return enLang() ? en : ru; };
+    const app = document.getElementById("app");
+    const kps3 = function(){ return [[state.correctCount, t('st_ok')],[total-state.correctCount, t('st_err')],[Math.round(state.correctCount/total*100) + '%', t('st_acc')]]; };
     if(state.ai){
-      document.getElementById("app").innerHTML =
-        '<canvas id="fw"></canvas>' +
-        '<div class="header">' +
-          '<div class="logo" onclick="renderCourses()">' + GA_LOGO + '</div>' +
-          (enLang()?'<div class="header-right"><button class="back-btn" onclick="renderMyWords()">← Vocabulary</button></div>':'<div class="header-right"><button class="back-btn" onclick="renderMyWords()">← Словарь</button></div>') +
-        '</div>' +
-        '<div class="card complete" style="margin-top:2rem">' +
-          '<div class="complete-icon">' + ic('star',44) + '</div>' +
-          (enLang()?'<div class="complete-title">Practice complete!</div>':'<div class="complete-title">Тренировка завершена!</div>') +
-          '<div class="complete-sub">' + state.correctCount + (enLang()?' of ':' из ') + total + (enLang()?' phrases with your words.<br>New phrases every time — come back for more.</div>':' фраз с твоими словами.<br>Фразы каждый раз новые — заходи ещё.</div>') +
-          '<button class="restart-btn" onclick="aiPractice()">' + ic('star',16) + (enLang()?' More phrases</button>':' Ещё фразы</button>') +
-        '</div>';
+      app.innerHTML = stateScreen({ img:'S-words-practice', h:L('Тренировка завершена!','Practice complete!'),
+        p: state.correctCount + L(' из ',' of ') + total + L(' фраз с твоими словами. Каждый раз — новые фразы',' phrases with your words. New phrases every time'),
+        pri:[L('Ещё фразы','More phrases'),'aiPractice()'], sec:[L('К словам','To my words'),'renderMyWords()'] });
       buzz('win');
-      setTimeout(launchFireworks, 60);
       return;
     }
     if(state.exam){
@@ -3756,47 +3707,22 @@ function render(){
       }
       touchLesson(currentLessonIdx);
       buzz(passed ? "win" : "err");
-      document.getElementById("app").innerHTML =
-        (passed ? '<canvas id="fw"></canvas>' : '') +
-        '<div class="header">' +
-          '<div class="logo" onclick="renderCourses()">' + GA_LOGO + '</div>' +
-          '<div class="header-right"><button class="back-btn" onclick="renderLesson(currentLessonIdx)">' + t('back_l') + '</button></div>' +
-        '</div>' +
-        '<div class="card complete" style="margin-top:2rem">' +
-          '<div class="complete-icon">' + (passed ? ic('cap',44) : ic('book',44)) + '</div>' +
-          '<div class="complete-title">' + (passed ? (enLang()?'Exam passed!':'Экзамен сдан!') : (enLang()?'Not passed yet':'Пока не сдан')) + '</div>' +
-          '<div class="complete-sub">' + (passed
-            ? (enLang()?'Lesson "':'Урок «') + lesTitle(lesson) + (enLang()?'" mastered':'» покорён') + (errs ? (enLang()?' — one mistake does not count':' — одна ошибка не в счёт') : (enLang()?' without a single mistake':' без единой ошибки')) + '!<br>' + (currentLessonIdx+1 < LESSONS.length ? (enLang()?'Lesson unlocked: ':'Открыт урок ') + (currentLessonIdx+2) + ' — så flink du er!' : 'Så flink du er!')
-            : (enLang()?'Mistakes: ':'Ошибок: ') + errs + (enLang()?' — only one is forgiven in the exam.<br>Go back to the blocks and try again, you will get there!':' — на экзамене прощается только одна.<br>Загляни в блоки и попробуй снова, всё получится!')) + '</div>' +
-          '<div class="stats">' +
-            '<div class="stat"><div class="stat-num">' + state.correctCount + (enLang()?'</div><div class="stat-label">Correct</div></div>':'</div><div class="stat-label">Верно</div></div>') +
-            '<div class="stat"><div class="stat-num">' + (total-state.correctCount) + '</div><div class="stat-label">' + t('st_err') + '</div></div>' +
-            '<div class="stat"><div class="stat-num">' + pct + (enLang()?'%</div><div class="stat-label">Score</div></div>':'%</div><div class="stat-label">Результат</div></div>') +
-          '</div>' +
-          (passed
-            ? '<button class="restart-btn" onclick="renderLessons()">' + t('to_ls') + '</button>'
-            : '<button class="restart-btn" onclick="startExam(' + currentLessonIdx + ')">' + ic('cap',16) + (enLang()?' Try again</button>':' Попробовать снова</button>')) +
-        '</div>';
-      if(passed) setTimeout(launchFireworks, 60);
+      app.innerHTML = (passed ? '<canvas id="fw"></canvas>' : '') + (passed
+        ? stateScreen({ img:'S-exam-pass', h:L('Экзамен сдан!','Exam passed!'),
+            p: L('Урок «','Lesson “') + lesTitle(lesson) + L('» покорён',"” mastered") + (errs ? L(' — одна ошибка не в счёт',' — one mistake does not count') : L(' без единой ошибки',' without a single mistake')),
+            kps: kps3(), pri:[t('to_ls').replace(/<[^>]+>/g,'').trim() || L('К урокам','To lessons'),'renderLessons()'] })
+        : stateScreen({ img:'S-exam-fail', h:L('Пока не сдан','Not passed yet'),
+            p: L('Ошибок: ','Mistakes: ') + errs + L(' — на экзамене прощается только одна. Вернись к блокам и попробуй снова.',' — only one is forgiven in the exam. Go back to the blocks and try again.'),
+            kps: kps3(), pri:[L('Попробовать снова','Try again'),'startExam(' + currentLessonIdx + ')'], sec:[L('К блокам урока','To the lesson blocks'),'renderLesson(currentLessonIdx)'] }));
+      if(passed) setTimeout(launchFireworks, 60);   // fireworks only on a passed exam
       return;
     }
     if(state.review){
-      document.getElementById("app").innerHTML =
-        '<canvas id="fw"></canvas>' +
-        '<div class="header">' +
-          '<div class="logo" onclick="renderCourses()">' + GA_LOGO + '</div>' +
-          '<div class="header-right"><button class="back-btn" onclick="renderLessons()">' + t('back_h') + '</button></div>' +
-        '</div>' +
-        '<div class="card complete" style="margin-top:2rem">' +
-          '<div class="complete-icon">' + ic('trophy',44) + '</div>' +
-          (enLang()?'<div class="complete-title">Mistakes reviewed!</div>':'<div class="complete-title">Ошибки разобраны!</div>') +
-          '<div class="complete-sub">' + (meta.mistakes.length===0
-            ? (enLang()?'Your mistakes deck is empty — great work!':'Колода ошибок пуста — отличная работа!')
-            : (enLang()?'Phrases left to review: ':'Осталось фраз на повторение: ') + meta.mistakes.length + (enLang()?".<br>They'll wait for your next round.":'.<br>Они дождутся следующего захода.')) + '</div>' +
-          (enLang()?'<button class="restart-btn" onclick="renderCourses()">Home</button>':'<button class="restart-btn" onclick="renderCourses()">На главную</button>') +
-        '</div>';
+      app.innerHTML = stateScreen({ img:'S-mistakes', h:L('Ошибки разобраны!','Mistakes reviewed!'),
+        p: meta.mistakes.length===0 ? L('Колода ошибок пуста — отличная работа!','Your mistakes deck is empty — great work!')
+           : L('Осталось фраз на повторение: ','Phrases left to review: ') + meta.mistakes.length + L('. Они дождутся следующего захода.',". They'll wait for your next round."),
+        kps: kps3(), pri:[L('На главную','Home'),'renderCourses()'] });
       buzz("win");
-    setTimeout(launchFireworks, 60);
       return;
     }
     const acc = Math.round(state.correctCount/total*100);
@@ -3806,42 +3732,22 @@ function render(){
     const nP = nParts(currentLessonIdx);
     const isLastPart = currentPartIdx === nP-1;
     const isLastLesson = currentLessonIdx === LESSONS.length-1;
-    let nextBtn;
-    if(!passedPart){
-      nextBtn = '<button class="restart-btn" onclick="startPart(' + currentLessonIdx + ',' + currentPartIdx + ')">' + ic('redo',16) + (enLang()?' Redo the block</button>':' Пройти блок заново</button>');
-    } else if(!isLastPart){
-      nextBtn = '<button class="restart-btn" onclick="startPart(' + currentLessonIdx + ',' + (currentPartIdx+1) + ')">' + t('nxt_b') + (enLang()?' \u201c':' «') + partTitle(lesson.parts[currentPartIdx+1]) + (enLang()?'\u201d →</button>':'» →</button>');
-    } else if(!isLastLesson && lessonUnlocked(currentLessonIdx+1)){
-      nextBtn = '<button class="restart-btn" onclick="startPart(' + (currentLessonIdx+1) + ',0)">' + t('lesson') + ' ' + (currentLessonIdx+2) + ': ' + LESSONS[currentLessonIdx+1].title + ' →</button>';
-    } else {
-      nextBtn = '<button class="restart-btn" onclick="renderLesson(currentLessonIdx)">' + ic('cap',16) + (enLang()?' Pass the exam to go further</button>':' Сдай экзамен, чтобы открыть дальше</button>');
-    }
-    const title = !passedPart ? (enLang()?'So close':'Почти получилось') : isLastPart ? t('done_l') : (enLang()?'\u201c':'«') + partTitle(lesson.parts[currentPartIdx]) + (enLang()?'\u201d ':'» ') + t('done_p');
+    let pri;
+    if(!passedPart) pri = [L('Пройти блок заново','Redo the block'), 'startPart(' + currentLessonIdx + ',' + currentPartIdx + ')'];
+    else if(!isLastPart) pri = [L('Дальше · ','Next · ') + partTitle(lesson.parts[currentPartIdx+1]), 'startPart(' + currentLessonIdx + ',' + (currentPartIdx+1) + ')'];
+    else if(examUnlocked(currentLessonIdx) && !examPassed(currentLessonIdx)) pri = [L('К экзамену','To the exam'), 'startExam(' + currentLessonIdx + ')'];
+    else if(!isLastLesson && lessonUnlocked(currentLessonIdx+1)) pri = [t('lesson') + ' ' + (currentLessonIdx+2) + ' · ' + lesTitle(LESSONS[currentLessonIdx+1]), 'startPart(' + (currentLessonIdx+1) + ',0)'];
+    else pri = [L('К уроку','To the lesson'), 'renderLesson(currentLessonIdx)'];
+    const title = !passedPart ? L('Почти получилось','So close') : isLastPart ? t('done_l') : L('«','“') + partTitle(lesson.parts[currentPartIdx]) + L('» ','” ') + t('done_p');
     const sub = !passedPart
-      ? (enLang()?'Accuracy ':'Точность ') + acc + (enLang()?'% — you need ':'% — для допуска нужно ') + PART_PASS + (enLang()?'%.<br>One more round and this block will unlock the next.':'%.<br>Ещё один заход, и блок откроет следующий.')
+      ? L('Точность ','Accuracy ') + acc + L('% — для допуска нужно ','% — you need ') + PART_PASS + L('%. Ещё один заход, и блок откроет следующий.','%. One more round and this block will unlock the next.')
       : isLastPart
-        ? (enLang()?'All blocks passed — exam unlocked for lesson \u201c':'Все блоки сданы — открыт экзамен урока «') + lesTitle(lesson) + (enLang()?'\u201d.':'».')
-        : (enLang()?'Accuracy ':'Точность ') + acc + (enLang()?'% — block passed. ':'% — блок сдан. Ещё ') + (nP-currentPartIdx-1) + ' ' + (enLang()?(nP-currentPartIdx-1===1?'block':'blocks'):blockWord(nP-currentPartIdx-1)) + (enLang()?' to go before the exam.':' до экзамена.');
-    document.getElementById("app").innerHTML =
-      '<canvas id="fw"></canvas>' +
-      '<div class="header">' +
-        '<div class="logo" onclick="renderCourses()">' + GA_LOGO + '</div>' +
-        '<div class="header-right"><button class="back-btn" onclick="renderLesson(currentLessonIdx)">' + t('back_l') + '</button></div>' +
-      '</div>' +
-      '<div class="card complete" style="margin-top:2rem">' +
-        '<div class="complete-icon">' + ic('party',44) + '</div>' +
-        '<div class="complete-title">' + title + '</div>' +
-        '<div class="complete-sub">' + sub + '</div>' +
-        '<div class="stats">' +
-          '<div class="stat"><div class="stat-num">' + state.correctCount + '</div><div class="stat-label">' + t('st_ok') + '</div></div>' +
-          '<div class="stat"><div class="stat-num">' + (total-state.correctCount) + '</div><div class="stat-label">' + t('st_err') + '</div></div>' +
-          '<div class="stat"><div class="stat-num">' + Math.round(state.correctCount/total*100) + '%</div><div class="stat-label">' + t('st_acc') + '</div></div>' +
-        '</div>' +
-        nextBtn +
-        (canShare() ? (enLang()?'<div style="margin-top:12px"><button class="back-btn" onclick="shareText(\'Learning Norwegian with Gå!  Streak: ':'<div style="margin-top:12px"><button class="back-btn" onclick="shareText(\'Я прохожу норвежский в Gå!  Стрик: ') + streakCount() + ' ' + dayWord(streakCount()) + (enLang()?', phrases completed: ':', пройдено фраз: ') + totalSolved() + (enLang()?'\')"><SH>Share your win</button></div>':'\')"><SH>Поделиться успехом</button></div>') : '') +
-      '</div>';
-    buzz("win");
-    setTimeout(launchFireworks, 60);
+        ? L('Все блоки сданы — открыт экзамен урока «','All blocks passed — exam unlocked for lesson “') + lesTitle(lesson) + L('».','”.')
+        : L('Блок сдан. Ещё ','Block passed. ') + (nP-currentPartIdx-1) + ' ' + (enLang()?(nP-currentPartIdx-1===1?'block':'blocks'):blockWord(nP-currentPartIdx-1)) + L(' до экзамена.',' to go before the exam.');
+    app.innerHTML = stateScreen({ img: passedPart ? 'S-lesson-done' : 'S-exam-fail', h:title, p:sub, kps:kps3(),
+      extra: canShare() ? '<button class="back-btn s-share" onclick="shareText(\'' + (enLang()?'Learning Norwegian with Gå!  Streak: ':'Я прохожу норвежский в Gå!  Стрик: ') + streakCount() + ' ' + dayWord(streakCount()) + (enLang()?', phrases completed: ':', пройдено фраз: ') + totalSolved() + '\')">' + ic('share',15) + L(' Поделиться',' Share') + '</button>' : '',
+      pri:pri, sec:[L('К урокам','To lessons'),'renderLessons()'] });
+    buzz(passedPart ? "win" : "err");
     return;
   }
 
@@ -4868,6 +4774,9 @@ function scrDock(pri, sec){
 function fitScrDock(){
   const d = document.querySelector('.s-dock'), sp = document.querySelector('.s-spacer');
   if(d && sp) sp.style.height = d.offsetHeight + 'px';
+  const any = document.querySelector('.dock');
+  // floating AI button sits just above whatever dock is on screen
+  document.body.style.setProperty('--dock-h', any ? any.offsetHeight + 'px' : '0px');
 }
 // Keep the dock spacer in sync whatever screen renders it.
 try{ new MutationObserver(function(){ fitScrDock(); }).observe(document.getElementById('app') || document.body, {childList:true}); }catch(e){}
