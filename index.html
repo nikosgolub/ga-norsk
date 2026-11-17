@@ -911,6 +911,7 @@ body.light .builder-answer.wrong-state,body.light .text-input.wrong-state{border
 .home-top .header-right{display:flex;align-items:center;gap:var(--sp-2);flex-wrap:wrap;justify-content:flex-end}
 .streak-pill{display:inline-flex;align-items:center;gap:var(--sp-1);font-size:var(--fs-14);font-weight:700;color:var(--ink-2);margin-right:var(--sp-1)}
 .streak-pill b{color:var(--ink)}
+@media (max-width:360px){.streak-pill .sp-word{display:none}}
 .home-greet{font-size:var(--fs-20);font-weight:700;margin-bottom:var(--sp-4);cursor:pointer}
 .day-card{border:1px solid var(--night);padding:var(--sp-4);display:flex;flex-direction:column;align-items:center;gap:var(--sp-4);margin-bottom:var(--sp-6)}
 .home-rings{display:flex;justify-content:center}
@@ -2689,7 +2690,7 @@ function renderCourses(){
     '<div class="home-top">' +
       '<div class="logo">' + GA_LOGO + '</div>' +
       '<div class="header-right">' +
-        '<span class="streak-pill">' + ic('fire',16) + '<span><b>' + sc + '</b> ' + dayWord(sc) + '</span></span>' +
+        '<span class="streak-pill">' + ic('fire',16) + '<span><b>' + sc + '</b><span class="sp-word"> ' + dayWord(sc) + '</span></span></span>' +
         '<button class="hb" aria-label="' + L('Тема','Theme') + '" onclick="toggleTheme()">' + ic(themeIsLight()?'moon':'sun',20) + '</button>' +
         '<button class="hb" id="sched-btn" aria-label="' + L('Расписание','Schedule') + '" onclick="renderSchedule()">' + ic('cal',20) + '</button>' +
       '</div>' +
