@@ -115,20 +115,16 @@ body.light .season{--pcl:rgba(21,22,26,0.38)}
 .header{padding:20px 0 0;display:flex;align-items:center;gap:.1200px;margin-bottom:24px}
 /* Шапка главной собрана в свою плашку, чтобы отделяться от колец.
    Она в обычном потоке: прокручивается вместе со страницей. */
-.header.head-card{padding:12px 12px 12px 16px;margin:.560px 0 16px;border-radius:var(--r-card);
-  background:linear-gradient(160deg,rgba(255,255,255,0.075),rgba(255,255,255,0.03) 45%,rgba(255,255,255,0.015));
-  backdrop-filter:blur(26px) saturate(150%);-webkit-backdrop-filter:blur(26px) saturate(150%);
-  border:1px solid rgba(255,255,255,0.10);
-  box-shadow:0 1px 0 rgba(255,255,255,0.09) inset,0 8px 28px rgba(0,0,0,0.35)}
-.head-card .back-btn{padding:8px 12px;border-color:rgba(255,255,255,0.10)}  /* та же обводка, что у самой карточки */
-body.light .head-card .back-btn{border-color:rgba(15,22,40,0.08)}
+
+  /* та же обводка, что у самой карточки */
+
 .ic{vertical-align:-3px;display:inline-block;flex-shrink:0}
 .logo{font-size:var(--fs-20);font-weight:700;color:var(--ink);letter-spacing:-0.5px;cursor:pointer}
 .logo svg{display:block;height:26px;width:auto}
-.welcome-logo svg{display:block;height:44px;width:auto;margin:0 auto}
-.onb-mark{color:var(--ink);padding:28px 0 20px}
-.onb-mark svg{display:block;height:96px;width:auto;margin:0 auto}
-.head-greet{font-size:var(--fs-16);font-weight:700;letter-spacing:-0.3px;color:var(--ink);cursor:pointer;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+
+
+
 .header-right{margin-left:auto;display:flex;align-items:center;gap:12px}
 .score-chip{background:var(--ink);color:var(--bg);font-size:var(--fs-14);font-weight:700;padding:4px 12px;border-radius:var(--r-sheet)}
 .back-btn{background:none;border:1px solid var(--line);color:var(--ink-2);font-size:var(--fs-14);font-weight:500;font-family:inherit;padding:8px 16px;border-radius:var(--r-chip);cursor:pointer;transition:all .2s}
@@ -273,7 +269,7 @@ body.light .head-card .back-btn{border-color:rgba(15,22,40,0.08)}
 .ch-in{animation:chOpen .34s cubic-bezier(.2,.8,.3,1) both;transform-origin:calc(100% - 46px) calc(100% - 46px)}
 @keyframes chOpen{from{opacity:0;transform:scale(.88) translateY(14px)}to{opacity:1;transform:none}}
 .ch-in .ch-hero > *{animation:chRise .42s cubic-bezier(.2,.8,.3,1) both}
-.ch-in .ch-hero-mark{animation-delay:.10s}
+
 .ch-in .ch-hero-t{animation-delay:.16s}
 .ch-in .ch-hero-d{animation-delay:.21s}
 .ch-in .ch-tips{animation-delay:.26s}
@@ -287,8 +283,7 @@ body.light .head-card .back-btn{border-color:rgba(15,22,40,0.08)}
 .ch-sub{font-size:var(--fs-12);color:var(--ink-3);margin:0 0 16px 4px;min-height:17px}
 /* приветствие — приглашение спросить, а не абзац текста */
 .ch-hero{padding:24px 4px 8px;max-width:34em}
-.ch-hero-mark{width:56px;height:56px;border-radius:var(--r-card);display:flex;align-items:center;justify-content:center;
-  color:var(--ink);background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);margin-bottom:16px}
+
 .ch-hero-t{font-size:var(--fs-20);font-weight:700;letter-spacing:-.4px;line-height:1.25;margin-bottom:8px}
 .ch-hero-d{font-size:var(--fs-14);color:var(--ink-2);line-height:1.65}
 .ch-tips{display:flex;flex-direction:column;align-items:flex-start;gap:8px;margin-top:20px}
@@ -297,7 +292,7 @@ body.light .head-card .back-btn{border-color:rgba(15,22,40,0.08)}
   transition:border-color .18s,background .18s}
 .ch-tip:hover{border-color:var(--ink-2)}
 .ch-tip:active{background:rgba(255,255,255,0.06)}
-body.light .ch-hero-mark{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.10)}
+
 body.light .ch-tip:active{background:rgba(0,0,0,0.04)}
 .ch-body{flex:1;display:flex;flex-direction:column;gap:12px;padding-bottom:16px}
 .ch-body.empty{justify-content:center;padding-bottom:32px}
@@ -337,29 +332,29 @@ body.light .ch-msg.ai{background:rgba(0,0,0,0.04)}
 .listen-btn:active{transform:scale(.97)}
 
 .complete{text-align:center;padding:48px 24px}
-.complete-icon{margin-bottom:16px;color:var(--ink)}
-.complete-title{font-size:var(--fs-28);font-weight:700;margin-bottom:.80px;letter-spacing:-0.5px}
-.complete-sub{color:var(--ink-2);font-size:var(--fs-16);margin-bottom:32px;line-height:1.6}
+
+
+
 .stats{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:32px}
 .stat{background:var(--bg);border:1px solid var(--line);border-radius:var(--r-card);padding:16px 24px;text-align:center}
-.stat-num{font-size:var(--fs-28);font-weight:700;color:var(--ink)}
-.stat-label{font-size:var(--fs-12);color:var(--ink-3);text-transform:uppercase;letter-spacing:.05em}
-.restart-btn{padding:16px 32px;font-size:var(--fs-16);font-weight:700;font-family:inherit;background:var(--ink);color:var(--bg);border:none;border-radius:var(--r-card);cursor:pointer;min-height:50px}
+
+
+
 
 /* ─── LESSON SELECTOR ─── */
-.lessons-title{font-size:var(--fs-28);font-weight:700;letter-spacing:-0.5px;margin:8px 0 4px}
-.lessons-sub{font-size:var(--fs-14);color:var(--ink-2);margin-bottom:24px}
+
+
 .lesson-list{display:flex;flex-direction:column;gap:12px}
 .lesson-card{background:linear-gradient(160deg,rgba(255,255,255,0.075),rgba(255,255,255,0.03) 45%,rgba(255,255,255,0.015));backdrop-filter:blur(26px) saturate(150%);-webkit-backdrop-filter:blur(26px) saturate(150%);border:1px solid rgba(255,255,255,0.10);box-shadow:0 1px 0 rgba(255,255,255,0.09) inset,0 8px 28px rgba(0,0,0,0.35);border-radius:var(--r-card);padding:16px 20px;cursor:pointer;transition:border-color .2s,transform .1s;display:flex;align-items:center;gap:12px}
 .lesson-card:hover{border-color:rgba(255,255,255,0.22)}
 .lesson-card:active{transform:scale(.99)}
 .lesson-card.done{border-color:rgba(74,222,128,0.35);box-shadow:0 1px 0 rgba(255,255,255,0.09) inset,0 8px 28px rgba(0,0,0,0.35),0 0 0 1px rgba(74,222,128,0.10)}
-.lesson-num{width:38px;height:38px;line-height:0;border-radius:var(--r-chip);background:var(--bg);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:var(--fs-14);font-weight:700;color:var(--ink-2);flex-shrink:0}
-.lesson-card.done .lesson-num{background:var(--tint);border-color:var(--ok);color:var(--ok)}
-.lesson-info{flex:1;min-width:0}
-.lesson-title{font-size:var(--fs-16);font-weight:700;color:var(--ink);line-height:1.35}
-.lesson-sub{font-size:var(--fs-12);color:var(--ink-3);margin-top:4px;line-height:1.4}
-.lesson-arrow{color:var(--ink-3);font-size:var(--fs-16);flex-shrink:0}
+
+
+
+
+
+
 
 .modal-back{position:fixed;inset:0;z-index:70;background:rgba(0,0,0,0.72);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:20px}
 .modal-box{width:min(360px,100%);background:linear-gradient(160deg,rgba(38,38,38,0.98),rgba(22,22,22,0.98));border:1px solid rgba(255,255,255,0.12);border-radius:var(--r-card);padding:20px;box-shadow:0 16px 48px rgba(0,0,0,0.55)}
@@ -369,10 +364,10 @@ body.light .ch-msg.ai{background:rgba(0,0,0,0.04)}
 .modal-row .submit-btn{flex:1}
 .modal-list{display:flex;flex-direction:column;gap:8px;max-height:50vh;overflow-y:auto}
 .set-row{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 4px}
-.set-chip{background:var(--bg);border:1px solid var(--line);border-radius:var(--r-sheet);color:var(--ink-2);font-family:inherit;font-size:var(--fs-12);font-weight:700;padding:8px 12px;cursor:pointer;min-height:36px;transition:all .15s}
-.set-chip:hover{border-color:var(--ink-2)}
-.set-chip.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
-.set-chip.add{color:var(--ink-3);border-style:dashed}
+
+
+
+
 .imp-area{min-height:140px;resize:vertical;font-family:inherit;line-height:1.5;padding:12px 16px}
 .imp-hint{font-size:var(--fs-12);color:var(--ink-3);line-height:1.7;background:var(--bg);border:1px solid var(--line);border-radius:var(--r-chip);padding:12px 12px;margin-bottom:12px}
 .imp-sum{display:flex;gap:16px;flex-wrap:wrap;font-size:var(--fs-14);color:var(--ink-2)}
@@ -384,10 +379,10 @@ body.light .ch-msg.ai{background:rgba(0,0,0,0.04)}
 .my-row .my-ru{font-size:var(--fs-12);color:var(--ink-3);margin-top:4px}
 .my-when{font-size:var(--fs-12);color:var(--ink-3);white-space:nowrap}
 .my-del{background:none;border:none;color:var(--ink-3);cursor:pointer;padding:8px;line-height:0}
-.pl-time{display:flex;justify-content:space-between;font-size:var(--fs-12);color:var(--ink-3);font-variant-numeric:tabular-nums;margin-bottom:8px}
+
 .pl-track{height:6px;background:rgba(255,255,255,0.12);border-radius:var(--r-chip);overflow:hidden;cursor:pointer;margin-bottom:16px}
 .pl-fill{height:100%;width:0;background:var(--ink);border-radius:var(--r-chip)}
-.pl-row{display:flex;align-items:center;justify-content:center;gap:12px}
+
 .pl-btn{min-width:52px;min-height:44px;background:var(--bg);border:1px solid var(--line);border-radius:var(--r-card);color:var(--ink);font-family:inherit;font-size:var(--fs-14);font-weight:700;cursor:pointer}
 .pl-btn:hover{border-color:var(--ink-2)}
 .pl-btn.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
@@ -404,46 +399,46 @@ body.light .ch-msg.ai{background:rgba(0,0,0,0.04)}
 .course-card:hover{border-color:rgba(255,255,255,0.22)}
 .course-card:active{transform:scale(.99)}
 .course-card.soon{--dim:.45;opacity:var(--dim);cursor:default}
-.course-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
-.course-title{font-size:var(--fs-16);font-weight:700;letter-spacing:-0.2px}
-.course-pct{font-size:var(--fs-14);font-weight:700;color:var(--ink-2);font-variant-numeric:tabular-nums}
-.course-badge{font-size:var(--fs-12);font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-3);border:1px solid var(--line);border-radius:var(--r-sheet);padding:4px 8px}
-.course-sub{font-size:var(--fs-14);color:var(--ink-3);margin-top:4px;line-height:1.4}
-.course-meta{font-size:var(--fs-12);color:var(--ink-3);margin-top:8px}
+
+
+
+
+
+
 /* compact right-side progress on lesson cards */
 .lesson-card.locked{--dim:.5;opacity:var(--dim)}
-.block-card.locked{--dim:.5;opacity:var(--dim)}
-.lesson-card.locked .lesson-num{background:var(--bg);border-color:var(--line);color:var(--ink-3)}
+
+
 .lesson-card.expired{border-color:rgba(251,191,36,0.38)}
-.lesson-card.expired .lesson-num{background:var(--tint);border-color:var(--line);color:var(--bad)}
-.lock-note{font-size:var(--fs-12);color:var(--ink-3);margin-top:4px}
-.expire-note{font-size:var(--fs-12);color:var(--bad);margin-top:4px}
-.lesson-mini{flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;gap:4px;width:64px}
-.lesson-mini-bar{width:64px;height:4px;background:var(--line);border-radius:var(--r-chip);overflow:hidden}
-.lesson-mini-fill{height:100%;background:var(--ink);border-radius:var(--r-chip);transition:width .4s ease}
-.lesson-card.done .lesson-mini-fill{background:var(--ok)}
-.lesson-mini-pct{font-size:var(--fs-12);font-weight:700;color:var(--ink-3)}
-.lesson-card.done .lesson-mini-pct{color:var(--ok)}
-.fjord-banner{border-radius:var(--r-card);overflow:hidden;border:1px solid var(--line);margin-bottom:12px;line-height:0}
-.fjord-banner svg{width:100%;height:auto;display:block}
+
+
+
+
+
+
+
+
+
+
+
 .footer{text-align:center;font-size:var(--fs-12);color:var(--ink-3);margin-top:36px;line-height:1.7}
 .foot-dot{margin:0 8px;opacity:.4}
 .tour-link{display:inline-block;margin-bottom:12px;cursor:pointer}
 .footer a{color:var(--ink-2);text-decoration:none;border-bottom:1px solid var(--line);transition:color .2s}
 .footer a:hover{color:var(--ink)}
 .daily{display:flex;flex-direction:column;gap:8px}
-.daily-top{display:flex;align-items:center;justify-content:space-between;font-size:var(--fs-14);font-weight:700;color:var(--ink-2)}
-.daily-streak{display:inline-flex;align-items:center;gap:8px}
-.daily-streak.lit{color:var(--bad)}
+
+
+
 .daily-goal{font-variant-numeric:tabular-nums;display:inline-flex;align-items:center;gap:4px}
 .daily-goal.hit{color:var(--ok)}
-.daily-bar{height:4px;background:rgba(255,255,255,0.10);border-radius:var(--r-chip);overflow:hidden}
-.daily-fill{height:100%;background:var(--ink);border-radius:var(--r-chip);transition:width .45s cubic-bezier(.4,0,.2,1)}
-.daily-fill.hit{background:var(--ok)}
-.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px}
+
+
+
+
 .sg{background:linear-gradient(160deg,rgba(255,255,255,0.075),rgba(255,255,255,0.03) 45%,rgba(255,255,255,0.015));border:1px solid rgba(255,255,255,0.10);border-radius:var(--r-card);padding:12px 8px;text-align:center}
-.sg-v{font-size:var(--fs-20);font-weight:700;letter-spacing:-0.5px;font-variant-numeric:tabular-nums}
-.sg-l{font-size:var(--fs-12);color:var(--ink-3);margin-top:4px;line-height:1.3}
+
+
 .heat{display:grid;grid-template-columns:repeat(10,1fr);gap:4px}
 .ht{aspect-ratio:1;border-radius:var(--r-chip);background:rgba(255,255,255,0.06)}
 .ht.l1{background:rgba(74,222,128,0.25)}
@@ -462,7 +457,7 @@ body.light .yr-bar-bg{background:rgba(15,22,40,0.07)}
 
 /* ─── градиент только как редкий акцент ─── */
 /* главная кнопка экрана — единственное градиентное пятно в интерфейсе */
-.submit-btn,.continue-btn,.restart-btn,.welcome-btn,.tour-next{
+.submit-btn,.continue-btn,.welcome-btn,.tour-next{
   background:var(--accent)!important;color:var(--ink)!important;border:none!important;
   box-shadow:0 6px 22px rgba(114,60,235,0.28);
 }
@@ -471,22 +466,22 @@ body.light .yr-bar-bg{background:rgba(15,22,40,0.07)}
 .submit-btn:disabled{--dim:.35;opacity:var(--dim);box-shadow:none}
 /* активные состояния — ровный фиолетовый */
 .mode-btn.active{background:rgba(255,255,255,0.12)!important;color:var(--ink)!important;border-color:transparent!important}
-.wd-chip.on,.set-chip.on,.goal-btn.on,.lang-btn.on,.pl-btn.on,.word-chip.selected{
+.wd-chip.on,.lang-btn.on,.pl-btn.on,.word-chip.selected{
   background:var(--ink)!important;color:var(--ink)!important;border-color:var(--ink)!important;
 }
 .pl-play{background:var(--ink)!important;color:var(--ink)!important}
 .score-chip{background:rgba(255,255,255,0.07)!important;color:var(--ink-2)!important;border:1px solid var(--line)!important;font-weight:700}
 /* плитки иконок — всегда нейтральные */
-.lesson-num,.block-num{border-radius:var(--r-chip);background:rgba(255,255,255,0.06);border:1px solid var(--line);color:var(--ink-2)}
-.lesson-card.done .lesson-num,.block-card.full .block-num{background:var(--tint);border-color:var(--ok);color:var(--ok)}
-.lesson-card.locked .lesson-num,.block-card.locked .block-num{background:rgba(255,255,255,0.03);border-color:var(--line);color:var(--ink-3)}
-.exam-card .block-num{background:rgba(255,239,99,0.12);border-color:rgba(255,239,99,0.3);color:var(--ink-2)}
+
+
+
+
 /* полосы — ровный фиолетовый, зелёный при выполнении */
-.progress-fill,.daily-fill,.lesson-mini-fill,.pl-fill,.part-bar-fill{background:var(--ink)}
-.daily-fill.hit,.lesson-card.done .lesson-mini-fill{background:var(--ok)}
-.wk-bar{background:rgba(255,255,255,0.14)}
-.wk-bar.today{background:var(--ink)}
-.wk-bar.hit{background:var(--ok)}
+.progress-fill,.pl-fill{background:var(--ink)}
+
+
+
+
 .yr-bar{background:var(--ink);opacity:.8}
 /* тепловая карта — одна фиолетовая шкала */
 .ht.l1{background:rgba(114,60,235,0.25)}
@@ -494,14 +489,14 @@ body.light .yr-bar-bg{background:rgba(15,22,40,0.07)}
 .ht.l3{background:rgba(114,60,235,0.7)}
 .ht.l4{background:var(--ink)}
 /* жёлтый — внимание */
-.daily-streak.lit{color:var(--ink-2)}
+
 .plan-banner{background:rgba(255,239,99,0.10);border-color:rgba(255,239,99,0.28);color:var(--ink-2)}
 .lesson-card.expired{border-color:rgba(255,239,99,0.35)}
-.expire-note{color:var(--ink-2)}
-.exam-card{border-color:rgba(255,239,99,0.22)}
+
+
 body.light .score-chip{background:rgba(15,22,40,0.06);color:var(--ink)}
-body.light .lesson-num,body.light .block-num{background:rgba(15,22,40,0.05);border-color:rgba(15,22,40,0.10)}
-body.light .wk-bar{background:rgba(15,22,40,0.14)}
+
+
 .ring-arc{transition:stroke-dashoffset 1.25s cubic-bezier(.16,1,.3,1)}
 .ring-arc.done{animation:ringPop .55s ease-out forwards}
 @keyframes numIn{from{opacity:0;transform:translate3d(0,9px,0)}to{opacity:1;transform:none}}
@@ -522,7 +517,7 @@ body.light .wk-bar{background:rgba(15,22,40,0.14)}
   background:var(--surface);border:1px solid var(--line);border-radius:var(--r-card);padding:12px 16px;
   box-shadow:0 12px 32px rgba(0,0,0,0.28);animation:toastIn .38s cubic-bezier(.2,.9,.3,1)}
 .toast.out{animation:toastOut .42s ease-in forwards}
-.toast-ic{width:34px;height:34px;border-radius:var(--r-chip);background:rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+
 .toast-t{font-size:var(--fs-14);font-weight:700;letter-spacing:-0.2px}
 .toast-d{font-size:var(--fs-12);color:var(--ink-2);margin-top:4px;line-height:1.35}
 @keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(-22px) scale(.95)}to{opacity:1;transform:translateX(-50%) translateY(0) scale(1)}}
@@ -530,13 +525,13 @@ body.light .wk-bar{background:rgba(15,22,40,0.14)}
 .allwin{position:fixed;inset:0;z-index:90;background:rgba(0,0,0,0.88);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:24px;animation:awIn .3s ease-out}
 .allwin canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
 .aw-box{position:relative;text-align:center;max-width:340px;width:100%}
-.aw-rings{position:relative;width:150px;height:150px;margin:0 auto 20px}
-.aw-center{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--ink);animation:numIn .5s .5s both ease-out}
-.aw-title{font-size:var(--fs-28);font-weight:700;letter-spacing:-0.5px;margin-bottom:8px}
-.aw-sub{font-size:var(--fs-14);color:var(--ink-2);line-height:1.55;margin-bottom:24px}
+
+
+
+
 @keyframes awIn{from{opacity:0}to{opacity:1}}
 body.light .toast{background:linear-gradient(160deg,var(--surface),var(--surface));border-color:rgba(15,22,40,0.12);box-shadow:0 12px 34px rgba(15,22,40,0.18)}
-body.light .toast-ic{background:rgba(15,22,40,0.07)}
+
 body.light .allwin{background:rgba(244,245,247,0.94)}
 /* ─── дневные кольца ─── */
 /* Кольца живут снаружи карточки: внутри их резал бы её backdrop-filter.
@@ -547,7 +542,7 @@ body.light .allwin{background:rgba(244,245,247,0.94)}
 .rings-hero{position:relative;display:flex;justify-content:center;
   height:var(--ring);cursor:pointer}
 .hero-stack > .hero{position:relative;margin-top:var(--gap);margin-bottom:0}
-.stat-float{position:absolute;inset:0;pointer-events:none}
+
 /* Свечение выходит за рамку svg — иначе ореол срезало бы по квадрату. */
 .rings-wrap svg{overflow:visible}
 .rings-wrap{position:relative;width:var(--ring,200px);aspect-ratio:1;flex-shrink:0;
@@ -556,15 +551,14 @@ body.light .allwin{background:rgba(244,245,247,0.94)}
                   to{opacity:1;transform:none}}
 .rings-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
 /* Число приходит следом за кольцом: подъём и проявление, без скачка масштаба. */
-.rings-big{animation:numIn .66s .22s both cubic-bezier(.16,1,.3,1);font-size:clamp(38px,13vw,52px);font-weight:700;letter-spacing:-1.5px;line-height:1}
+
 /* Рекордный день в четыре знака — ужимаем, чтобы число не вылезло за дорожку. */
-.rings-big.long{font-size:clamp(30px,10vw,40px);letter-spacing:-1.2px}
+
 .ring-lap{filter:drop-shadow(0 0 2px var(--bg)) drop-shadow(0 0 2px var(--bg)) drop-shadow(0 0 1px var(--bg))}
 .lg-lap{margin-left:4px;font-size:var(--fs-12);font-weight:700;opacity:.55;vertical-align:1px}
-.rings-small{font-size:var(--fs-14);color:var(--ink-3);margin-top:4px;white-space:nowrap;font-variant-numeric:tabular-nums;letter-spacing:.01em;
-  animation:numIn .66s .30s both cubic-bezier(.16,1,.3,1)}
+
 @media (prefers-reduced-motion:reduce){
-  .rings-wrap,.rings-big,.rings-small{animation:none}
+  .rings-wrap{animation:none}
 }
 /* Свечение идёт от самой линии прогресса. Дорожка под дугой остаётся матовой,
    иначе кольцо превращается в пятно. */
@@ -576,11 +570,11 @@ body.light .allwin{background:rgba(244,245,247,0.94)}
 .ring-halo{filter:drop-shadow(0 0 5px var(--rglow)) drop-shadow(0 0 12px var(--rglow));
   animation:haloBreath 5.2s ease-in-out infinite;will-change:opacity}
 .ring-halo .ring-arc{filter:none}
-.ring-l1 .ring-halo{animation-duration:6.9s;animation-delay:-2.1s}
-.ring-l2 .ring-halo{animation-duration:8.3s;animation-delay:-4.4s}
+
+
 @keyframes haloBreath{0%,100%{opacity:.34}50%{opacity:1}}
 @media (prefers-reduced-motion:reduce){ .ring-halo{animation:none;opacity:.72} }
-.rings-legend{display:contents}
+
 .rings-wrap svg{width:100%;height:100%;display:block}
 /* Подпись над значением: так три цели встают в строку даже на узком экране,
    а длинное «0 / 60 мин» не ломает плашку. */
@@ -610,51 +604,50 @@ body.light .allwin{background:rgba(244,245,247,0.94)}
 @media (prefers-reduced-motion:reduce){ .lg{animation:none} }
 body.light .lg{background:linear-gradient(165deg,rgba(255,255,255,0.96),rgba(245,246,249,0.94));
   border-color:rgba(15,22,40,0.10);box-shadow:0 8px 22px rgba(15,22,40,0.14)}
-.lg-dot{grid-area:dot;width:8px;height:8px;border-radius:50%;flex-shrink:0;align-self:center}
-/* Высоты строк заданы явно: от них считается, где внутри плашки сидит точка. */
-.lg-t{grid-area:name;color:var(--ink-2);line-height:16px}
-.lg-v{grid-area:val;justify-self:center;font-weight:700;font-variant-numeric:tabular-nums;
-  font-size:clamp(12px,3.6vw,14.5px);line-height:20px}
 
-.lg-v.over{color:var(--ink)}
-.lg-v.off{color:var(--ink-3);font-weight:500}
+/* Высоты строк заданы явно: от них считается, где внутри плашки сидит точка. */
+
+
+
+
+
 /* полоса недели */
-.week-strip{display:flex;gap:8px;margin-top:16px;padding-top:16px;border-top:1px solid var(--line)}
+
 /* Когда неделя открывает карточку, черта над ней не нужна: отделять нечего. */
-.hero > .week-strip:first-child{margin-top:0;padding-top:0;border-top:none}
-.wk-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:8px}
-.wk-bar-bg{width:100%;height:52px;display:flex;align-items:flex-end;background:rgba(255,255,255,0.05);border-radius:var(--r-chip);overflow:hidden}
-.wk-bar{width:100%;background:var(--ink-3);border-radius:var(--r-chip);transition:height .4s ease}
-.wk-bar.hit{background:var(--ok)}
-.wk-bar.today{background:var(--ink)}
-.wk-bar.today.hit{background:var(--ok)}
+
+
+
+
+
+
+
 .wk-lbl{font-size:var(--fs-12);color:var(--ink-3)}
 .wk-lbl.today{color:var(--ink);font-weight:700}
-.wk-col.future{opacity:.35}
-.hero-foot{display:flex;align-items:center;gap:12px;margin-top:16px;padding-top:12px;border-top:1px solid var(--line);font-size:var(--fs-12);color:var(--ink-2)}
-.hf-item{display:inline-flex;align-items:center;gap:8px;cursor:pointer}
-.hf-sep{flex:1}
-body.light .wk-bar-bg{background:rgba(15,22,40,0.07)}
-body.light .wk-bar.today{background:var(--ink)}
+
+
+
+
+
+
 /* hero ring on main screen */
 .hero{display:flex;flex-direction:column;gap:16px;background:linear-gradient(160deg,rgba(255,255,255,0.075),rgba(255,255,255,0.03) 45%,rgba(255,255,255,0.015));backdrop-filter:blur(26px) saturate(150%);-webkit-backdrop-filter:blur(26px) saturate(150%);border:1px solid rgba(255,255,255,0.10);box-shadow:0 1px 0 rgba(255,255,255,0.09) inset,0 8px 28px rgba(0,0,0,0.35);border-radius:var(--r-card);padding:20px 20px;margin-bottom:20px}
-.hero-rings{display:flex;gap:12px;align-items:stretch;padding-top:16px;border-top:1px solid rgba(255,255,255,0.08)}
-.ring-divider{width:1px;background:var(--line);margin:8px 0;flex-shrink:0}
-.ring-cell{flex:1;display:flex;flex-direction:column;align-items:center;gap:8px}
-.ring-caption{font-size:var(--fs-12);color:var(--ink-2);text-align:center;line-height:1.45}
-.ring-caption b{color:var(--ink);font-size:var(--fs-14)}
-.ring-wrap{position:relative;width:84px;height:84px;flex-shrink:0}
-.ring-wrap svg{transform:rotate(-90deg);display:block}
-.ring-wrap svg circle{transition:stroke-dashoffset .6s ease}
-.ring-pct{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:var(--fs-20);font-weight:700;letter-spacing:-0.5px}
-.hero-info{min-width:0}
-.hero-title{font-size:var(--fs-16);font-weight:700;letter-spacing:-0.2px}
-.hero-sub{font-size:var(--fs-14);color:var(--ink-2);margin-top:4px;line-height:1.5}
+
+
+
+
+
+
+
+
+
+
+
+
 /* lesson detail page */
-.detail-label{font-size:var(--fs-12);font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-3);margin-bottom:4px}
-.detail-title{font-size:var(--fs-28);font-weight:700;letter-spacing:-0.5px;margin-bottom:4px}
-.detail-sub{font-size:var(--fs-14);color:var(--ink-2);margin-bottom:8px}
-.detail-count{font-size:var(--fs-14);color:var(--ink-3);margin-bottom:20px}
+
+
+
+
 .continue-btn{width:100%;padding:16px;font-size:var(--fs-16);font-weight:700;font-family:inherit;background:var(--ink);color:var(--bg);border:none;border-radius:var(--r-card);cursor:pointer;min-height:50px;margin-bottom:16px;transition:opacity .2s,transform .1s}
 .continue-btn:hover{opacity:.9}
 .continue-btn:active{transform:scale(.98)}
@@ -662,55 +655,47 @@ body.light .wk-bar.today{background:var(--ink)}
 .section-label{font-size:var(--fs-12);font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-3);margin:16px 0 0;display:flex;align-items:center;gap:12px}
 .section-label::after{content:"";flex:1;height:1px;background:var(--line)}
 .section-label:first-child{margin-top:0}
-.exam-card{border-color:rgba(251,191,36,0.30)}
-.exam-card:hover{border-color:var(--bad)}
-.exam-card .block-num{background:var(--tint);border-color:var(--line);color:var(--bad)}
-.exam-card.full{border-color:var(--ok)}
-.exam-card.full .block-num{background:var(--tint);border-color:var(--ok);color:var(--ok)}
-.block-card{background:linear-gradient(160deg,rgba(255,255,255,0.075),rgba(255,255,255,0.03) 45%,rgba(255,255,255,0.015));backdrop-filter:blur(26px) saturate(150%);-webkit-backdrop-filter:blur(26px) saturate(150%);border:1px solid rgba(255,255,255,0.10);box-shadow:0 1px 0 rgba(255,255,255,0.09) inset,0 8px 28px rgba(0,0,0,0.35);border-radius:var(--r-card);padding:16px 20px;cursor:pointer;transition:border-color .2s,transform .1s;display:flex;align-items:center;gap:12px}
-.block-card:hover{border-color:rgba(255,255,255,0.22)}
+
+
+
+
+
+
+
 /* Бегущий засвет по рамке: по кругу едет светлый участок конического
    градиента, а маска оставляет от него только кромку в 1,5px.
    Угол анимируется через @property — иначе браузер не умеет его
    интерполировать; где @property нет, остаётся обычная статичная рамка. */
 @property --spin{syntax:'<angle>';initial-value:0deg;inherits:false}
-.block-card.live{position:relative;isolation:isolate}
-.block-card.live::before{content:'';position:absolute;inset:-1px;border-radius:inherit;
-  padding:0;pointer-events:none;z-index:1;
-  background:conic-gradient(from var(--spin,0deg),transparent 0 74%,
-    rgba(255,255,255,0.14) 81%,var(--ink) 86%,rgba(255,255,255,0.14) 91%,transparent 98%);
-  -webkit-mask:linear-gradient(#000,#000) content-box,linear-gradient(#000,#000);
-  -webkit-mask-composite:xor;
-  mask:linear-gradient(#000,#000) content-box,linear-gradient(#000,#000);
-  mask-composite:exclude;
-  animation:spinEdge 3.6s linear infinite}
+
+
 @keyframes spinEdge{to{--spin:360deg}}
-@media (prefers-reduced-motion:reduce){ .block-card.live::before{animation:none;opacity:.5} }
-.block-card:active{transform:scale(.99)}
-.block-card.full{border-color:rgba(74,222,128,0.35)}
-.block-num{width:34px;height:34px;line-height:0;border-radius:var(--r-chip);background:var(--bg);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:var(--fs-14);font-weight:700;color:var(--ink-2);flex-shrink:0}
-.block-card.full .block-num{background:var(--tint);border-color:var(--ok);color:var(--ok)}
-.block-card.full .lesson-mini-fill{background:var(--ok)}
-.block-title{flex:1;font-size:var(--fs-14);font-weight:700;color:var(--ink);line-height:1.35;min-width:0}
+
+
+
+
+
+
+
 /* flashcards */
 .word-stage{background:linear-gradient(160deg,rgba(255,255,255,0.075),rgba(255,255,255,0.03) 45%,rgba(255,255,255,0.015));backdrop-filter:blur(26px) saturate(150%);-webkit-backdrop-filter:blur(26px) saturate(150%);border:1px solid rgba(255,255,255,0.10);box-shadow:0 1px 0 rgba(255,255,255,0.09) inset,0 8px 28px rgba(0,0,0,0.35);border-radius:var(--r-card);min-height:240px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;cursor:pointer;gap:12px;padding:24px;margin-bottom:16px;user-select:none;-webkit-user-select:none;transition:border-color .2s}
 .word-stage:active{border-color:var(--ink-2)}
 .word-main{font-size:var(--fs-28);font-weight:700;letter-spacing:-0.5px;line-height:1.25}
-.word-divider{width:44px;height:1px;background:var(--line)}
+
 .word-back{font-size:var(--fs-20);color:var(--ink-2);font-weight:500;line-height:1.35;animation:slideIn .2s ease}
 .word-hint{font-size:var(--fs-12);color:var(--ink-3)}
 .deck-count{text-align:center;font-size:var(--fs-12);color:var(--ink-3);margin-top:12px;line-height:1.5}
-.words-done-icon{margin-bottom:16px;color:var(--ink)}
+
 /* fireworks */
 #fw{position:fixed;inset:0;z-index:50;pointer-events:none}
 
 /* ─── WELCOME SCREEN ─── */
 .welcome{position:fixed;inset:0;z-index:5;padding-top:var(--tg-top,0px);display:flex;flex-direction:column;align-items:center;text-align:center;overflow:hidden;background:var(--bg)}
 .welcome.scroll{overflow-y:auto;-webkit-overflow-scrolling:touch;justify-content:flex-start;overscroll-behavior:contain}
-.welcome.scroll .welcome-content{padding-bottom:calc(40px + env(safe-area-inset-bottom))}
-.welcome-content{margin-top:calc(12vh + env(safe-area-inset-top));padding:0 24px;max-width:420px}
-.welcome-logo{font-size:var(--fs-40);font-weight:700;letter-spacing:-1px;color:var(--ink);margin-bottom:16px}
-.welcome-tagline{font-size:var(--fs-16);line-height:1.65;color:rgba(255,255,255,0.85);margin-bottom:28px}
+
+
+
+
 .welcome-btn{background:rgba(255,255,255,0.92);color:var(--bg);font-size:var(--fs-16);font-weight:700;font-family:inherit;border:none;border-radius:var(--r-card);padding:16px 36px;cursor:pointer;transition:transform .15s,background .2s;min-height:50px}
 .welcome-btn:hover{background:var(--ink)}
 .welcome-btn:active{transform:scale(.97)}
@@ -732,19 +717,19 @@ body.light .wk-bar.today{background:var(--ink)}
 .sched-label{font-size:var(--fs-14);color:var(--ink-2);font-weight:500}
 .plan-banner{background:var(--tint);border:1px solid var(--line);color:var(--bad);border-radius:var(--r-card);padding:12px 16px;font-size:var(--fs-14);font-weight:700;text-align:center;margin-bottom:12px;cursor:pointer}
 .goal-list{display:flex;flex-direction:column;gap:8px;margin-top:4px}
-.goal-btn{display:flex;flex-direction:column;align-items:flex-start;gap:4px;background:rgba(255,255,255,0.07);border:1.5px solid rgba(255,255,255,0.18);border-radius:var(--r-card);color:var(--ink);font-family:inherit;padding:12px 16px;cursor:pointer;text-align:left;transition:all .2s}
-.goal-btn.on{background:rgba(255,255,255,0.92);border-color:var(--ink);color:var(--bg)}
-.goal-time{font-size:var(--fs-16);font-weight:700}
-.goal-desc{font-size:var(--fs-12);opacity:.7}
-.goal-ph{font-size:var(--fs-12);font-weight:700;opacity:.6;text-transform:uppercase;letter-spacing:.04em}
-.wn-list{display:flex;flex-direction:column;gap:12px;text-align:left}
-.wn-item{background:linear-gradient(160deg,rgba(255,255,255,0.075),rgba(255,255,255,0.03) 45%,rgba(255,255,255,0.015));backdrop-filter:blur(26px) saturate(150%);-webkit-backdrop-filter:blur(26px) saturate(150%);border:1px solid rgba(255,255,255,0.10);border-radius:var(--r-card);padding:12px 16px}
-.wn-t{font-size:var(--fs-16);font-weight:700;color:var(--ink);margin-bottom:4px}
-.wn-d{font-size:var(--fs-14);line-height:1.5;color:var(--ink-2)}
-.lang-list{display:flex;flex-direction:column;gap:12px;margin-top:8px}
+
+
+
+
+
+
+
+
+
+
 .lang-btn{background:rgba(255,255,255,0.08);border:1.5px solid rgba(255,255,255,0.22);border-radius:var(--r-card);color:var(--ink);font-size:var(--fs-16);font-weight:700;font-family:inherit;padding:16px;cursor:pointer;min-height:52px;transition:all .2s}
 .lang-btn:hover,.lang-btn.on{background:rgba(255,255,255,0.92);color:var(--bg);border-color:var(--ink)}
-.onb-illo{height:190px;display:flex;align-items:center;justify-content:center;margin-bottom:8px}
+
 .onb-dots{display:flex;gap:8px;justify-content:center;margin:20px 0 24px}
 .onb-dot{width:6px;height:6px;border-radius:var(--r-chip);background:rgba(255,255,255,0.22);transition:all .25s}
 .onb-dot.active{width:20px;background:var(--ink)}
@@ -755,10 +740,10 @@ body.light .wk-bar.today{background:var(--ink)}
 .name-input{width:100%;max-width:300px;padding:16px 20px;font-size:var(--fs-16);font-family:inherit;text-align:center;background:rgba(255,255,255,0.08);border:1.5px solid rgba(255,255,255,0.25);border-radius:var(--r-card);color:var(--ink);outline:none;margin-bottom:16px;transition:border-color .2s}
 .name-input::placeholder{color:rgba(255,255,255,0.4)}
 .name-input:focus{border-color:rgba(255,255,255,0.6)}
-.hero-title .edit-hint{font-size:var(--fs-12);opacity:.45;margin-left:8px}
+
 
 /* ─── СВЕТЛАЯ ТЕМА ─── */
-body.light,.theme-light{
+body.light{
   --bg:#F4F2EE;--surface:#FFFFFF;--line:#DEDBE6;--ink:#141414;--ink-2:#5C5868;
   --ink-3:#6F6B78;
   --glass-bg:rgba(244,242,238,.78);--glass-line:rgba(20,20,20,.08);
@@ -769,30 +754,28 @@ body.light,.theme-light{
 body.light .ambient{background:var(--bg)}
 body.light .amb.a1{background:radial-gradient(circle,rgba(47,95,208,0.13),transparent 70%)}
 body.light .amb.a2{background:radial-gradient(circle,rgba(201,42,42,0.09),transparent 70%)}
-body.light .card,body.light .hero,body.light .lesson-card,body.light .block-card,
-body.light .header.head-card,
-body.light .course-card,body.light .mode-toggle,body.light .word-stage,body.light .wn-item{
+body.light .card,body.light .hero,body.light .lesson-card,
+body.light .course-card,body.light .mode-toggle,body.light .word-stage{
   background:var(--surface);border-color:var(--line);box-shadow:none;
 }
-body.light .submit-btn,body.light .continue-btn,body.light .restart-btn,
+body.light .submit-btn,body.light .continue-btn,
 body.light .welcome-btn,body.light .tour-next,body.light .score-chip{
   background:var(--ink);color:var(--bg);border-color:var(--ink);
 }
-body.light .mode-btn.active,body.light .word-chip.selected,body.light .set-chip.on,
-body.light .goal-btn.on,body.light .lang-btn.on,body.light .pl-btn.on{
+body.light .mode-btn.active,body.light .word-chip.selected,body.light .lang-btn.on,body.light .pl-btn.on{
   background:var(--ink);color:var(--bg);border-color:var(--ink);
 }
 body.light .pl-play{background:var(--ink);color:var(--bg)}
 body.light .pl-pause{border-color:var(--bg)}
 body.light .submit-btn.retry-btn{background:var(--surface);color:var(--ink);border:1px solid var(--line)}
 body.light .submit-btn.next{background:var(--ok);color:var(--bg)}
-body.light .progress-fill,body.light .daily-fill,body.light .lesson-mini-fill,body.light .pl-fill{background:var(--ink)}
-body.light .daily-fill.hit,body.light .lesson-card.done .lesson-mini-fill{background:var(--ok)}
-body.light .progress-track,body.light .daily-bar,body.light .lesson-mini-bar,body.light .pl-track{background:rgba(15,22,40,0.10)}
+body.light .progress-fill,body.light .pl-fill{background:var(--ink)}
+
+body.light .progress-track,body.light .pl-track{background:rgba(15,22,40,0.10)}
 body.light .word-chip.pool{background:var(--surface);border-color:var(--line);color:var(--ink)}
 body.light .builder-answer,body.light .text-input{background:var(--surface);border-color:var(--line)}
 body.light .lesson-card.done{border-color:rgba(21,128,61,0.35)}
-body.light .lesson-card.expired,body.light .exam-card{border-color:rgba(161,98,7,0.35)}
+body.light .lesson-card.expired{border-color:rgba(161,98,7,0.35)}
 body.light .plan-banner{background:var(--tint);border-color:rgba(161,98,7,0.3)}
 body.light .modal-box,body.light .tour-tip{
   background:var(--surface);border-color:var(--line);box-shadow:0 16px 40px rgba(15,22,40,0.16);
@@ -801,72 +784,71 @@ body.light .tour-hole{box-shadow:0 0 0 9999px rgba(15,22,40,0.55);border-color:r
 body.light .modal-back{background:rgba(15,22,40,0.45)}
 /* полноэкранные оверлеи */
 body.light .welcome{background:var(--bg)}
-body.light .welcome-logo,body.light .onb-title{color:var(--ink)}
-body.light .welcome-tagline,body.light .onb-sub{color:var(--ink-2)}
+body.light .onb-title{color:var(--ink)}
+body.light .onb-sub{color:var(--ink-2)}
 body.light .name-input{background:var(--surface);border-color:var(--line);color:var(--ink)}
 body.light .name-input::placeholder{color:var(--ink-3)}
-body.light .lang-btn,body.light .goal-btn{background:var(--surface);border-color:var(--line);color:var(--ink)}
+body.light .lang-btn{background:var(--surface);border-color:var(--line);color:var(--ink)}
 body.light .skip-link{color:var(--ink-3)}
 body.light .onb-dot{background:rgba(15,22,40,0.2)}
 body.light .onb-dot.active{background:var(--ink)}
 
 
 /* ─── акцентный градиент ─── */
-.submit-btn:not(.retry-btn):not(.next),.continue-btn,.restart-btn,.welcome-btn,.tour-next{
+.submit-btn:not(.retry-btn):not(.next),.continue-btn,.welcome-btn,.tour-next{
   background:var(--accent);color:var(--ink);border:none;
   box-shadow:0 4px 16px rgba(83,0,208,0.28);
 }
 .submit-btn:disabled{--dim:.32;opacity:var(--dim);box-shadow:none}
 
-.goal-btn.on .goal-desc,.goal-btn.on .goal-ph{opacity:.85}
+
 .pl-pause{border-color:var(--ink)}
 /* плашки иконок */
-.lesson-num,.block-num{background:var(--tint);border-color:rgba(255,255,255,0.14);color:var(--ink)}
-.lesson-card.done .lesson-num,.block-card.full .block-num{background:var(--tint);border-color:var(--ok);color:var(--ok)}
-.lesson-card.locked .lesson-num,.block-card.locked .block-num{background:var(--surface);border-color:var(--line);color:var(--ink-3)}
-.exam-card .block-num{background:linear-gradient(120deg,rgba(239,136,44,0.28),rgba(255,255,255,0.12));border-color:rgba(239,136,44,0.35);color:var(--bad)}
+
+
+
+
 /* полосы прогресса */
-.daily-fill.hit,.lesson-card.done .lesson-mini-fill,.wk-bar.hit{background:var(--ok)}
+
 /* акценты интерфейса */
-body.light .submit-btn:not(.retry-btn):not(.next),body.light .continue-btn,body.light .restart-btn,
+body.light .submit-btn:not(.retry-btn):not(.next),body.light .continue-btn,
 body.light .welcome-btn,body.light .tour-next{background:var(--accent);color:var(--bg)}
 body.light .pl-play{background:var(--surface);color:var(--bg)}
-body.light .mode-btn.active,body.light .word-chip.selected,body.light .set-chip.on,
-body.light .goal-btn.on,body.light .lang-btn.on,body.light .pl-btn.on{background:var(--surface)!important;color:var(--bg)!important}
-body.light .lesson-num,body.light .block-num{background:linear-gradient(120deg,rgba(83,0,208,0.12),rgba(239,136,44,0.12));border-color:rgba(15,22,40,0.10)}
+body.light .mode-btn.active,body.light .word-chip.selected,body.light .lang-btn.on,body.light .pl-btn.on{background:var(--surface)!important;color:var(--bg)!important}
+
 
 @media (max-width:480px){
   .amb{filter:blur(90px)}
   .card{padding:20px;border-radius:var(--r-card)}
   .q-ru{font-size:var(--fs-20)}
-  .welcome-logo{font-size:var(--fs-40)}
+  
 }
 
 /* ═══ МОНОХРОМ ═══ */
-.submit-btn:not(.retry-btn),.continue-btn,.restart-btn,.welcome-btn,.tour-next{
+.submit-btn:not(.retry-btn),.continue-btn,.welcome-btn,.tour-next{
   background:var(--ink)!important;color:var(--bg)!important;border:none!important;box-shadow:none!important;
 }
 .submit-btn.retry-btn{background:var(--surface)!important;color:var(--ink)!important;border:1px solid var(--line)!important;box-shadow:none!important}
 .submit-btn:disabled{--dim:.32;opacity:var(--dim)!important;box-shadow:none!important}
 .score-chip{background:rgba(255,255,255,0.07)!important;color:var(--ink-2)!important;border:1px solid var(--line)!important;box-shadow:none!important}
 .mode-btn.active{background:var(--ink)!important;color:var(--bg)!important;border-color:transparent!important}
-.word-chip.selected,.wd-chip.on,.set-chip.on,.goal-btn.on,.lang-btn.on,.pl-btn.on{background:var(--ink)!important;color:var(--bg)!important;border-color:var(--ink)!important}
+.word-chip.selected,.wd-chip.on,.lang-btn.on,.pl-btn.on{background:var(--ink)!important;color:var(--bg)!important;border-color:var(--ink)!important}
 .pl-play{background:var(--ink)!important;color:var(--bg)!important;box-shadow:none!important}
 .pl-pause{border-color:var(--bg)!important}
-.progress-fill,.daily-fill,.lesson-mini-fill,.pl-fill,.part-bar-fill,.wk-bar.today,.yr-bar{background:var(--ink)!important}
-.daily-fill.hit,.lesson-card.done .lesson-mini-fill,.wk-bar.hit{background:var(--ink)!important}
-.rings-big{color:var(--ink)!important;-webkit-text-fill-color:var(--ink)!important;background:none!important}
-.complete-title{background:none!important;-webkit-text-fill-color:var(--ink)!important;color:var(--ink)!important}
+.progress-fill,.pl-fill,.yr-bar{background:var(--ink)!important}
+
+
+
 /* иконки и плитки */
-.lesson-num,.block-num{border-radius:var(--r-chip);background:rgba(255,255,255,0.06)!important;border:1px solid var(--line)!important;color:var(--ink-2)!important}
-.lesson-card.done .lesson-num,.block-card.full .block-num{background:rgba(255,255,255,0.14)!important;border-color:rgba(255,255,255,0.3)!important;color:var(--ink)!important}
-.lesson-card.locked .lesson-num,.block-card.locked .block-num,.exam-card .block-num{background:rgba(255,255,255,0.03)!important;border-color:var(--line)!important;color:var(--ink-3)!important}
+
+
+
 /* состояния — оттенками серого */
-.lesson-card.done,.block-card.full{border-color:rgba(255,255,255,0.28)!important}
-.lesson-card.expired,.exam-card{border-color:var(--line)!important}
-.expire-note,.daily-streak.lit,.daily-goal.hit{color:var(--ink)!important}
+.lesson-card.done{border-color:rgba(255,255,255,0.28)!important}
+.lesson-card.expired{border-color:var(--line)!important}
+.daily-goal.hit{color:var(--ink)!important}
 .plan-banner{background:rgba(255,255,255,0.06)!important;border-color:var(--line)!important;color:var(--ink-2)!important}
-.lesson-mini-pct[style],.block-title{color:var(--ink)!important}
+
 /* тепловая карта — градации белого */
 .ht.l1{background:rgba(255,255,255,0.14)!important}
 .ht.l2{background:rgba(255,255,255,0.3)!important}
@@ -886,11 +868,11 @@ body.light .lesson-num,body.light .block-num{background:linear-gradient(120deg,r
 /* фоновые пятна убираем */
 .amb{display:none!important}
 /* светлая тема */
-body.light .submit-btn:not(.retry-btn),body.light .continue-btn,body.light .restart-btn,body.light .welcome-btn,body.light .tour-next,body.light .play-big{background:var(--ink)!important;color:var(--bg)!important}
-body.light .mode-btn.active,body.light .word-chip.selected,body.light .wd-chip.on,body.light .set-chip.on,body.light .goal-btn.on,body.light .lang-btn.on,body.light .pl-btn.on,body.light .pl-play{background:var(--ink)!important;color:var(--bg)!important;border-color:var(--ink)!important}
-body.light .progress-fill,body.light .daily-fill,body.light .lesson-mini-fill,body.light .pl-fill,body.light .wk-bar.today,body.light .yr-bar,body.light .ht.l4{background:var(--ink)!important}
+body.light .submit-btn:not(.retry-btn),body.light .continue-btn,body.light .welcome-btn,body.light .tour-next,body.light .play-big{background:var(--ink)!important;color:var(--bg)!important}
+body.light .mode-btn.active,body.light .word-chip.selected,body.light .wd-chip.on,body.light .lang-btn.on,body.light .pl-btn.on,body.light .pl-play{background:var(--ink)!important;color:var(--bg)!important;border-color:var(--ink)!important}
+body.light .progress-fill,body.light .pl-fill,body.light .yr-bar,body.light .ht.l4{background:var(--ink)!important}
 body.light .score-chip{background:rgba(15,22,40,0.06)!important;color:var(--ink)!important}
-body.light .lesson-num,body.light .block-num{background:rgba(15,22,40,0.05)!important;border-color:rgba(15,22,40,0.10)!important}
+
 body.light .ht.l1{background:rgba(15,22,40,0.14)!important}
 body.light .ht.l2{background:rgba(15,22,40,0.32)!important}
 body.light .ht.l3{background:rgba(15,22,40,0.58)!important}
@@ -1179,11 +1161,11 @@ body:not(.light) .s-wans{color:var(--ring-phrases)!important}
 
 /* ─── ревью v1.1: правки ─── */
 :root{--accent-text:#7D7AFF}
-body.light,.theme-light{--accent-text:#5A57E0}
+body.light{--accent-text:#5A57E0}
 .dl-who,body:not(.light) .dl-who,.s-opt.on .s-opt-h b,body:not(.light) .s-opt.on .s-opt-h b,.s-wans,body:not(.light) .s-wans{color:var(--accent-text)!important}
 .wd-chip.on,body.light .wd-chip.on,body:not(.light) .wd-chip.on{background:var(--accent)!important;border-color:var(--accent)!important;color:var(--on-accent)!important}
 /* стекло только у .glass (шит урока) и модалки — остальное наследие */
-.tour-tip,.header.head-card,.mode-toggle,.card,.lesson-card,.course-card,.toast,.allwin,.hero,.block-card,.word-stage,.wn-item,.modal-back,.glass:not(.fb-sheet):not(.s-top){-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+.tour-tip,.mode-toggle,.card,.lesson-card,.course-card,.toast,.allwin,.hero,.word-stage,.modal-back,.glass:not(.fb-sheet):not(.s-top){-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
 .season,.amb,#fjord,.fj-fade,.fj-dim{display:none!important}
 .s-field,body.light .s-field{font-size:var(--fs-16)!important}
 .text-input,.ch-inp{font-size:var(--fs-16)}
@@ -1208,18 +1190,17 @@ body{font-family:var(--f-ui)}
 @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.glass{background:var(--surface)}}
 .night-card{background:var(--night);color:var(--night-ink);border-radius:var(--r-sheet)}
 /* правило 2: акцент — только главное действие экрана */
-.submit-btn:not(.retry-btn),.continue-btn,.restart-btn,.welcome-btn,.tour-next,.play-big,
-body.light .submit-btn:not(.retry-btn),body.light .continue-btn,body.light .restart-btn,body.light .welcome-btn,body.light .tour-next,body.light .play-big{
+.submit-btn:not(.retry-btn),.continue-btn,.welcome-btn,.tour-next,.play-big,
+body.light .submit-btn:not(.retry-btn),body.light .continue-btn,body.light .welcome-btn,body.light .tour-next,body.light .play-big{
   background:var(--accent)!important;color:var(--on-accent)!important;border:none!important;box-shadow:none!important}
 .submit-btn.retry-btn{background:var(--surface)!important;color:var(--ink)!important;border:1px solid var(--line)!important}
 /* выбранные чипы — нейтрально, инверсией текста */
-.mode-btn.active,.wd-chip.on,.set-chip.on,.goal-btn.on,.lang-btn.on,.pl-btn.on,.pl-play,
-body.light .mode-btn.active,body.light body.light .wd-chip.on,body.light .set-chip.on,body.light .goal-btn.on,body.light .lang-btn.on,body.light .pl-btn.on,body.light .pl-play{
+.mode-btn.active,.wd-chip.on,.lang-btn.on,.pl-btn.on,.pl-play,
+body.light .mode-btn.active,body.light body.light .wd-chip.on,body.light .lang-btn.on,body.light .pl-btn.on,body.light .pl-play{
   background:var(--ink)!important;color:var(--bg)!important;border-color:var(--ink)!important}
 /* правило 3: цвет = тип практики */
 .progress-fill,body.light .progress-fill{background:var(--accent)!important}
-.daily-fill,.lesson-mini-fill,.part-bar-fill,.wk-bar.today,.wk-bar.hit,.yr-bar,.daily-fill.hit,.lesson-card.done .lesson-mini-fill,
-body.light .daily-fill,body.light .lesson-mini-fill,body.light .wk-bar.today,body.light .yr-bar{background:var(--ring-phrases)!important}
+.yr-bar,body.light .yr-bar{background:var(--ring-phrases)!important}
 .pl-fill,body.light .pl-fill{background:var(--ring-audio)!important}
 .ht.l1,body.light .ht.l1{background:rgba(125,122,255,.25)!important}
 .ht.l2,body.light .ht.l2{background:rgba(125,122,255,.5)!important}
