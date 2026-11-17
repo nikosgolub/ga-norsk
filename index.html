@@ -746,7 +746,7 @@ body.light .lg{background:linear-gradient(165deg,rgba(255,255,255,0.96),rgba(245
 body.light{
   --bg:#F4F2EE;--surface:#FFFFFF;--line:#DEDBE6;--ink:#141414;--ink-2:#5C5868;
   --ink-3:#6F6B78;
-  --glass-bg:rgba(244,242,238,.78);--glass-line:rgba(20,20,20,.08);
+  --glass-bg:rgba(244,242,238,.94);--glass-line:rgba(20,20,20,.08);
   --tint:rgba(20,20,20,.05);--tint-2:rgba(20,20,20,.10);
   --rtrack:rgba(20,20,20,.08);--rdone:rgba(20,20,20,.14);
   color-scheme:light;color:var(--ink);
@@ -989,7 +989,9 @@ body.light .builder-answer.wrong-state,body.light .text-input.wrong-state{border
 /* ─── урок Gå! v1.0: блоки норвежским шрифтом, нижний док, шит обратной связи ─── */
 .word-chip,.word-chip.pool,.word-chip.selected,body.light .word-chip.selected{
   font-family:var(--f-no);font-weight:700;font-size:var(--fs-20);line-height:1;
-  background:var(--surface)!important;color:var(--ink)!important;border:1px solid var(--line)!important;box-shadow:0 2px 0 var(--line)}
+  background:var(--surface)!important;color:var(--ink)!important;border:1px solid var(--line)!important;box-shadow:none!important;
+  min-height:48px;height:48px;padding:0 var(--sp-4);border-radius:var(--r-chip)}
+.word-chip:active,.word-chip.pool:active{background:var(--line)!important}
 .builder-answer,.builder-answer.has-content,.builder-answer.hint-more,body.light .builder-answer{background:transparent!important;border:none!important;border-bottom:2px solid var(--line)!important;border-radius:0!important;padding:0 0 var(--sp-3)!important}
 .builder-answer.correct-state{border-bottom-color:var(--ok)!important}
 .builder-answer.wrong-state{border-bottom-color:var(--bad)!important}
@@ -1182,6 +1184,32 @@ body.light{--accent-text:#5A57E0}
 /* ─── уборка старого стекла: поверхности только на токенах ─── */
 #q-card{background:none;border:none;box-shadow:none;padding:0}
 .mode-toggle{box-shadow:none}
+
+/* ─── компоненты по спецификации Арт-директора v1.1.1 ─── */
+/* кнопка в шапке: круг 40, иконка 20 */
+.hb,.s-back,.s-icbtn{display:inline-grid;place-items:center;flex:none;width:40px;height:40px;padding:0;margin:0;border-radius:var(--r-sheet);background:var(--surface);border:1px solid var(--line);color:var(--ink);cursor:pointer;transition:background .15s}
+.hb:active,.s-back:active,.s-icbtn:active{background:var(--line)}
+.hb:focus-visible,.s-back:focus-visible,.s-icbtn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.s-r .s-icbtn{margin-left:var(--sp-2)}
+/* пилюля в шапке: высота 40, капсула */
+.score-chip,.streak-pill,body.light .score-chip{display:inline-flex;align-items:center;gap:6px;height:40px;padding:0 var(--sp-3);margin:0;border-radius:var(--r-sheet);background:var(--surface)!important;border:1px solid var(--line)!important;color:var(--ink)!important;font-size:var(--fs-14);font-weight:700;box-shadow:none!important}
+.streak-pill b{color:var(--ink)}
+.header-right{gap:var(--sp-2)}
+/* текстовые кнопки: капсула 40 */
+.back-btn{display:inline-flex;align-items:center;justify-content:center;gap:var(--sp-2);height:40px;padding:0 var(--sp-4);border-radius:var(--r-sheet);background:var(--surface);border:1px solid var(--line);color:var(--ink);font-size:var(--fs-14);font-weight:700}
+.back-btn.s-link{height:44px;padding:0;border:none;background:none;color:var(--ink-2);border-radius:0}
+.back-btn.s-share{margin-top:var(--sp-2)}
+/* переключатель режимов: на всю ширину, равные сегменты, капсула 48 */
+.mode-toggle{width:100%;height:48px;padding:4px;border-radius:var(--r-sheet);margin-bottom:var(--sp-6)}
+.mode-btn{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:var(--sp-2);height:40px;min-height:40px;padding:0 var(--sp-2);border-radius:20px;font-weight:700;white-space:nowrap}
+.s-modes{margin-bottom:var(--sp-6)}
+/* «−» / «+»: круги 48 */
+.gset-btn{width:48px;height:48px;border-radius:var(--r-sheet);display:inline-grid;place-items:center;padding:0}
+/* шит ответа: бейдж 32, два действия в строку 44, «Почему?» текстом */
+.fb-title{min-height:32px;margin-bottom:var(--sp-3)}
+.fb-actions{display:flex;gap:var(--sp-2);margin-top:var(--sp-3)}
+.fb-actions .listen-btn{flex:1;justify-content:center;height:44px;margin:0;padding:0 var(--sp-3);border-radius:var(--r-sheet)!important;font-weight:700}
+.why-btn{display:inline-flex;align-items:center;gap:var(--sp-2);min-height:44px;padding:0;margin-top:var(--sp-2);background:none;border:none;color:var(--accent-text);font:inherit;font-size:var(--fs-14);font-weight:700;cursor:pointer}
 /* ═══ Gå! v1.0 — правила дизайн-системы (последний слой, перекрывает старые) ═══ */
 body{font-family:var(--f-ui)}
 [lang="nb"]{font-family:var(--f-no)}
@@ -2038,7 +2066,7 @@ function pronounce(){
   if(!SR) return;
   const target = state.questions[state.idx].no;
   const btn = document.getElementById('mic-btn');
-  if(btn) btn.textContent = '<MC>Слушаю…';
+  if(btn) btn.innerHTML = icp('<MC>') + 'Слушаю…';
   try{
     const rec = new SR();
     rec.lang = 'nb-NO';
@@ -2053,20 +2081,20 @@ function pronounce(){
       }
       const box = document.getElementById('pron-res');
       if(box) box.innerHTML = ok
-        ? '<OK>Отличное произношение! Bra uttale!'
-        : '<ER>Услышал: «' + heard + '»<br>Послушай образец и попробуй ещё раз';
+        ? icp('<OK>') + 'Отличное произношение! Bra uttale!'
+        : icp('<ER>') + 'Услышал: «' + heard + '»<br>Послушай образец и попробуй ещё раз';
       const b = document.getElementById('mic-btn');
-      if(b) b.textContent = '<MC>Ещё раз';
+      if(b) b.innerHTML = icp('<MC>') + 'Ещё раз';
     };
     rec.onerror = function(){
       const b = document.getElementById('mic-btn');
-      if(b) b.textContent = '<MC>Произнести';
+      if(b) b.innerHTML = icp('<MC>') + 'Произнести';
       const box = document.getElementById('pron-res');
       if(box) box.innerHTML = 'Микрофон недоступен — проверь разрешения браузера';
     };
     rec.onend = function(){
       const b = document.getElementById('mic-btn');
-      if(b && b.textContent.indexOf('Слушаю')>=0) b.textContent = '<MC>Произнести';
+      if(b && b.textContent.indexOf('Слушаю')>=0) b.innerHTML = icp('<MC>') + 'Произнести';
     };
     rec.start();
   }catch(e){}
@@ -2344,6 +2372,8 @@ function applySafeArea(){
   }catch(e){}
 }
 // Hidden diagnostics: long-press the logo to see the numbers behind the top inset (for checking on a phone).
+// Plain text for aria-labels from strings that carry icon tags, arrows or markup.
+function plainLabel(x){ return String(x||'').replace(/<[^>]+>/g,'').replace(/[←→]/g,'').trim(); }
 function showSafeDiag(){
   const n = safeAreaNumbers();
   const old = document.getElementById('safe-diag'); if(old){ old.remove(); return; }
@@ -2659,9 +2689,9 @@ function renderCourses(){
     '<div class="home-top">' +
       '<div class="logo">' + GA_LOGO + '</div>' +
       '<div class="header-right">' +
-        '<span class="streak-pill">' + ic('fire',14) + '<b>' + sc + '</b> ' + dayWord(sc) + '</span>' +
-        '<button class="back-btn" aria-label="' + L('Тема','Theme') + '" onclick="toggleTheme()">' + ic(themeIsLight()?'moon':'sun',17) + '</button>' +
-        '<button class="back-btn" id="sched-btn" aria-label="' + L('Расписание','Schedule') + '" onclick="renderSchedule()">' + ic('cal',17) + '</button>' +
+        '<span class="streak-pill">' + ic('fire',16) + '<span><b>' + sc + '</b> ' + dayWord(sc) + '</span></span>' +
+        '<button class="hb" aria-label="' + L('Тема','Theme') + '" onclick="toggleTheme()">' + ic(themeIsLight()?'moon':'sun',20) + '</button>' +
+        '<button class="hb" id="sched-btn" aria-label="' + L('Расписание','Schedule') + '" onclick="renderSchedule()">' + ic('cal',20) + '</button>' +
       '</div>' +
     '</div>' +
     '<div class="home-greet" onclick="renderName()">' + (meta.name ? 'Hei, ' + meta.name + '!' : 'Hei!') + '<span class="edit-hint">' + ic('pencil',13) + '</span></div>' +
@@ -3505,9 +3535,9 @@ function renderGoalEdit(keep){
         '<span class="gset-hint">' + d.hint + '</span>' +
       '</div>' +
       '<div class="gset-row">' +
-        '<button class="gset-btn" onclick="goalStep(\'' + k + '\',-1)"' + (v<=d.min?' disabled':'') + '>−</button>' +
+        '<button class="gset-btn" onclick="goalStep(\'' + k + '\',-1)"' + (v<=d.min?' disabled':'') + ' aria-label="−">' + ic('minus',20) + '</button>' +
         '<div class="gset-val"><b>' + v + '</b><span>' + (v===0 ? (enLang()?'off':'выключено') : d.unit) + '</span></div>' +
-        '<button class="gset-btn" onclick="goalStep(\'' + k + '\',1)"' + (v>=d.max?' disabled':'') + '>+</button>' +
+        '<button class="gset-btn" onclick="goalStep(\'' + k + '\',1)"' + (v>=d.max?' disabled':'') + ' aria-label="+">' + ic('plus',20) + '</button>' +
       '</div>' +
     '</div>';
   }).join('');
@@ -3874,8 +3904,10 @@ function render(){
               ? (enLang()?'Your word order is fine too. But this task drills V2 — time first, verb second: <code>':'Твой порядок слов тоже верный. А в этом задании тренируем V2 — время впереди, глагол вторым: <code>') + escHT(feedback.canon) + '</code>'
               : (enLang()?'Your word order works too. Another option: <code>':'Твой порядок слов тоже верный. Ещё вариант: <code>') + escHT(feedback.canon) + '</code>') + '</div>'
           : '') +
-        '<button class="listen-btn" onclick="speak(state.questions[state.idx].no)">' + t('listen') + '</button>' +
-        (SR ? '<button class="listen-btn" id="mic-btn" style="margin-left:8px" onclick="pronounce()">' + t('mic') + '</button>' : '') +
+        '<div class="fb-actions">' +
+          '<button class="listen-btn" onclick="speak(state.questions[state.idx].no)">' + t('listen') + '</button>' +
+          (SR ? '<button class="listen-btn" id="mic-btn" onclick="pronounce()">' + t('mic') + '</button>' : '') +
+        '</div>' +
         '<div class="pron-res" id="pron-res"></div></div>';
     } else if(feedback.type==="v2"){
       feedbackHTML = '<div class="feedback v2">' +
@@ -3883,14 +3915,14 @@ function render(){
         '<div class="diff-view"><span class="diff-label">' + t('corr') + '</span><span lang="nb">' +
           feedback.diff.map(d=>'<span class="dw ' + d.status + '">' + d.word + '</span>').join(" ") + '</span></div>' +
         (state.exam ? '' : explainHTML(current)) +
-        (state.exam ? '' : '<button class="listen-btn" id="ai-why" style="margin-top:10px" onclick="aiExplain()">' + ic('star',14) + (enLang()?' Why?</button><div class="pron-res" id="ai-exp"></div>':' Почему?</button><div class="pron-res" id="ai-exp"></div>')) +
+        (state.exam ? '' : '<button class="why-btn" id="ai-why" onclick="aiExplain()">' + ic('ai',16) + (enLang()?' Why?</button><div class="pron-res" id="ai-exp"></div>':' Почему?</button><div class="pron-res" id="ai-exp"></div>')) +
       '</div>';
     } else {
       feedbackHTML = '<div class="feedback err">' +
         '<div class="fb-title">' + t('err_t') + '</div>' +
         '<div class="diff-view" lang="nb">' + feedback.diff.map(d=>'<span class="dw ' + d.status + '">' + d.word + '</span>').join(" ") + '</div>' +
         (state.exam ? '' : explainHTML(current)) +
-        (state.exam ? '' : '<button class="listen-btn" id="ai-why" style="margin-top:10px" onclick="aiExplain()">' + ic('star',14) + (enLang()?' Why?</button><div class="pron-res" id="ai-exp"></div>':' Почему?</button><div class="pron-res" id="ai-exp"></div>')) +
+        (state.exam ? '' : '<button class="why-btn" id="ai-why" onclick="aiExplain()">' + ic('ai',16) + (enLang()?' Why?</button><div class="pron-res" id="ai-exp"></div>':' Почему?</button><div class="pron-res" id="ai-exp"></div>')) +
       '</div>';
     }
   }
@@ -3937,8 +3969,8 @@ function render(){
     '<div class="header">' +
       '<div class="logo" onclick="renderCourses()">' + GA_LOGO + '</div>' +
       '<div class="header-right">' +
-        '<div class="score-chip">' + ic('star',14) + ' ' + score + ' / ' + idx + '</div>' +
-        '<button class="back-btn" onclick="' + backCall + '">' + (state.ai?(enLang()?'← Vocabulary':'← Словарь'):(state.review?t('back_h'):t('back_l'))) + '</button>' +
+        '<div class="score-chip">' + ic('star',16) + '<span>' + score + ' / ' + idx + '</span></div>' +
+        '<button class="hb" aria-label="' + plainLabel(state.ai?(enLang()?'Vocabulary':'Словарь'):(state.review?t('back_h'):t('back_l'))) + '" onclick="' + backCall + '">' + ic('caret-left',20) + '</button>' +
       '</div>' +
     '</div>' +
     '<div class="progress-section">' +
@@ -5242,8 +5274,8 @@ function renderMyWords(){
       '<button class="my-del" aria-label="' + L('Удалить','Delete') + '" onclick="myDel(' + i + ')">' + ic('cross',15) + '</button>' +
     '</div>';
   }).join('');
-  const right = isSet ? '<button class="s-icbtn" aria-label="' + L('Переименовать','Rename') + '" onclick="myRenameSet(\'' + myCur + '\')">' + ic('pencil',15) + '</button>' +
-                        '<button class="s-icbtn" aria-label="' + L('Удалить раздел','Delete section') + '" onclick="myDelSet(\'' + myCur + '\')">' + ic('cross',15) + '</button>' : '';
+  const right = isSet ? '<button class="s-icbtn" aria-label="' + L('Переименовать','Rename') + '" onclick="myRenameSet(\'' + myCur + '\')">' + ic('pencil',20) + '</button>' +
+                        '<button class="s-icbtn" aria-label="' + L('Удалить раздел','Delete section') + '" onclick="myDelSet(\'' + myCur + '\')">' + ic('cross',20) + '</button>' : '';
   document.getElementById('app').innerHTML =
     scrTop('renderMyDecks()', title, right) +
     '<p class="s-mut" style="margin-bottom:var(--sp-3)">' + (due ? nWords(due) + L(' ждут повторения',' due for review') : list.length ? L('Все слова повторены — добавь новые','All words reviewed — add some new ones') : L('Здесь пока пусто — добавь первое слово','Nothing here yet — add your first word')) + '</p>' +
