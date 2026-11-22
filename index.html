@@ -3228,26 +3228,21 @@ function ringArc(pct,size,stroke,color,offsetR,idx,noTrack){
   const r = (size-stroke)/2 - (offsetR||0);
   const c = 2*Math.PI*r;
   const cx = size/2, cy = size/2;
-  const base = (idx||0)*0.12;
-  function arc(p, lap, col){
-    const off = c*(1 - Math.max(0, Math.min(p,100))/100);
-    const d = base + lap*0.22;
-    return '<circle class="ring-arc' + (p>=100?' done':'') + (lap?' ring-lap':'') +
-      '" style="animation-delay:' + d + 's" cx="' + cx + '" cy="' + cy + '" r="' + r +
-      '" fill="none" stroke="' + col + '" stroke-width="' + stroke +
-      '" stroke-linecap="round" stroke-dasharray="' + c + '" stroke-dashoffset="' + c +
-      '" data-off="' + off + '" data-delay="' + d + '"/>';
-  }
-  // Ореолу дорожка не нужна: размывать матовую подложку бессмысленно.
+  pct = Math.max(0, pct||0);
+  // Ring laps: finished laps are one dimmed full circle under the current, bright lap.
+  const laps = pct > 100 ? Math.ceil(pct/100) - 1 : 0;
+  const rest = pct - laps*100;                       // 0..100 — the current lap
+  const off = c*(1 - Math.min(rest,100)/100);
+  const d = (idx||0)*0.12;
+  const common = ' cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="none" stroke="' + color +
+    '" stroke-width="' + stroke + '" stroke-linecap="round" stroke-dasharray="' + c + '"';
+  // Halo needs no track: blurring a matte underlay makes no sense.
   let out = noTrack ? '' : ('<circle cx="' + cx + '" cy="' + cy + '" r="' + r +
     '" fill="none" stroke="var(--rtrack)" stroke-width="' + stroke + '"/>');
-  if(pct <= 100) return out + arc(pct, 0, color);
-  const rest = pct - Math.floor(pct/100)*100;
-  // ровно N кругов без остатка — просто закрытое кольцо
-  if(rest === 0) return out + arc(100, 0, color);
-  // план перевыполнен: закрытый круг приглушается, текущий виток идёт поверх
-  out += arc(100, 0, 'var(--rdone)');
-  out += arc(rest, 1, color);
+  if(laps) out += '<circle class="ring-arc ring-base"' + common + ' stroke-opacity=".4" stroke-dashoffset="0" data-off="0"/>';
+  out += '<circle class="ring-arc' + (pct>=100?' done':'') + (laps?' ring-lap':'') + '" style="animation-delay:' + d + 's"' +
+    common + ' stroke-dashoffset="' + c + '" data-off="' + off + '" data-delay="' + d +
+    '" data-pct="' + pct + '" data-c="' + c + '"/>';
   return out;
 }
 
@@ -3271,11 +3266,37 @@ function miniRing(k, size){
 function animateRings(){
   const arcs = document.querySelectorAll ? document.querySelectorAll('.ring-arc') : null;
   if(!arcs) return;
+  const still = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
   for(let i=0;i<arcs.length;i++){
     (function(el){
       const off = el.getAttribute('data-off');
       const d = parseFloat(el.getAttribute('data-delay')||0) * 1000;
-      setTimeout(function(){ el.style.strokeDashoffset = off; }, 60 + d);
+      const pct = parseFloat(el.getAttribute('data-pct'));
+      if(isNaN(pct) || pct <= 100){
+        if(el.classList.contains('ring-base')) return;      // static underlay of a finished lap
+        setTimeout(function(){ el.style.strokeDashoffset = off; }, 60 + d);
+        return;
+      }
+      // More than one lap: the arc runs around lap after lap; behind it a dimmed full circle appears.
+      const c = parseFloat(el.getAttribute('data-c'));
+      const base = el.previousElementSibling && el.previousElementSibling.classList.contains('ring-base') ? el.previousElementSibling : null;
+      if(still){ el.style.strokeDashoffset = off; return; }
+      if(base) base.style.opacity = 0;
+      el.style.transition = 'none';
+      const dur = Math.min(1100 + (pct-100)*9, 3600);       // about 0.9 s per extra lap, no longer than 3.6 s
+      let t0 = null;
+      function frame(now){
+        if(!el.isConnected) return;
+        if(t0 === null) t0 = now;
+        const x = Math.min(1, (now - t0)/dur);
+        const v = pct * (1 - Math.pow(1 - x, 2.2));
+        const laps = x >= 1 ? Math.ceil(pct/100) - 1 : Math.max(0, Math.ceil(v/100) - 1);
+        const rest = x >= 1 ? pct - laps*100 : v - laps*100;
+        el.style.strokeDashoffset = c*(1 - Math.min(rest,100)/100);
+        if(base) base.style.opacity = laps >= 1 ? 1 : 0;
+        if(x < 1) requestAnimationFrame(frame);
+      }
+      setTimeout(function(){ requestAnimationFrame(frame); }, 60 + d);
     })(arcs[i]);
   }
 }
