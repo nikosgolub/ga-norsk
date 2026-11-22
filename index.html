@@ -1088,7 +1088,6 @@ body:has(.dock) .ch-fab{bottom:calc(var(--dock-h,96px) + 8px)!important}
 .s-num{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--accent);color:var(--on-accent);font-size:var(--fs-12);font-weight:800}
 .s-num.ghost{background:var(--tint-2);color:var(--ink)}
 .plan-banner{margin-bottom:var(--sp-3)}
-.s-share{margin-top:var(--sp-2)}
 
 /* ─── v1.1 этап 3: диалоги ─── */
 .dl-title{font-family:var(--f-no);font-size:var(--fs-20);font-weight:700;margin:0}
@@ -1199,7 +1198,6 @@ body.light{--accent-text:#5A57E0}
 /* текстовые кнопки: капсула 40 */
 .back-btn{display:inline-flex;align-items:center;justify-content:center;gap:var(--sp-2);height:40px;padding:0 var(--sp-4);border-radius:var(--r-sheet);background:var(--surface);border:1px solid var(--line);color:var(--ink);font-size:var(--fs-14);font-weight:700}
 .back-btn.s-link{height:44px;padding:0;border:none;background:none;color:var(--ink-2);border-radius:0}
-.back-btn.s-share{margin-top:var(--sp-2)}
 /* переключатель режимов: на всю ширину, равные сегменты, капсула 48 */
 .mode-toggle{width:100%;height:48px;padding:4px;border-radius:var(--r-sheet);margin-bottom:var(--sp-6)}
 .mode-btn{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:var(--sp-2);height:40px;min-height:40px;padding:0 var(--sp-2);border-radius:20px;font-weight:700;white-space:nowrap}
@@ -2906,17 +2904,6 @@ function buzz(kind){
       : [60,40,60]); }catch(e){}
   }
 }
-// Shared posts link to the app's bot so friends can open Gå! directly.
-const BOT_LINK = 'https://t.me/ganorsk_app';
-function canShare(){ return !!(TG || (typeof navigator!=="undefined" && navigator.share)); }
-function shareText(t){
-  if(TG && TG.openTelegramLink){
-    TG.openTelegramLink("https://t.me/share/url?url=" + encodeURIComponent(BOT_LINK) + "&text=" + encodeURIComponent(t));
-    return;
-  }
-  if(typeof navigator!=="undefined" && navigator.share){ navigator.share({text:t, url:BOT_LINK}).catch(function(){}); }
-}
-
 // Icons: Phosphor Bold (MIT), supplied by the Art Director, viewBox 256. Sizes: 16 / 20 / 24 only.
 const IC_PATHS = {
   'ai':'<path d="M199,125.31l-49.88-18.39L130.69,57a19.92,19.92,0,0,0-37.38,0L74.92,106.92,25,125.31a19.92,19.92,0,0,0,0,37.38l49.88,18.39L93.31,231a19.92,19.92,0,0,0,37.38,0l18.39-49.88L199,162.69a19.92,19.92,0,0,0,0-37.38Zm-63.38,35.16a12,12,0,0,0-7.11,7.11L112,212.28l-16.47-44.7a12,12,0,0,0-7.11-7.11L43.72,144l44.7-16.47a12,12,0,0,0,7.11-7.11L112,75.72l16.47,44.7a12,12,0,0,0,7.11,7.11L180.28,144ZM140,40a12,12,0,0,1,12-12h12V16a12,12,0,0,1,24,0V28h12a12,12,0,0,1,0,24H188V64a12,12,0,0,1-24,0V52H152A12,12,0,0,1,140,40ZM252,88a12,12,0,0,1-12,12h-4v4a12,12,0,0,1-24,0v-4h-4a12,12,0,0,1,0-24h4V72a12,12,0,0,1,24,0v4h4A12,12,0,0,1,252,88Z"/>',
@@ -3883,7 +3870,6 @@ function render(){
         ? L('Все блоки сданы — открыт экзамен урока «','All blocks passed — exam unlocked for lesson “') + lesTitle(lesson) + L('».','”.')
         : L('Блок сдан. Ещё ','Block passed. ') + (nP-currentPartIdx-1) + ' ' + (enLang()?(nP-currentPartIdx-1===1?'block':'blocks'):blockWord(nP-currentPartIdx-1)) + L(' до экзамена.',' to go before the exam.');
     app.innerHTML = stateScreen({ img: passedPart ? 'S-lesson-done' : 'S-exam-fail', h:title, p:sub, kps:kps3(),
-      extra: canShare() ? '<button class="back-btn s-share" onclick="shareText(\'' + (enLang()?'Learning Norwegian with Gå!  Streak: ':'Я прохожу норвежский в Gå!  Стрик: ') + streakCount() + ' ' + dayWord(streakCount()) + (enLang()?', phrases completed: ':', пройдено фраз: ') + totalSolved() + '\')">' + ic('share',15) + L(' Поделиться',' Share') + '</button>' : '',
       pri:pri, sec:[L('К урокам','To lessons'),'renderLessons()'] });
     buzz(passedPart ? "win" : "err");
     return;
