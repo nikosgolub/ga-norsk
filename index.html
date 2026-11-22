@@ -554,8 +554,8 @@ body.light .allwin{background:rgba(244,245,247,0.94)}
 
 /* Рекордный день в четыре знака — ужимаем, чтобы число не вылезло за дорожку. */
 
-.ring-lap{filter:drop-shadow(0 0 2px var(--bg)) drop-shadow(0 0 2px var(--bg)) drop-shadow(0 0 1px var(--bg))}
-.lg-lap{margin-left:4px;font-size:var(--fs-12);font-weight:700;opacity:.55;vertical-align:1px}
+.ring-lap{filter:drop-shadow(0 0 2px var(--night)) drop-shadow(0 0 2px var(--night)) drop-shadow(0 0 1px var(--night))}
+.lg-lap{margin-left:4px;font-size:var(--fs-12);font-weight:700;vertical-align:1px}
 
 @media (prefers-reduced-motion:reduce){
   .rings-wrap{animation:none}
@@ -2680,7 +2680,7 @@ function renderCourses(){
     '<div class="wk-days">' + days.map(function(d,i){ return '<span' + (dstrOf(d)===dstr(0)?' class="t"':'') + '>' + wdn[i] + '</span>'; }).join('') + '</div>';
 
   function lg(col, name, v, goal, unit){
-    return '<div class="hl"><span><i style="background:var(' + col + ')"></i>' + name + '</span>' +
+    return '<div class="hl"><span><i style="background:var(' + col + ')"></i>' + name + (goal && v >= goal*2 ? '<em class="lg-lap" style="color:var(' + col + ');font-style:normal">×' + Math.floor(v/goal) + '</em>' : '') + '</span>' +
       (goal ? '<b>' + v + '<small> / ' + goal + (unit||'') + '</small></b>' : '<b class="off">' + L('выкл.','off') + '</b>') + '</div>';
   }
 
@@ -3239,7 +3239,7 @@ function ringArc(pct,size,stroke,color,offsetR,idx,noTrack){
   // Halo needs no track: blurring a matte underlay makes no sense.
   let out = noTrack ? '' : ('<circle cx="' + cx + '" cy="' + cy + '" r="' + r +
     '" fill="none" stroke="var(--rtrack)" stroke-width="' + stroke + '"/>');
-  if(laps) out += '<circle class="ring-arc ring-base"' + common + ' stroke-opacity=".4" stroke-dashoffset="0" data-off="0"/>';
+  if(laps && !noTrack) out += '<circle class="ring-arc ring-base"' + common + ' stroke-opacity=".4" stroke-dashoffset="0" data-off="0"/>';
   out += '<circle class="ring-arc' + (pct>=100?' done':'') + (laps?' ring-lap':'') + '" style="animation-delay:' + d + 's"' +
     common + ' stroke-dashoffset="' + c + '" data-off="' + off + '" data-delay="' + d +
     '" data-pct="' + pct + '" data-c="' + c + '"/>';
@@ -3248,8 +3248,8 @@ function ringArc(pct,size,stroke,color,offsetR,idx,noTrack){
 
 function lapsOf(pct){ return Math.max(1, Math.floor(pct/100) + (pct % 100 > 0 ? 1 : 0)); }
 function lapBadge(pct){
-  const l = Math.floor(pct/100);
-  return l >= 1 && pct > 100 ? '<span class="lg-lap">×' + (l+1) + '</span>' : '';
+  const l = Math.floor(pct/100);                    // full laps only
+  return l >= 2 ? '<span class="lg-lap">×' + l + '</span>' : '';
 }
 
 function miniRing(k, size){
@@ -3283,7 +3283,7 @@ function animateRings(){
       if(still){ el.style.strokeDashoffset = off; return; }
       if(base) base.style.opacity = 0;
       el.style.transition = 'none';
-      const dur = Math.min(1100 + (pct-100)*9, 3600);       // about 0.9 s per extra lap, no longer than 3.6 s
+      const dur = Math.min(900 + (pct-100)*6, 2400);        // about 0.6 s per extra lap, no longer than 2.4 s
       let t0 = null;
       function frame(now){
         if(!el.isConnected) return;
@@ -3293,7 +3293,13 @@ function animateRings(){
         const laps = x >= 1 ? Math.ceil(pct/100) - 1 : Math.max(0, Math.ceil(v/100) - 1);
         const rest = x >= 1 ? pct - laps*100 : v - laps*100;
         el.style.strokeDashoffset = c*(1 - Math.min(rest,100)/100);
-        if(base) base.style.opacity = laps >= 1 ? 1 : 0;
+        if(base){
+          if(laps >= 1 && base.style.opacity !== '1'){
+            // lap closed: the underlay appears bright and settles to 40% in 240 ms
+            base.style.opacity = 1; base.style.strokeOpacity = 1;
+            requestAnimationFrame(function(){ base.style.transition = 'stroke-opacity .24s ease-out'; base.style.strokeOpacity = .4; });
+          } else if(laps < 1){ base.style.opacity = 0; base.style.transition = 'none'; }
+        }
         if(x < 1) requestAnimationFrame(frame);
       }
       setTimeout(function(){ requestAnimationFrame(frame); }, 60 + d);
