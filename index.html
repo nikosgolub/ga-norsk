@@ -4158,7 +4158,6 @@ function switchMode(m){
   state.retryUsed=false;state.retryMode=false;
   state.pool=makePool(state.questions[state.idx].no);
   render();
-  if(m==="listen") speak(state.questions[state.idx].no);
 }
 
 function doSubmit(){
