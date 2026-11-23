@@ -363,12 +363,15 @@ body.light .ch-msg.ai{background:rgba(0,0,0,0.04)}
 .modal-row{display:flex;gap:12px;margin-top:12px}
 .modal-row .submit-btn{flex:1}
 .wc{cursor:pointer;-webkit-tap-highlight-color:transparent}
-.wc-tip{font-size:var(--fs-12,12px);color:var(--ink-3);margin-top:6px}
-.wcard-w{font-size:var(--fs-28,28px);font-weight:800;letter-spacing:-0.5px;line-height:1.15}
-.wcard-tr{font-size:var(--fs-18,18px);color:var(--ink);margin-top:6px}
-.wcard-base{font-size:var(--fs-14);color:var(--ink-2);margin-top:6px}
+.dw.wc{display:inline-block;padding:6px 10px;margin:0 2px 6px 0;transition:transform .1s}
+.dw.wc:active{transform:scale(.96)}
+.wc-tip{font-size:var(--fs-12);color:var(--ink-3);margin-top:2px}
+.wcard-w{font-size:var(--fs-28);font-weight:800;letter-spacing:-0.5px;line-height:1.15}
+.wcard-tr{font-size:var(--fs-20);font-weight:500;color:var(--ink);margin-top:4px}
+.wcard-base{font-size:var(--fs-14);color:var(--ink-2);margin-top:8px}
 .wcard-base b{color:var(--ink);font-weight:700}
-.wcard-in{font-size:var(--fs-14);font-weight:700;color:var(--ok);margin-top:12px}
+.wcard-in{display:inline-block;font-size:var(--fs-14);font-weight:700;background:var(--ok);color:var(--on-sem);padding:6px 12px;border-radius:999px;margin-top:12px}
+.modal-box .modal-row{margin-top:20px}
 .modal-list{display:flex;flex-direction:column;gap:8px;max-height:50vh;overflow-y:auto}
 .set-row{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 4px}
 
@@ -3955,14 +3958,14 @@ function render(){
       feedbackHTML = '<div class="feedback v2">' +
         '<div class="fb-title">' + (feedback.diag ? icp('<BT>') + feedback.diag.title : t('v2_t')) + '</div>' +
         '<div class="diff-view"><span class="diff-label">' + t('corr') + '</span><span lang="nb">' +
-          feedback.diff.map(wcSpan).join(" ") + '</span></div>' + wcTip() +
+          feedback.diff.map(wcSpan).join(" ") + '</span></div>' +
         (state.exam ? '' : explainHTML(current)) +
         (state.exam ? '' : '<button class="why-btn" id="ai-why" onclick="aiExplain()">' + ic('ai',16) + (enLang()?' Why?</button><div class="pron-res" id="ai-exp"></div>':' Почему?</button><div class="pron-res" id="ai-exp"></div>')) +
       '</div>';
     } else {
       feedbackHTML = '<div class="feedback err">' +
         '<div class="fb-title">' + t('err_t') + '</div>' +
-        '<div class="diff-view" lang="nb">' + feedback.diff.map(wcSpan).join(" ") + '</div>' + wcTip() +
+        '<div class="diff-view" lang="nb">' + feedback.diff.map(wcSpan).join(" ") + '</div>' +
         (state.exam ? '' : explainHTML(current)) +
         (state.exam ? '' : '<button class="why-btn" id="ai-why" onclick="aiExplain()">' + ic('ai',16) + (enLang()?' Why?</button><div class="pron-res" id="ai-exp"></div>':' Почему?</button><div class="pron-res" id="ai-exp"></div>')) +
       '</div>';
@@ -5268,7 +5271,7 @@ function wcSpan(d){
 function wcSentence(s){
   return String(s||'').split(/\s+/).filter(Boolean).map(function(w){ return wcSpan({status:'correct', word:escHT(w)}); }).join(' ');
 }
-function wcTip(){ return '<div class="wc-tip">' + (enLang() ? 'Tap a word to save it to My Cards' : 'Нажми на слово — сохранить в «Мои карточки»') + '</div>'; }
+function wcTip(){ return meta.wcSeen ? '' : '<div class="wc-tip">' + (enLang() ? 'Tap a word to save it to My Cards' : 'Нажми на слово, чтобы сохранить его в карточки') + '</div>'; }
 
 let wcCur = null;
 function wcInDict(n, base){
@@ -5276,6 +5279,7 @@ function wcInDict(n, base){
   return myList().some(function(w){ const x = String(w.n).toLowerCase(); return x===k || wcBase(x)===b; });
 }
 function openWordCard(tok){
+  if(!meta.wcSeen){ meta.wcSeen = 1; saveMeta(); }
   const q = (state.questions||[])[state.idx];
   const tokens = wcTokens(q && q.no);
   let i = tokens.indexOf(tok); if(i<0){ tokens.push(tok); i = tokens.length-1; }
@@ -5292,11 +5296,11 @@ function renderWordCard(){
       ? '<div class="wcard-base" id="wc-tr">' + L('Этого слова нет в словаре курса','This word is not in the course vocabulary') + '</div>'
       : '<div class="wcard-tr" id="wc-tr">' + escHT(c.r) + '</div>') +
     (c.form && c.n!==c.word ? '<div class="wcard-base">' + L('Начальная форма: ','Base form: ') + '<b lang="nb">' + escHT(c.n) + '</b></div>' : '') +
-    (have ? '<div class="wcard-in">✓ ' + L('Уже в словаре','Already in My Cards') + '</div>' : '') +
+    (have ? '<div class="wcard-in">✓ ' + L('В твоих карточках','Already in My Cards') + '</div>' : '') +
     '<div class="modal-row">' +
       '<button class="submit-btn retry-btn" onclick="closeModal()">' + L('Закрыть','Close') + '</button>' +
       (have ? '' : c.r
-        ? '<button class="submit-btn" onclick="wcAdd()">' + L('В словарь','Add to My Cards') + '</button>'
+        ? '<button class="submit-btn" onclick="wcAdd()">' + L('В карточки','Add to My Cards') + '</button>'
         : '<button class="submit-btn" id="wc-ai" onclick="wcAsk()">' + L('Узнать перевод','Get translation') + '</button>') +
     '</div>');
 }
