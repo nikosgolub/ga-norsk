@@ -5320,6 +5320,41 @@ function wcSentence(s){
 }
 function wcTip(){ return meta.wcSeen ? '' : '<div class="wc-tip">' + (enLang() ? 'Tap a word to save it to My Cards' : 'Нажми на слово, чтобы сохранить его в карточки') + '</div>'; }
 
+// A word tapped in a lesson goes to the section of that lesson («Урок 3 · …»), created on the first word.
+function wcLessons(){ return (COURSES[0] && COURSES[0].L) || LESSONS || []; }
+function wcLessonOf(no){
+  const Ls = wcLessons();
+  for(let i=0;i<Ls.length;i++) for(const p of Ls[i].parts) for(const q of p.q) if(q.no===no) return i;
+  return -1;
+}
+function wcLessonSet(li){
+  const id = 'wl' + li, l = wcLessons()[li];
+  if(!mySets().some(function(x){ return x.id===id; })){
+    const title = (enLang() && l.title_en) ? l.title_en : l.title;
+    mySets().push({ id:id, name:((enLang()?'Lesson ':'Урок ') + (li+1) + ' · ' + title).replace(/[<>&"]/g,'').slice(0,40) });
+  }
+  return id;
+}
+// One-time: move words that sit in «No section» to the section of the first lesson where they occur
+function wcMigrate(){
+  if(meta.wcMig) return;
+  meta.wcMig = 1;
+  const loose = myList().filter(function(w){ return !w.set; });
+  if(loose.length){
+    const want = {}; loose.forEach(function(w){ want[String(w.n).toLowerCase()] = null; });
+    const Ls = wcLessons();
+    outer: for(let li=0; li<Ls.length; li++) for(const p of Ls[li].parts) for(const q of p.q){
+      const tk = wcTokens(q.no);
+      for(let i=0;i<tk.length;i++){
+        const h = wcLookup(tk, i), k = h && String(h.e.n).toLowerCase();
+        if(k && k in want && want[k]===null) want[k] = li;
+      }
+      if(Object.keys(want).every(function(k){ return want[k]!==null; })) break outer;
+    }
+    loose.forEach(function(w){ const li = want[String(w.n).toLowerCase()]; if(li!==null && li!==undefined) w.set = wcLessonSet(li); });
+  }
+  saveMeta();
+}
 let wcCur = null;
 function wcInDict(n, base){
   const k = String(n).toLowerCase(), b = wcBase(n).toLowerCase();
@@ -5343,7 +5378,7 @@ function renderWordCard(){
       ? '<div class="wcard-base" id="wc-tr">' + L('Этого слова нет в словаре курса','This word is not in the course vocabulary') + '</div>'
       : '<div class="wcard-tr" id="wc-tr">' + escHT(c.r) + '</div>') +
     (c.form && c.n!==c.word ? '<div class="wcard-base">' + L('Начальная форма: ','Base form: ') + '<b lang="nb">' + escHT(c.n) + '</b></div>' : '') +
-    (have ? '<div class="wcard-in">✓ ' + L('В твоих карточках','Already in My Cards') + '</div>' : '') +
+    (have ? '<div class="wcard-in">✓ ' + L('В карточках','In My Cards') + wcSecLabel(c.n) + '</div>' : '') +
     '<div class="modal-row">' +
       '<button class="submit-btn retry-btn" onclick="closeModal()">' + L('Закрыть','Close') + '</button>' +
       (have ? '' : c.r
@@ -5351,9 +5386,19 @@ function renderWordCard(){
         : '<button class="submit-btn" id="wc-ai" onclick="wcAsk()">' + L('Узнать перевод','Get translation') + '</button>') +
     '</div>');
 }
+function wcSecLabel(n){
+  const k = String(n).toLowerCase(), b = wcBase(k);
+  const w = myList().find(function(x){ const y = String(x.n).toLowerCase(); return y===k || wcBase(y)===b; });
+  return w && w.set ? ' · ' + escHT(setName(w.set)) : '';
+}
 function wcAdd(){
   const c = wcCur; if(!c || !c.r) return;
-  if(!wcInDict(c.n)){ myList().unshift({ n:c.n, r:c.r, s:0, d:dnum() }); saveMeta(); buzz('ok'); }
+  if(!wcInDict(c.n)){
+    const w = { n:c.n, r:c.r, s:0, d:dnum() };
+    const q = (state.questions||[])[state.idx], li = q ? wcLessonOf(q.no) : -1;
+    if(li>=0) w.set = wcLessonSet(li);
+    myList().unshift(w); saveMeta(); buzz('ok');
+  }
   renderWordCard();
 }
 let wcAskSeq = 0;
@@ -5496,7 +5541,7 @@ function renderMyDecks(){
 function openDeck(id){ myCur = id; renderMyWords(); }
 
 function renderMyWords(){
-  screen = 'mywords';
+  screen = 'mywords'; wcMigrate();
   const L = function(ru,en){ return enLang() ? en : ru; };
   const list = myFiltered();
   const due = myDue(list).length;
