@@ -366,7 +366,7 @@ body.light .ch-msg.ai{background:rgba(0,0,0,0.04)}
 .dw.wc{display:inline-block;padding:6px 10px;margin:0 2px 6px 0;transition:transform .1s}
 .dw.wc:active{transform:scale(.96)}
 .word-chip.wc:active{transform:scale(.96)}
-.wc-tip{font-size:var(--fs-12);color:var(--ink-3);margin-top:2px}
+.wc-tip{font-size:var(--fs-14);color:var(--ink-2);margin-top:8px}
 .wcard-w{font-size:var(--fs-28);font-weight:800;letter-spacing:-0.5px;line-height:1.15}
 .wcard-tr{font-size:var(--fs-20);font-weight:500;color:var(--ink);margin-top:4px}
 .wcard-base{font-size:var(--fs-14);color:var(--ink-2);margin-top:8px}
@@ -1263,6 +1263,12 @@ body.light .mode-btn.active,body.light body.light .wd-chip.on,body.light .lang-b
 .dw.extra,body.light .dw.extra{background:transparent!important;color:var(--ink-2)!important;text-decoration:line-through!important}
 .ch-fix{background:var(--ok);color:var(--on-sem);border-radius:var(--r-chip);padding:0 4px}
 .submit-btn.next,body.light .submit-btn.next{background:var(--accent)!important;color:var(--on-accent)!important}
+/* design review word-tap-2: tap targets in the error sheet, card above the sheet, open-word marker */
+body .fb-sheet .feedback .dw.wc{display:inline-block;padding:6px 10px;margin:0 2px 8px 0;line-height:1.2;min-width:36px;text-align:center}
+body .fb-sheet .diff-view{line-height:1.2}
+body:has(.modal-box .wcard-w) .fb-sheet{visibility:hidden}
+body .modal-box:has(.wcard-w){background:var(--bg);-webkit-backdrop-filter:none;backdrop-filter:none}
+.word-chip.wc-on{outline:2px solid var(--accent);outline-offset:2px}
 </style>
 <script data-goatcounter="https://nikosgolub.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </head>
@@ -1904,9 +1910,9 @@ function explainHTML(qn){
   const d = state.feedback && state.feedback.diag;
   if(!d) return getRuleHTML(qn.type);
   const L=W();
-  let inner = icp(L.lbl) + d.text;
-  inner += '<div class="why-cmp"><span>'+L.you+':</span> <code>'+escHT(state.lastAnswer||"")+'</code><br>'+
-           '<span>'+L.need+':</span> <code>'+escHT(state.target||qn.no)+'</code></div>';
+  // "You wrote / Need" and the "Why it's wrong" label are dropped: the answer is shown above the sheet,
+  // the correct phrase is the coloured row (design review word-tap-2).
+  let inner = d.text;
   if(d.noun){
     const role = nounRoleOf(state.target || qn.no, d.noun.need);
     const rt = role && L['noun_role_'+role];
@@ -3968,22 +3974,21 @@ function render(){
           '<button class="listen-btn" onclick="speak(state.questions[state.idx].no)">' + t('listen') + '</button>' +
           (SR ? '<button class="listen-btn" id="mic-btn" onclick="pronounce()">' + t('mic') + '</button>' : '') +
         '</div>' +
-        wcTip() +
         '<div class="pron-res" id="pron-res"></div></div>';
     } else if(feedback.type==="v2"){
       feedbackHTML = '<div class="feedback v2">' +
         '<div class="fb-title">' + (feedback.diag ? icp('<BT>') + feedback.diag.title : t('v2_t')) + '</div>' +
         '<div class="diff-view"><span class="diff-label">' + t('corr') + '</span><span lang="nb">' +
-          feedback.diff.map(wcSpan).join(" ") + '</span></div>' +
+          wcDiffCase(feedback.diff, state.target).map(wcSpan).join(" ") + '</span></div>' +
         (state.exam ? '' : explainHTML(current)) +
-        (state.exam ? '' : '<button class="why-btn" id="ai-why" onclick="aiExplain()">' + ic('ai',16) + (enLang()?' Why?</button><div class="pron-res" id="ai-exp"></div>':' Почему?</button><div class="pron-res" id="ai-exp"></div>')) +
+        (state.exam ? '' : '<button class="why-btn" id="ai-why" onclick="aiExplain()">' + ic('ai',16) + (enLang()?' Explain in detail</button><div class="pron-res" id="ai-exp"></div>':' Разобрать подробнее</button><div class="pron-res" id="ai-exp"></div>')) +
       '</div>';
     } else {
       feedbackHTML = '<div class="feedback err">' +
         '<div class="fb-title">' + t('err_t') + '</div>' +
-        '<div class="diff-view" lang="nb">' + feedback.diff.map(wcSpan).join(" ") + '</div>' +
+        '<div class="diff-view" lang="nb"><span class="diff-label">' + t('corr') + '</span>' + wcDiffCase(feedback.diff, state.target).map(wcSpan).join(" ") + '</div>' +
         (state.exam ? '' : explainHTML(current)) +
-        (state.exam ? '' : '<button class="why-btn" id="ai-why" onclick="aiExplain()">' + ic('ai',16) + (enLang()?' Why?</button><div class="pron-res" id="ai-exp"></div>':' Почему?</button><div class="pron-res" id="ai-exp"></div>')) +
+        (state.exam ? '' : '<button class="why-btn" id="ai-why" onclick="aiExplain()">' + ic('ai',16) + (enLang()?' Explain in detail</button><div class="pron-res" id="ai-exp"></div>':' Разобрать подробнее</button><div class="pron-res" id="ai-exp"></div>')) +
       '</div>';
     }
   }
@@ -4000,19 +4005,21 @@ function render(){
             : '<span class="word-chip selected' + (hintOn && state.hintAt===i ? ' hint-bounce' : '') +
             '" data-src="ans" data-i="' + i + '" onclick="removeWord(' + i + ')">' + w + '</span>').join("")) +
     '</div>' +
+    (wordsTappable ? wcTip() : '') +
     (hintOn ? '<div class="hint-note">' + (state.exam
         ? (state.hintAt<0 ? (enLang()?'Right so far, but some words are missing. You only get one hint in the exam':'Пока всё верно, но слов не хватает. Подсказка на экзамене одна')
                           : (enLang()?"This bit's off. You get one hint in the exam":'Вот здесь не так. Подсказка на экзамене одна'))
         : (state.hintAt<0 ? (enLang()?'All correct so far, but not enough words':'Пока всё верно, но слов не хватает')
                           : (enLang()?"Here's what's off":'Вот здесь не так'))) + '</div>' : '') +
-    '<div class="pool-label" style="margin-top:1rem">' + t('pool') + '</div>' +
-    '<div class="word-pool" id="word-pool" lang="nb">' +
-      pool.map((w,i)=>'<span class="word-chip pool" data-src="pool" data-i="' + i + '" onclick="addWord(' + i + ')">' + w + '</span>').join("") +
-    '</div>';
+    (phase==="revealed" ? '' :
+      '<div class="pool-label" style="margin-top:1rem">' + t('pool') + '</div>' +
+      '<div class="word-pool" id="word-pool" lang="nb">' +
+        pool.map((w,i)=>'<span class="word-chip pool" data-src="pool" data-i="' + i + '" onclick="addWord(' + i + ')">' + w + '</span>').join("") +
+      '</div>');
 
   const textHTML = wordsTappable
     ? '<div class="pool-label">' + t('your') + '</div><div class="builder-answer correct-state" lang="nb">' +
-        textVal.trim().split(/\s+/).filter(Boolean).map(w=>'<span class="word-chip selected wc" data-wc="' + escHT(wcClean(w)).replace(/"/g,'&quot;') + '">' + escHT(w) + '</span>').join("") + '</div>'
+        textVal.trim().split(/\s+/).filter(Boolean).map(w=>'<span class="word-chip selected wc" data-wc="' + escHT(wcClean(w)).replace(/"/g,'&quot;') + '">' + escHT(w) + '</span>').join("") + '</div>' + wcTip()
     : '<input id="text-inp" class="text-input ' + inputCls + '" type="text" lang="nb" autocapitalize="sentences" placeholder="'+t('inp_ph')+'"' +
     ' value="' + textVal.replace(/"/g,'&quot;') + '"' +
     (phase==="revealed"?" disabled":"") +
@@ -5023,7 +5030,7 @@ function optCard(on, title, small, desc, go){
 
 // ─── МОДАЛЬНЫЕ ОКНА (prompt/confirm блокируются в Telegram) ───
 let modalCb = null;
-function closeModal(){ const m = document.getElementById('modal'); if(m) m.remove(); modalCb = null; }
+function closeModal(){ const m = document.getElementById('modal'); if(m) m.remove(); modalCb = null; document.querySelectorAll('.wc-on').forEach(function(x){ x.classList.remove('wc-on'); }); }
 function openModal(html){
   closeModal();
   const m = document.createElement('div');
@@ -5289,6 +5296,16 @@ function wcSpan(d){
   if(d.status==='extra') return '<span class="dw extra">' + d.word + '</span>';
   return '<span class="dw ' + d.status + ' wc" data-wc="' + escHT(wcClean(d.word)).replace(/"/g,'&quot;') + '">' + d.word + '</span>';
 }
+// diffAnswers() lower-cases words for comparison; show the correct phrase with its own spelling (Norge, Jeg).
+function wcDiffCase(diff, target){
+  const tk = String(target||'').replace(/[?!,.]/g,'').split(/\s+/).filter(Boolean);
+  let j = 0;
+  return diff.map(function(d){
+    if(d.status==='extra') return d;
+    const w = tk[j++];
+    return (w && w.toLowerCase()===d.word) ? { word:w, status:d.status } : d;
+  });
+}
 function wcSentence(s){
   return String(s||'').split(/\s+/).filter(Boolean).map(function(w){ return wcSpan({status:'correct', word:escHT(w)}); }).join(' ');
 }
@@ -5348,7 +5365,11 @@ async function wcAsk(){
 }
 document.addEventListener('click', function(e){
   const el = e.target && e.target.closest ? e.target.closest('[data-wc]') : null;
-  if(el) openWordCard(el.getAttribute('data-wc'));
+  if(el){
+    document.querySelectorAll('.wc-on').forEach(function(x){ x.classList.remove('wc-on'); });
+    el.classList.add('wc-on');
+    openWordCard(el.getAttribute('data-wc'));
+  }
 });
 
 function myAddSet(){
