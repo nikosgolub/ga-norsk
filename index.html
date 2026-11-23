@@ -3084,6 +3084,7 @@ function wordSrc(w){ if(!meta.lang || meta.lang==='ru') return w.r; return w[met
 let meta = {};
 try{ meta = JSON.parse(localStorage.getItem('ro_meta')||'{}'); }catch(e){ meta = {}; }
 if(!meta.mistakes) meta.mistakes = [];
+if(!Array.isArray(meta.int)) meta.int = [];
 function saveMeta(){ persist('ro_meta', JSON.stringify(meta)); }
 function dstr(off){ const d = new Date(Date.now()+(off||0)*864e5); return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(); }
 const GOAL_OPTS = [
@@ -3220,6 +3221,108 @@ function reviewQueue(){
 }
 function dnum(){ return Math.floor((Date.now()-new Date().getTimezoneOffset()*60000)/864e5); }
 const SRS_INT = [1,3,7,14,30];
+// ─── ИНТЕНСИВ: ДАННЫЕ ───
+// Новые фразы идут группами, а закрепление встроено: у каждой фразы очередь шагов.
+// Запись — компактный массив [no, шаг, срок в мс]; сами фразы достаём по no (phraseByNo),
+// текст не копируем, как в meta.mistakes. Шаги: 0 — через ~3 ч после сессии, 1 — следующее
+// утро, дальше 3 · 7 · 14 · 30 дней; после последнего шага фраза уходит из очереди.
+const INT_DAYS = [3, 7, 14, 30];          // шаги 2..5 — через столько дней после предыдущего
+const INT_LAST = 1 + INT_DAYS.length;     // номер последнего шага
+const INT_CAP = 240;                      // записей в очереди максимум
+const INT_GROUP = 4;                      // фраз в группе
+const INT_SEC_PHRASE = 75;                // секунд на фразу в сессии (знакомство + закрепление)
+const INT_SEC_FINAL = 15;                 // секунд на фразу в итоговой проверке
+const INT_SEC_ROUND = 12;                 // секунд на фразу при повторе
+const INT_MS_H = 36e5;
+function intQ(){ if(!Array.isArray(meta.int)) meta.int = []; return meta.int; }
+function intMidnight(ms, plusDays){ const d = new Date(ms); return new Date(d.getFullYear(), d.getMonth(), d.getDate() + (plusDays||0)).getTime(); }
+function intMorning(ms){ const d = new Date(ms); return new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1, 7).getTime(); }
+// Срок шага после того, как предыдущий пройден в момент doneMs.
+function intDueFor(step, doneMs){
+  if(step === 0) return doneMs + 3 * INT_MS_H;
+  if(step === 1) return intMorning(doneMs);
+  return intMidnight(doneMs, INT_DAYS[step - 2]);
+}
+// Первый срок новой фразы. Если «+3 ч» уходит за 22:00 — вечернего повтора нет, сразу утро.
+function intFirst(now){
+  const t = new Date(now + 3 * INT_MS_H), n = new Date(now);
+  if(t.getDate() === n.getDate() && t.getHours() < 22) return { s:0, d:now + 3 * INT_MS_H };
+  return { s:1, d:intMorning(now) };
+}
+function intFind(no){ const q = intQ(); for(let i=0;i<q.length;i++) if(q[i][0] === no) return i; return -1; }
+function intAdd(nos, now){
+  now = now || Date.now();
+  const q = intQ(), f = intFirst(now);
+  nos.forEach(function(no){
+    const i = intFind(no);
+    if(i >= 0) q.splice(i, 1);                 // выучил заново — расписание с начала
+    q.push([no, f.s, f.d]);
+  });
+  while(q.length > INT_CAP){                   // переполнение: убираем самую продвинутую
+    let out = 0;
+    for(let i=1;i<q.length;i++) if(q[i][1] > q[out][1]) out = i;
+    q.splice(out, 1);
+  }
+  saveMeta();
+}
+function intDueList(now){
+  now = now || Date.now();
+  return intQ().filter(function(e){ return e[2] <= now; }).sort(function(a,b){ return a[2] - b[2]; });
+}
+function intPass(no, now){
+  now = now || Date.now();
+  const q = intQ(), i = intFind(no);
+  if(i < 0) return;
+  const s = q[i][1] + 1;
+  if(s > INT_LAST) q.splice(i, 1);
+  else { q[i][1] = s; q[i][2] = intDueFor(s, now); }
+  saveMeta();
+}
+// Ошибка на повторе: ступень не выше «утра», срок — следующее утро.
+function intFail(no, now){
+  now = now || Date.now();
+  const q = intQ(), i = intFind(no);
+  if(i < 0) return;
+  q[i][1] = Math.min(q[i][1], 1); q[i][2] = intMorning(now);
+  saveMeta();
+}
+// Прогноз нагрузки: сколько повторов выпадет на каждый из ближайших дней (0 = сегодня),
+// если все записи (и новые nos) проходятся без ошибок.
+function intLoad(extra, now, days){
+  now = now || Date.now();
+  const load = []; for(let i=0;i<days;i++) load.push(0);
+  const day0 = intMidnight(now, 0);
+  const list = intQ().map(function(e){ return [e[1], e[2]]; });
+  if(extra){ const f = intFirst(now); for(let i=0;i<extra;i++) list.push([f.s, f.d]); }
+  list.forEach(function(e){
+    let s = e[0], d = e[1];
+    while(s <= INT_LAST){
+      const t = Math.max(d, now);
+      const di = Math.floor((intMidnight(t, 0) - day0) / 864e5 + 0.5);
+      if(di >= days) break;
+      load[di]++;
+      s++; if(s > INT_LAST) break;
+      d = intDueFor(s, t);
+    }
+  });
+  return load;
+}
+function intMin(sec){ return Math.max(1, Math.round(sec / 60)); }
+// Цена сессии из n новых фраз: сейчас / повтор сегодня (или завтра) / самый тяжёлый день недели.
+function intCost(n, now){
+  now = now || Date.now();
+  const f = intFirst(now), load = intLoad(n, now, 8);
+  const todayN = f.s === 0 ? n + intDueList(f.d).filter(function(e){ return e[2] <= f.d; }).length : 0;
+  let peak = 0; for(let i=1;i<8;i++) peak = Math.max(peak, load[i]);
+  return {
+    now: intMin(n * (INT_SEC_PHRASE + INT_SEC_FINAL)),
+    today: f.s === 0, at: f.d, todayMin: intMin(todayN * INT_SEC_ROUND),
+    tomorrowMin: intMin((load[1] || n) * INT_SEC_ROUND),
+    dayMin: intMin(peak * INT_SEC_ROUND)
+  };
+}
+function intTime(ms){ const d = new Date(ms); let m = Math.ceil(d.getMinutes() / 5) * 5, h = d.getHours(); if(m === 60){ m = 0; h = (h + 1) % 24; } return (h < 10 ? '0' : '') + h + ':' + (m < 10 ? '0' : '') + m; }
+// ─── /ИНТЕНСИВ: ДАННЫЕ ───
 function srsPromote(l,wi){
   if(!meta.srs) meta.srs = {};
   const k = (ci===0?'':COURSES[ci].id+'_') + l + ':' + wi;
@@ -6382,6 +6485,7 @@ function mergeMeta(a, b){            // a — локальное, b — обла
   out.hist = Object.keys(hs).sort(function(x,y){ return dayNum(x)-dayNum(y); }).slice(-400);
 
   out.mistakes = uniqBy((a.mistakes||[]).concat(b.mistakes||[]), function(m){ return m.no; }).slice(-50);
+  out.int = intMerge(a.int, b.int);                   // очередь закрепления — дальше продвинутая ступень
   out.my       = uniqBy((a.my||[]).concat(b.my||[]), function(w){ return ((w.n||w.no||'')+'').toLowerCase() + '|' + (w.set||''); });
   out.mysets   = uniqBy((a.mysets||[]).concat(b.mysets||[]), function(x){ return x.id; });
 
@@ -6391,6 +6495,15 @@ function mergeMeta(a, b){            // a — локальное, b — обла
     out.srs[k] = (!y || (x.s||0) >= (y.s||0)) ? x : y;
   });
   return out;
+}
+function intMerge(a, b){
+  const by = {};
+  (a||[]).concat(b||[]).forEach(function(e){
+    if(!e || e.length < 3) return;
+    const y = by[e[0]];
+    if(!y || e[1] > y[1] || (e[1] === y[1] && e[2] > y[2])) by[e[0]] = e;
+  });
+  return Object.keys(by).map(function(k){ return by[k]; }).slice(-INT_CAP);
 }
 function mergeProgress(a, b){
   if(!b) return a || {};
