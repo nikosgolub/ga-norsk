@@ -141,6 +141,16 @@ body.light .season{--pcl:rgba(21,22,26,0.38)}
 .int-bar i.s2::after{opacity:1}
 .int-no{font-family:var(--f-no);font-size:var(--fs-28);font-weight:800;line-height:1.25;letter-spacing:-.3px;margin-bottom:var(--sp-3)}
 .int-tr{font-size:var(--fs-16);color:var(--ink-2);margin-bottom:var(--sp-4)}
+.int-btn{min-height:48px;margin-top:var(--sp-3);margin-bottom:0}
+.home-go + .int-btn{margin-top:calc(var(--sp-3) - 16px)}
+.int-sub{font-size:var(--fs-16);color:var(--ink-2);margin:0 0 var(--sp-4)}
+.int-note{font-size:var(--fs-14);color:var(--ink-3);margin:var(--sp-3) 0;text-align:center}
+.int-seg{margin-bottom:var(--sp-4)!important}
+.int-seg .mode-btn{flex:1}
+.int-tiles{margin:0 0 var(--sp-2)}
+.int-tiles .s-kp b{font-size:var(--fs-28);white-space:nowrap}
+.int-tiles .s-kp b small{font-size:var(--fs-14);font-weight:700;color:var(--ink-2)}
+.int-tiles .s-kp span{font-weight:500;color:var(--ink-3);font-size:var(--fs-14)}
 
 .mode-toggle{display:flex;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-card);padding:4px;margin-bottom:20px;width:fit-content}
 .mode-btn{padding:8px 20px;font-size:var(--fs-14);font-weight:500;border:none;background:none;color:var(--ink-2);border-radius:var(--r-chip);cursor:pointer;transition:all .2s;font-family:inherit;min-height:38px}
@@ -2768,6 +2778,7 @@ function renderCourses(){
         lg('--ring-audio', L('Аудио','Audio'), lm, LISTEN_GOAL, L(' мин',' min')) +
       '</div>' +
       (cont ? '<button class="continue-btn home-go" onclick="' + cont.go + '"><span>' + L('Продолжить','Continue') + '<small>' + cont.sub + '</small></span><span aria-hidden="true">→</span></button>' : '') +
+      (cont ? intBtnHTML() : '') +
     '</div>' +
     review +
     '<div class="sec-h"><h3>' + L('Разделы','Sections') + '</h3><span>' + (COURSES.length + 1) + '</span></div>' +
@@ -3911,6 +3922,7 @@ function renderLesson(i){
   if(solved >= total) pri = [t('repeat_l'), 'startPart(' + i + ',0)'];
   else if(np >= 0) pri = [(solved>0 ? L('Продолжить · ','Continue · ') : L('Начать · ','Start · ')) + partTitle(l.parts[np]), 'startPart(' + i + ',' + np + ')'];
   else if(exOpen && !exPassed) pri = [t('exam'), 'startExam(' + i + ')'];
+  const sec = (ci===0 && np >= 0 && solved < total && intTarget(i)) ? [intLabel(i), 'intSheet(' + i + ')'] : null;
 
   document.getElementById("app").innerHTML =
     scrTop('renderLessons()', t('lesson') + ' ' + (i+1), (i+1) + '/' + LESSONS.length) +
@@ -3921,7 +3933,7 @@ function renderLesson(i){
       '<p class="s-mut">' + t('phr_done') + ' ' + solved + ' ' + t('of') + ' ' + total + ' ' + t('phrases') + '</p>' +
       '<div class="s-parts">' + words + parts + exam + '</div>' +
     '</div>' +
-    (pri ? scrDock(pri) : '');
+    (pri ? scrDock(pri, sec) : '');
   try{ window.scrollTo(0,0); }catch(e){}
 }
 
@@ -4625,6 +4637,72 @@ function intGateHTML(){
     '<button class="submit-btn next" onclick="advance()">' + IL('Дальше · группа ','Next · group ') + nx + IL(' из ',' of ') + state.int.groups.length + '</button>';
 }
 // ─── /ИНТЕНСИВ: ПОТОК ───
+
+// ─── ИНТЕНСИВ: ВХОД И НАСТРОЙКА ───
+// Если у человека назрели повторы, они идут первыми (см. intGuard в «Закреплении»).
+function intTileHTML(c){
+  const L = IL;
+  return '<div class="s-kps int-tiles">' +
+    '<div class="s-kp"><b>~' + c.now + '<small>' + L(' мин',' min') + '</small></b><span>' + L('сейчас','now') + '</span></div>' +
+    (c.today
+      ? '<div class="s-kp"><b>~' + c.todayMin + '<small>' + L(' мин',' min') + '</small></b><span>' + L('сегодня после ','today after ') + intTime(c.at) + '</span></div>'
+      : '<div class="s-kp"><b>~' + c.tomorrowMin + '<small>' + L(' мин',' min') + '</small></b><span>' + L('завтра','tomorrow') + '</span></div>') +
+    '<div class="s-kp"><b>~' + c.dayMin + '<small>' + L(' мин',' min') + '</small></b><span>' + L('в день на повторы','a day to review') + '</span></div>' +
+  '</div>';
+}
+function intSheetHTML(lock, n){
+  const tg = intTarget(lock), c = intCost(n);
+  const opts = intSizes(tg.rem);
+  return '<div class="modal-title">' + IL('Интенсив','Intensive') + '</div>' +
+    (meta.intSeen ? '' : '<p class="int-sub">' + IL('Фразы группами по 4 — пока не запомнишь, потом проверка','Phrases in groups of 4 — until they stick, then a check') + '</p>') +
+    '<div class="mode-toggle int-seg">' + opts.map(function(x){
+      return '<button class="mode-btn' + (x === n ? ' active' : '') + '" onclick="intSheetDraw(' + (lock === undefined ? 'undefined' : lock) + ',' + x + ')">' + x + ' ' + plural(x,'фраза','фразы','фраз','phrase','phrases') + '</button>';
+    }).join('') + '</div>' +
+    intTileHTML(c) +
+    '<p class="int-note">' + IL('Без повторов большая часть забудется за неделю','Without review most of it is gone within a week') + '</p>' +
+    '<button class="submit-btn" onclick="intStart(' + tg.l + ',' + tg.p + ',' + n + ')">' + IL('Начать','Start') + '</button>' +
+    '<p class="int-note">' + IL('Выйти можно в любой момент — прогресс сохранится','You can leave any time — progress is saved') + '</p>';
+}
+function intSheetDraw(lock, n){
+  const box = document.querySelector('#modal .modal-box');
+  if(!box){ return; }
+  const tg = intTarget(lock);
+  if(!tg){ closeModal(); return; }
+  box.innerHTML = intSheetHTML(lock, n);
+}
+function intSheet(lock){
+  if(meta.isess){ intResume(); return; }
+  const tg = intTarget(lock);
+  if(!tg){ renderCourses(); return; }
+  if(intGuard('intSheet(' + (lock === undefined ? '' : lock) + ')')) return;
+  openModal('');
+  intSheetDraw(lock, intN(tg.rem));
+}
+function intResume(){
+  if(intGuard('intResume()')) return;
+  intLaunch();
+}
+// Кнопка под «Продолжить» на главном и на экране урока.
+function intBtnHTML(lock){
+  const sess = meta.isess;
+  if(sess){
+    const G = Math.ceil(sess.n / INT_GROUP);
+    return '<button class="submit-btn retry-btn int-btn" onclick="intResume()">' + IL('Продолжить интенсив','Resume intensive') +
+      (sess.ph === 'f' ? ' · ' + IL('проверка','check') : ' · ' + IL('группа ','group ') + Math.min(sess.g + 1, G) + IL(' из ',' of ') + G) + '</button>';
+  }
+  const tg = intTarget(lock);
+  if(!tg) return '';
+  const n = intN(tg.rem);
+  return '<button class="submit-btn retry-btn int-btn" onclick="intSheet(' + (lock === undefined ? '' : lock) + ')">' +
+    IL('Интенсивом','Intensive') + ' · ' + n + ' ' + plural(n,'фраза','фразы','фраз','phrase','phrases') + ' · ~' + intCost(n).now + IL(' мин',' min') + '</button>';
+}
+function intGuard(call){ return false; }
+function intLabel(lock){
+  if(meta.isess) return IL('Продолжить интенсив','Resume intensive');
+  const tg = intTarget(lock);
+  return IL('Интенсивом','Intensive') + (tg ? ' · ' + intN(tg.rem) + ' ' + plural(intN(tg.rem),'фраза','фразы','фраз','phrase','phrases') : '');
+}
+// ─── /ИНТЕНСИВ: ВХОД И НАСТРОЙКА ───
 
 // ─── FLASHCARDS (с SRS) ──────────────────────────────
 let wordsState = { deck: [], flipped: false, mode: "no-ru", review: false, my: false };
