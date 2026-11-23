@@ -5564,7 +5564,7 @@ function renderMyWords(){
                         '<button class="s-icbtn" aria-label="' + L('Удалить раздел','Delete section') + '" onclick="myDelSet(\'' + myCur + '\')">' + ic('cross',20) + '</button>' : '';
   document.getElementById('app').innerHTML =
     scrTop('renderMyDecks()', title, right) +
-    '<p class="s-mut" style="margin-bottom:var(--sp-3)">' + (due ? nWords(due) + L(' ждут повторения',' due for review') : list.length ? L('Все слова повторены — добавь новые','All words reviewed — add some new ones') : L('Здесь пока пусто — добавь первое слово','Nothing here yet — add your first word')) + '</p>' +
+    '<p class="s-mut" style="margin-bottom:var(--sp-3)">' + (due ? nWords(due) + L((due%10===1 && due%100!==11) ? ' ждёт повторения' : ' ждут повторения',' due for review') : list.length ? L('Все слова повторены — добавь новые','All words reviewed — add some new ones') : L('Здесь пока пусто — добавь первое слово','Nothing here yet — add your first word')) + '</p>' +
     '<div class="s-card">' +
       '<input class="text-input" id="my-no" type="text" lang="nb" placeholder="' + L('Слово по-норвежски','Word in Norwegian') + '">' +
       '<input class="text-input" id="my-ru" type="text" placeholder="' + L('Перевод','Translation') + '" onkeydown="if(event.key===\'Enter\')myAdd()">' +
