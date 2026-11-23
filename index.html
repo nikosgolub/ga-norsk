@@ -4542,9 +4542,14 @@ function intHead(){
     right = I.finOk + ' / ' + I.all.length;
     bar = '<div class="progress-track"><div class="progress-fill" style="width:' + Math.round((I.finIdx||0) / I.all.length * 100) + '%"></div></div>';
   } else {
-    const k = I.items.filter(function(it){ return it.c >= 2; }).length;
-    right = k + ' / ' + I.items.length;
-    bar = '<div class="int-bar">' + I.items.map(function(it){ return '<i class="s' + Math.min(it.c,2) + '"></i>'; }).join('') + '</div>';
+    // сегмент реагирует сразу на ответ: верно — на ступень выше, ошибка — падает в «пусто»
+    const cur = (state.phase === 'revealed' && state.feedback && !I.gate) ? I.items[I.queue[0]] : null;
+    const lv = I.items.map(function(it){
+      if(it !== cur) return Math.min(it.c, 2);
+      return state.feedback.type === 'ok' ? Math.min(it.c + 1, 2) : 0;
+    });
+    right = lv.filter(function(v){ return v >= 2; }).length + ' / ' + I.items.length;
+    bar = '<div class="int-bar">' + lv.map(function(v){ return '<i class="s' + v + '"></i>'; }).join('') + '</div>';
   }
   return '<div class="header">' +
       '<div class="logo" onclick="intLeave()">' + GA_LOGO + '</div>' +
