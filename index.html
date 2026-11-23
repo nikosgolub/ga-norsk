@@ -369,6 +369,9 @@ body.light .ch-msg.ai{background:rgba(0,0,0,0.04)}
 .wc-tip{font-size:var(--fs-14);color:var(--ink-2);margin-top:8px}
 .wcard-w{font-size:var(--fs-28);font-weight:800;letter-spacing:-0.5px;line-height:1.15}
 .wcard-tr{font-size:var(--fs-20);font-weight:500;color:var(--ink);margin-top:4px}
+.wcard-load{display:flex;align-items:center;gap:8px;font-size:var(--fs-14);color:var(--ink-2);margin-top:8px}
+.wcard-load i{width:6px;height:6px;border-radius:50%;background:var(--ink-2);animation:chDot 1.2s infinite}
+.wcard-load i:nth-child(2){animation-delay:.15s}.wcard-load i:nth-child(3){animation-delay:.3s}
 .wcard-base{font-size:var(--fs-14);color:var(--ink-2);margin-top:8px}
 .wcard-base b{color:var(--ink);font-weight:700}
 .wcard-in{display:inline-block;font-size:var(--fs-14);font-weight:700;background:var(--ok);color:var(--on-sem);padding:6px 12px;border-radius:999px;margin-top:12px}
@@ -5030,7 +5033,7 @@ function optCard(on, title, small, desc, go){
 
 // ─── МОДАЛЬНЫЕ ОКНА (prompt/confirm блокируются в Telegram) ───
 let modalCb = null;
-function closeModal(){ const m = document.getElementById('modal'); if(m) m.remove(); modalCb = null; document.querySelectorAll('.wc-on').forEach(function(x){ x.classList.remove('wc-on'); }); }
+function closeModal(){ wcAskSeq++; const m = document.getElementById('modal'); if(m) m.remove(); modalCb = null; document.querySelectorAll('.wc-on').forEach(function(x){ x.classList.remove('wc-on'); }); }
 function openModal(html){
   closeModal();
   const m = document.createElement('div');
@@ -5353,20 +5356,32 @@ function wcAdd(){
   if(!wcInDict(c.n)){ myList().unshift({ n:c.n, r:c.r, s:0, d:dnum() }); saveMeta(); buzz('ok'); }
   renderWordCard();
 }
+let wcAskSeq = 0;
 async function wcAsk(){
-  const c = wcCur, btn = document.getElementById('wc-ai');
-  if(btn){ btn.disabled = true; btn.innerHTML = '…'; }
+  const c = wcCur, btn = document.getElementById('wc-ai'), tr = document.getElementById('wc-tr'), L = function(ru,en){ return enLang() ? en : ru; };
+  const seq = ++wcAskSeq;
+  if(btn){ btn.disabled = true; btn.textContent = L('Ищу…','Looking up…'); }
+  if(tr){ tr.className = 'wcard-load'; tr.innerHTML = '<i></i><i></i><i></i><span>' + L('Ищу перевод — это до 20 секунд','Looking up the translation — up to 20 seconds') + '</span>'; }
+  const fail = function(msg){
+    if(seq !== wcAskSeq) return;
+    if(btn){ btn.disabled = false; btn.textContent = L('Повторить','Try again'); }
+    if(tr){ tr.className = 'wcard-base'; tr.textContent = msg; }
+  };
   try{
-    const r = await aiAsk((enLang()?'You are an assistant in a Norwegian (bokmål) learning app, level A1-A2. ':'Ты помощник в приложении для изучения норвежского (bokmål), уровень A1–A2. ') +
+    const ask = aiAsk((enLang()?'You are an assistant in a Norwegian (bokmål) learning app, level A1-A2. ':'Ты помощник в приложении для изучения норвежского (bokmål), уровень A1–A2. ') +
       (enLang()?'Word from a phrase: "':'Слово из фразы: "') + c.word + '"' + (state.questions && state.questions[state.idx] ? (enLang()?', phrase: "':', фраза: "') + state.questions[state.idx].no + '"' : '') +
       (enLang()?'. Return JSON: {"no": "dictionary form (en/ei/et for nouns, å for verbs)", "ru": "short English translation"}. JSON only.':'. Верни JSON: {"no": "начальная форма (en/ei/et для существительных, å для глаголов)", "ru": "короткий перевод на русский"}. Только JSON.'), true);
-    const tr = String(r.ru||'').replace(/[<>&"]/g,'').trim().slice(0,60), no = String(r.no||'').replace(/[<>&"]/g,'').trim().slice(0,60);
-    if(!tr) throw new Error(aiErrText('other'));
-    wcCur = { n:no||c.word, r:tr, word:c.word, form:!!no && no!==c.word };
+    let timer;
+    const limit = new Promise(function(_, rej){ timer = setTimeout(function(){ rej(new Error(L('Сервер отвечает слишком долго. Нажми «Повторить».','The server is taking too long. Tap "Try again".'))); }, 20000); });
+    let r;
+    try{ r = await Promise.race([ask, limit]); } finally { clearTimeout(timer); }
+    if(seq !== wcAskSeq || wcCur !== c) return;
+    const t2 = String(r.ru||'').replace(/[<>&"]/g,'').trim().slice(0,60), no = String(r.no||'').replace(/[<>&"]/g,'').trim().slice(0,60);
+    if(!t2) throw new Error(aiErrText('other'));
+    wcCur = { n:no||c.word, r:t2, word:c.word, form:!!no && no!==c.word };
     renderWordCard();
   }catch(e){
-    if(btn){ btn.disabled = false; btn.textContent = enLang()?'Get translation':'Узнать перевод'; }
-    const t = document.getElementById('wc-tr'); if(t) t.textContent = (e && e.message) ? e.message : aiErrText('other');
+    fail((e && e.message) ? e.message : aiErrText('other'));
   }
 }
 document.addEventListener('click', function(e){
