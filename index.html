@@ -134,15 +134,20 @@ body.light .season{--pcl:rgba(21,22,26,0.38)}
 .progress-meta{display:flex;justify-content:space-between;font-size:var(--fs-12);color:var(--ink-3);margin-bottom:4px;font-weight:500;text-transform:uppercase;letter-spacing:.04em}
 .progress-track{height:8px;background:var(--line);border-radius:var(--r-chip);overflow:hidden}
 .progress-fill{height:100%;background:var(--ink);border-radius:var(--r-chip);transition:width .45s cubic-bezier(.4,0,.2,1)}
-.int-bar{display:flex;gap:4px}
-.int-bar i{flex:1;height:8px;border-radius:var(--r-chip);background:var(--line);position:relative;overflow:hidden}
-.int-bar i::after{content:"";position:absolute;inset:0;background:var(--accent);opacity:0;transition:opacity .2s}
-.int-bar i.s1::after{opacity:.4}
-.int-bar i.s2::after{opacity:1}
+.int-bar{display:flex;gap:4px;align-items:center;height:10px}
+.int-bar i{flex:1;height:6px;border-radius:var(--r-chip);background:var(--line);position:relative;overflow:hidden;transition:height .2s}
+.int-bar i.cur{height:10px}
+.int-bar i::after{content:"";position:absolute;left:0;top:0;bottom:0;width:0;background:var(--accent);transition:width .2s}
+.int-bar i.s1::after{width:50%}
+.int-bar i.s2::after{width:100%}
 .int-no{font-family:var(--f-no);font-size:var(--fs-28);font-weight:800;line-height:1.25;letter-spacing:-.3px;margin-bottom:var(--sp-3)}
 .int-tr{font-size:var(--fs-16);color:var(--ink-2);margin-bottom:var(--sp-4)}
-.int-btn{min-height:48px;margin-top:var(--sp-3);margin-bottom:0}
-.home-go + .int-btn{margin-top:calc(var(--sp-3) - 16px)}
+.int-btn{min-height:56px;margin-top:var(--sp-3);margin-bottom:0}
+.home-go + .int-btn{margin-top:-4px}
+.night-card .int-btn.submit-btn.retry-btn{background:transparent!important;border:1px solid rgba(255,255,255,.2)!important;color:#fff!important;box-shadow:none!important;text-align:left;padding:14px var(--sp-4);border-radius:var(--r-sheet)!important;font-size:var(--fs-16);font-weight:700}
+.night-card .int-btn.submit-btn.retry-btn:active{background:rgba(255,255,255,.06)!important}
+.fb-title.fb-neutral{background:var(--surface-2,var(--surface))!important;color:var(--ink)!important;border:1px solid var(--line)}
+.int-no .wc{border-bottom:1px dotted var(--ink-3);padding-bottom:4px}
 .int-sub{font-size:var(--fs-16);color:var(--ink-2);margin:0 0 var(--sp-4)}
 .int-note{font-size:var(--fs-14);color:var(--ink-3);margin:var(--sp-3) 0;text-align:center}
 .int-seg{margin-bottom:var(--sp-4)!important}
@@ -3031,8 +3036,8 @@ function ic(n,sz){
 }
 
 const UI = {
-ru:{next:"Далее",start:"Начать",skip:"Пропустить",n_q:"Как тебя зовут?<br>Имя появится на главном экране —<br>твой поход будет именным.",n_ph:"Твоё имя",save:"Сохранить",days1:"день",days2:"дня",days5:"дней",streak_lbl:"занятий подряд",goal_lbl:"цель дня: 1 урок (75 фраз)",cap_ph:"Выучено фраз",cap_w:"Выучено слов",of:"из",lessons:"Уроки",lessons_sub:"17 уроков · уровень A1–A2 · 3–4 смысловых блока в каждом",lesson:"Урок",cont:"▶ Продолжить: Урок",mist:"Повторение",srs_rev:"Повторение слов",plan:"<CL>Сегодня по плану тренировка —",footer:"Gå! — норвежский тренажёр · версия 2.3<br>Автор:",l_of:"из",phr_done:"Пройдено",phrases:"фраз",start_l:"▶ Начать урок",cont_b:"▶ Продолжить:",repeat_l:"<RD>Повторить урок",sec1:"<BK>Подготовка",sec2:"<CH>Практика по блокам",sec3:"<FL>Проверка знаний",w_card:"Слова урока",w_learned:" — выучены",exam:"Экзамен",exam_q:"вопросов без подсказок",exam_ok:" — сдан",back_l:"← Урок",back_ls:"← Уроки",back_h:"← Курсы",mode_c:"<CH>Чипы",mode_t:"<KB>Текст",mode_l:"<HD>На слух",your:"Твой ответ",pool:"Слова",tap_w:"Нажимай слова ниже, чтобы составить предложение…",inp_ph:"Напиши предложение по-норвежски…",check:"Проверить",nxt:"Следующее →",again:"<RD>Ещё раз",play:"<SD>Прослушать",l_hint:"Собери фразу, которую услышал",ok_t:"<OK>Правильно! Bra jobbet!",err_t:"<NO>Не совсем верно",v2_t:"<BT>Правило V2",rule:"<BK><b>Правило:</b> ",corr:"Правильный ответ:",listen:"<SD>Послушать",mic:"<MC>Произнести",mic_l:"<MC>Слушаю…",mic_a:"<MC>Ещё раз",pron_ok:"<OK>Отличное произношение! Bra uttale!",pron_h:"<ER>Услышал:",pron_r:"Послушай образец и попробуй ещё раз",mic_e:"Микрофон недоступен — проверь разрешения браузера",done_l:"Урок завершён!",done_p:"— готово!",nxt_b:"Дальше:",all_done:"<TR>Все уроки пройдены!",st_ok:"Правильно",st_err:"Ошибок",st_acc:"Точность",to_ls:"К списку уроков",share:"<SH>Поделиться успехом",know:"Знаю <CK>",tap_f:"Нажми, чтобы увидеть перевод",deck:"Осталось в колоде:",w_of:"Слова урока",w_pct:"выучено",w_srs:"Повторение слов · интервалы SRS",in_d:"в колоде:",w_done:"Слова выучены!",w_rev_done:"Слова повторены!",sched:"<CL>Расписание",sched_s:"Выбери дни занятий — и не сбивайся с шага",cal_leg:"занимался · рамка — по плану",days_t:"Дни занятий",time_t:"Время напоминания",ics:"<CL>Добавить в календарь телефона (.ics)",notif_on:" Напоминания браузера включены",notif_off:" Включить напоминания браузера",sched_n:"Браузерные напоминания работают, пока Gå! открыт.<br>Для гарантии добавь расписание в календарь телефона.",pick_days:"Сначала выбери дни занятий",rev_h:"<RD>Повторение",exam_h:"<GC>Экзамен · Урок",lang:"<GL>Язык / Language",wd:["Пн","Вт","Ср","Чт","Пт","Сб","Вс"],mo:["Январь","Февраль","Март","Апрель","Май","Июнь","Июль","Август","Сентябрь","Октябрь","Ноябрь","Декабрь"]},
-en:{next:"Next",start:"Start",skip:"Skip",n_q:"What is your name?<br>It will appear on the home screen —<br>your voyage gets personal.",n_ph:"Your name",save:"Save",days1:"day",days2:"days",days5:"days",streak_lbl:"day streak",goal_lbl:"daily goal: 1 lesson (75 phrases)",cap_ph:"Phrases learned",cap_w:"Words learned",of:"of",lessons:"Lessons",lessons_sub:"17 lessons · level A1–A2 · 3–4 thematic blocks each",lesson:"Lesson",cont:"▶ Continue: Lesson",mist:"Review",srs_rev:"Word review",plan:"<CL>Training planned for today —",footer:"Gå! — Norwegian trainer · version 2.3<br>Author:",l_of:"of",phr_done:"Completed",phrases:"phrases",start_l:"▶ Start lesson",cont_b:"▶ Continue:",repeat_l:"<RD>Repeat lesson",sec1:"<BK>Preparation",sec2:"<CH>Practice by blocks",sec3:"<FL>Knowledge check",w_card:"Lesson vocabulary",w_learned:" — learned",exam:"Exam",exam_q:"questions, no hints",exam_ok:" — passed",back_l:"← Lesson",back_ls:"← Lessons",back_h:"← Courses",mode_c:"<CH>Chips",mode_t:"<KB>Typing",mode_l:"<HD>Listening",your:"Your answer",pool:"Words",tap_w:"Tap the words below to build the sentence…",inp_ph:"Type the sentence in Norwegian…",check:"Check",nxt:"Next →",again:"<RD>Try again",play:"<SD>Play",l_hint:"Build the phrase you heard",ok_t:"<OK>Correct! Bra jobbet!",err_t:"<NO>Not quite",v2_t:"<BT>V2 rule",rule:"<BK><b>Rule:</b> ",corr:"Correct answer:",listen:"<SD>Listen",mic:"<MC>Pronounce",mic_l:"<MC>Listening…",mic_a:"<MC>Once more",pron_ok:"<OK>Great pronunciation! Bra uttale!",pron_h:"<ER>I heard:",pron_r:"Listen to the sample and try again",mic_e:"Microphone unavailable — check browser permissions",done_l:"Lesson complete!",done_p:"— done!",nxt_b:"Next:",all_done:"<TR>All lessons complete!",st_ok:"Correct",st_err:"Mistakes",st_acc:"Accuracy",to_ls:"Back to lessons",share:"<SH>Share progress",know:"I know <CK>",tap_f:"Tap to see the translation",deck:"Left in deck:",w_of:"Lesson vocabulary",w_pct:"learned",w_srs:"Word review · SRS intervals",in_d:"in deck:",w_done:"Words learned!",w_rev_done:"Review complete!",sched:"<CL>Schedule",sched_s:"Pick your training days — keep going",cal_leg:"practiced · outline — planned",days_t:"Training days",time_t:"Reminder time",ics:"<CL>Add to phone calendar (.ics)",notif_on:" Browser reminders on",notif_off:" Enable browser reminders",sched_n:"Browser reminders work while Gå! is open.<br>For reliability add the schedule to your phone calendar.",pick_days:"Pick training days first",rev_h:"<RD>Review",exam_h:"<GC>Exam · Lesson",lang:"<GL>Language",wd:["Mo","Tu","We","Th","Fr","Sa","Su"],mo:["January","February","March","April","May","June","July","August","September","October","November","December"]},
+ru:{next:"Далее",start:"Начать",skip:"Пропустить",n_q:"Как тебя зовут?<br>Имя появится на главном экране —<br>твой поход будет именным.",n_ph:"Твоё имя",save:"Сохранить",days1:"день",days2:"дня",days5:"дней",streak_lbl:"занятий подряд",goal_lbl:"цель дня: 1 урок (75 фраз)",cap_ph:"Выучено фраз",cap_w:"Выучено слов",of:"из",lessons:"Уроки",lessons_sub:"17 уроков · уровень A1–A2 · 3–4 смысловых блока в каждом",lesson:"Урок",cont:"▶ Продолжить: Урок",mist:"Повторение",srs_rev:"Повторение слов",plan:"<CL>Сегодня по плану тренировка —",footer:"Gå! — норвежский тренажёр · версия 2.3<br>Автор:",l_of:"из",phr_done:"Пройдено",phrases:"фраз",start_l:"▶ Начать урок",cont_b:"▶ Продолжить:",repeat_l:"<RD>Повторить урок",sec1:"<BK>Подготовка",sec2:"<CH>Практика по блокам",sec3:"<FL>Проверка знаний",w_card:"Слова урока",w_learned:" — выучены",exam:"Экзамен",exam_q:"вопросов без подсказок",exam_ok:" — сдан",back_l:"← Урок",back_ls:"← Уроки",back_h:"← Курсы",mode_c:"<CH>Чипы",mode_t:"<KB>Текст",mode_l:"<HD>На слух",your:"Твой ответ",pool:"Слова",tap_w:"Нажимай слова ниже, чтобы составить предложение…",inp_ph:"Напиши по-норвежски",check:"Проверить",nxt:"Следующее →",again:"<RD>Ещё раз",play:"<SD>Прослушать",l_hint:"Собери фразу, которую услышал",ok_t:"<OK>Правильно! Bra jobbet!",err_t:"<NO>Не совсем верно",v2_t:"<BT>Правило V2",rule:"<BK><b>Правило:</b> ",corr:"Правильный ответ:",listen:"<SD>Послушать",mic:"<MC>Произнести",mic_l:"<MC>Слушаю…",mic_a:"<MC>Ещё раз",pron_ok:"<OK>Отличное произношение! Bra uttale!",pron_h:"<ER>Услышал:",pron_r:"Послушай образец и попробуй ещё раз",mic_e:"Микрофон недоступен — проверь разрешения браузера",done_l:"Урок завершён!",done_p:"— готово!",nxt_b:"Дальше:",all_done:"<TR>Все уроки пройдены!",st_ok:"Правильно",st_err:"Ошибок",st_acc:"Точность",to_ls:"К списку уроков",share:"<SH>Поделиться успехом",know:"Знаю <CK>",tap_f:"Нажми, чтобы увидеть перевод",deck:"Осталось в колоде:",w_of:"Слова урока",w_pct:"выучено",w_srs:"Повторение слов · интервалы SRS",in_d:"в колоде:",w_done:"Слова выучены!",w_rev_done:"Слова повторены!",sched:"<CL>Расписание",sched_s:"Выбери дни занятий — и не сбивайся с шага",cal_leg:"занимался · рамка — по плану",days_t:"Дни занятий",time_t:"Время напоминания",ics:"<CL>Добавить в календарь телефона (.ics)",notif_on:" Напоминания браузера включены",notif_off:" Включить напоминания браузера",sched_n:"Браузерные напоминания работают, пока Gå! открыт.<br>Для гарантии добавь расписание в календарь телефона.",pick_days:"Сначала выбери дни занятий",rev_h:"<RD>Повторение",exam_h:"<GC>Экзамен · Урок",lang:"<GL>Язык / Language",wd:["Пн","Вт","Ср","Чт","Пт","Сб","Вс"],mo:["Январь","Февраль","Март","Апрель","Май","Июнь","Июль","Август","Сентябрь","Октябрь","Ноябрь","Декабрь"]},
+en:{next:"Next",start:"Start",skip:"Skip",n_q:"What is your name?<br>It will appear on the home screen —<br>your voyage gets personal.",n_ph:"Your name",save:"Save",days1:"day",days2:"days",days5:"days",streak_lbl:"day streak",goal_lbl:"daily goal: 1 lesson (75 phrases)",cap_ph:"Phrases learned",cap_w:"Words learned",of:"of",lessons:"Lessons",lessons_sub:"17 lessons · level A1–A2 · 3–4 thematic blocks each",lesson:"Lesson",cont:"▶ Continue: Lesson",mist:"Review",srs_rev:"Word review",plan:"<CL>Training planned for today —",footer:"Gå! — Norwegian trainer · version 2.3<br>Author:",l_of:"of",phr_done:"Completed",phrases:"phrases",start_l:"▶ Start lesson",cont_b:"▶ Continue:",repeat_l:"<RD>Repeat lesson",sec1:"<BK>Preparation",sec2:"<CH>Practice by blocks",sec3:"<FL>Knowledge check",w_card:"Lesson vocabulary",w_learned:" — learned",exam:"Exam",exam_q:"questions, no hints",exam_ok:" — passed",back_l:"← Lesson",back_ls:"← Lessons",back_h:"← Courses",mode_c:"<CH>Chips",mode_t:"<KB>Typing",mode_l:"<HD>Listening",your:"Your answer",pool:"Words",tap_w:"Tap the words below to build the sentence…",inp_ph:"Write it in Norwegian",check:"Check",nxt:"Next →",again:"<RD>Try again",play:"<SD>Play",l_hint:"Build the phrase you heard",ok_t:"<OK>Correct! Bra jobbet!",err_t:"<NO>Not quite",v2_t:"<BT>V2 rule",rule:"<BK><b>Rule:</b> ",corr:"Correct answer:",listen:"<SD>Listen",mic:"<MC>Pronounce",mic_l:"<MC>Listening…",mic_a:"<MC>Once more",pron_ok:"<OK>Great pronunciation! Bra uttale!",pron_h:"<ER>I heard:",pron_r:"Listen to the sample and try again",mic_e:"Microphone unavailable — check browser permissions",done_l:"Lesson complete!",done_p:"— done!",nxt_b:"Next:",all_done:"<TR>All lessons complete!",st_ok:"Correct",st_err:"Mistakes",st_acc:"Accuracy",to_ls:"Back to lessons",share:"<SH>Share progress",know:"I know <CK>",tap_f:"Tap to see the translation",deck:"Left in deck:",w_of:"Lesson vocabulary",w_pct:"learned",w_srs:"Word review · SRS intervals",in_d:"in deck:",w_done:"Words learned!",w_rev_done:"Review complete!",sched:"<CL>Schedule",sched_s:"Pick your training days — keep going",cal_leg:"practiced · outline — planned",days_t:"Training days",time_t:"Reminder time",ics:"<CL>Add to phone calendar (.ics)",notif_on:" Browser reminders on",notif_off:" Enable browser reminders",sched_n:"Browser reminders work while Gå! is open.<br>For reliability add the schedule to your phone calendar.",pick_days:"Pick training days first",rev_h:"<RD>Review",exam_h:"<GC>Exam · Lesson",lang:"<GL>Language",wd:["Mo","Tu","We","Th","Fr","Sa","Su"],mo:["January","February","March","April","May","June","July","August","September","October","November","December"]},
 uk:{next:"Далі",start:"Почати",skip:"Пропустити",n_q:"Як тебе звати?<br>Ім'я з'явиться на головному екрані —<br>твій похід буде іменним.",n_ph:"Твоє ім'я",save:"Зберегти",days1:"день",days2:"дні",days5:"днів",streak_lbl:"занять поспіль",goal_lbl:"ціль дня: 1 урок (75 фраз)",cap_ph:"Вивчено фраз",cap_w:"Вивчено слів",of:"з",lessons:"Уроки",lessons_sub:"17 уроків · рівень A1–A2 · 3–4 смислові блоки в кожному",lesson:"Урок",cont:"▶ Продовжити: Урок",mist:"Повторення",srs_rev:"Повторення слів",plan:"<CL>Сьогодні за планом тренування —",footer:"Gå! — норвезький тренажер · версія 2.3<br>Автор:",l_of:"з",phr_done:"Пройдено",phrases:"фраз",start_l:"▶ Почати урок",cont_b:"▶ Продовжити:",repeat_l:"<RD>Повторити урок",sec1:"<BK>Підготовка",sec2:"<CH>Практика за блоками",sec3:"<FL>Перевірка знань",w_card:"Слова уроку",w_learned:" — вивчені",exam:"Екзамен",exam_q:"питань без підказок",exam_ok:" — складено",back_l:"← Урок",back_ls:"← Уроки",back_h:"← Курси",mode_c:"<CH>Чипи",mode_t:"<KB>Текст",mode_l:"<HD>На слух",your:"Твоя відповідь",pool:"Слова",tap_w:"Натискай слова нижче, щоб скласти речення…",inp_ph:"Напиши речення норвезькою…",check:"Перевірити",nxt:"Наступне →",again:"<RD>Ще раз",play:"<SD>Прослухати",l_hint:"Збери фразу, яку почув",ok_t:"<OK>Правильно! Bra jobbet!",err_t:"<NO>Не зовсім так",v2_t:"<BT>Правило V2",rule:"<BK><b>Правило:</b> ",corr:"Правильна відповідь:",listen:"<SD>Послухати",mic:"<MC>Вимовити",mic_l:"<MC>Слухаю…",mic_a:"<MC>Ще раз",pron_ok:"<OK>Чудова вимова! Bra uttale!",pron_h:"<ER>Почув:",pron_r:"Послухай зразок і спробуй ще раз",mic_e:"Мікрофон недоступний — перевір дозволи браузера",done_l:"Урок завершено!",done_p:"— готово!",nxt_b:"Далі:",all_done:"<TR>Усі уроки пройдено!",st_ok:"Правильно",st_err:"Помилок",st_acc:"Точність",to_ls:"До списку уроків",share:"<SH>Поділитися успіхом",know:"Знаю <CK>",tap_f:"Натисни, щоб побачити переклад",deck:"Залишилось у колоді:",w_of:"Слова уроку",w_pct:"вивчено",w_srs:"Повторення слів · інтервали SRS",in_d:"у колоді:",w_done:"Слова вивчено!",w_rev_done:"Слова повторено!",sched:"<CL>Розклад",sched_s:"Обери дні занять — і не збивайся з кроку",cal_leg:"займався · рамка — за планом",days_t:"Дні занять",time_t:"Час нагадування",ics:"<CL>Додати в календар телефону (.ics)",notif_on:" Нагадування браузера увімкнено",notif_off:" Увімкнути нагадування браузера",sched_n:"Браузерні нагадування працюють, поки Gå! відкрито.<br>Для гарантії додай розклад у календар телефону.",pick_days:"Спочатку обери дні занять",rev_h:"<RD>Повторення",exam_h:"<GC>Екзамен · Урок",lang:"<GL>Мова",wd:["Пн","Вт","Ср","Чт","Пт","Сб","Нд"],mo:["Січень","Лютий","Березень","Квітень","Травень","Червень","Липень","Серпень","Вересень","Жовтень","Листопад","Грудень"]},
 pl:{next:"Dalej",start:"Start",skip:"Pomiń",n_q:"Jak masz na imię?<br>Imię pojawi się na ekranie głównym —<br>Twoja wyprawa będzie osobista.",n_ph:"Twoje imię",save:"Zapisz",days1:"dzień",days2:"dni",days5:"dni",streak_lbl:"dni z rzędu",goal_lbl:"cel dnia: 1 lekcja (75 fraz)",cap_ph:"Nauczone frazy",cap_w:"Nauczone słowa",of:"z",lessons:"Lekcje",lessons_sub:"17 lekcji · poziom A1–A2 · 3–4 bloki tematyczne",lesson:"Lekcja",cont:"▶ Kontynuuj: Lekcja",mist:"Powtórka",srs_rev:"Powtórka słów",plan:"<CL>Dziś zaplanowany trening —",footer:"Gå! — trener norweskiego · wersja 2.3<br>Autor:",l_of:"z",phr_done:"Ukończono",phrases:"fraz",start_l:"▶ Rozpocznij lekcję",cont_b:"▶ Kontynuuj:",repeat_l:"<RD>Powtórz lekcję",sec1:"<BK>Przygotowanie",sec2:"<CH>Praktyka w blokach",sec3:"<FL>Sprawdzian wiedzy",w_card:"Słówka lekcji",w_learned:" — nauczone",exam:"Egzamin",exam_q:"pytań bez podpowiedzi",exam_ok:" — zdany",back_l:"← Lekcja",back_ls:"← Lekcje",back_h:"← Kursy",mode_c:"<CH>Klocki",mode_t:"<KB>Pisanie",mode_l:"<HD>Ze słuchu",your:"Twoja odpowiedź",pool:"Słowa",tap_w:"Dotykaj słów poniżej, aby ułożyć zdanie…",inp_ph:"Napisz zdanie po norwesku…",check:"Sprawdź",nxt:"Następne →",again:"<RD>Jeszcze raz",play:"<SD>Odtwórz",l_hint:"Ułóż frazę, którą usłyszałeś",ok_t:"<OK>Dobrze! Bra jobbet!",err_t:"<NO>Nie do końca",v2_t:"<BT>Reguła V2",rule:"<BK><b>Reguła:</b> ",corr:"Poprawna odpowiedź:",listen:"<SD>Posłuchaj",mic:"<MC>Wymów",mic_l:"<MC>Słucham…",mic_a:"<MC>Jeszcze raz",pron_ok:"<OK>Świetna wymowa! Bra uttale!",pron_h:"<ER>Usłyszałem:",pron_r:"Posłuchaj wzoru i spróbuj ponownie",mic_e:"Mikrofon niedostępny — sprawdź uprawnienia",done_l:"Lekcja ukończona!",done_p:"— gotowe!",nxt_b:"Dalej:",all_done:"<TR>Wszystkie lekcje ukończone!",st_ok:"Poprawnie",st_err:"Błędy",st_acc:"Dokładność",to_ls:"Do listy lekcji",share:"<SH>Udostępnij postęp",know:"Znam <CK>",tap_f:"Dotknij, aby zobaczyć tłumaczenie",deck:"Zostało w talii:",w_of:"Słówka lekcji",w_pct:"nauczono",w_srs:"Powtórka słów · interwały SRS",in_d:"w talii:",w_done:"Słówka nauczone!",w_rev_done:"Powtórka zakończona!",sched:"<CL>Harmonogram",sched_s:"Wybierz dni nauki — nie zwalniaj kroku",cal_leg:"ćwiczyłeś · ramka — zaplanowane",days_t:"Dni nauki",time_t:"Czas przypomnienia",ics:"<CL>Dodaj do kalendarza telefonu (.ics)",notif_on:" Przypomnienia przeglądarki włączone",notif_off:" Włącz przypomnienia przeglądarki",sched_n:"Przypomnienia działają, gdy Gå! jest otwarte.<br>Dla pewności dodaj harmonogram do kalendarza.",pick_days:"Najpierw wybierz dni nauki",rev_h:"<RD>Powtórka",exam_h:"<GC>Egzamin · Lekcja",lang:"<GL>Język",wd:["Pn","Wt","Śr","Cz","Pt","So","Nd"],mo:["Styczeń","Luty","Marzec","Kwiecień","Maj","Czerwiec","Lipiec","Sierpień","Wrzesień","Październik","Listopad","Grudzień"]},
 es:{next:"Siguiente",start:"Empezar",skip:"Omitir",n_q:"¿Cómo te llamas?<br>Tu nombre aparecerá en la pantalla principal —<br>tu travesía será personal.",n_ph:"Tu nombre",save:"Guardar",days1:"día",days2:"días",days5:"días",streak_lbl:"días seguidos",goal_lbl:"meta diaria: 1 lección (75 frases)",cap_ph:"Frases aprendidas",cap_w:"Palabras aprendidas",of:"de",lessons:"Lecciones",lessons_sub:"17 lecciones · nivel A1–A2 · 3–4 bloques temáticos",lesson:"Lección",cont:"▶ Continuar: Lección",mist:"Repaso",srs_rev:"Repaso de palabras",plan:"<CL>Hoy hay entrenamiento —",footer:"Gå! — entrenador de noruego · versión 2.3<br>Autor:",l_of:"de",phr_done:"Completadas",phrases:"frases",start_l:"▶ Empezar lección",cont_b:"▶ Continuar:",repeat_l:"<RD>Repetir lección",sec1:"<BK>Preparación",sec2:"<CH>Práctica por bloques",sec3:"<FL>Comprobación",w_card:"Vocabulario de la lección",w_learned:" — aprendido",exam:"Examen",exam_q:"preguntas sin pistas",exam_ok:" — aprobado",back_l:"← Lección",back_ls:"← Lecciones",back_h:"← Cursos",mode_c:"<CH>Fichas",mode_t:"<KB>Teclado",mode_l:"<HD>De oído",your:"Tu respuesta",pool:"Palabras",tap_w:"Toca las palabras para formar la frase…",inp_ph:"Escribe la frase en noruego…",check:"Comprobar",nxt:"Siguiente →",again:"<RD>Otra vez",play:"<SD>Escuchar",l_hint:"Arma la frase que escuchaste",ok_t:"<OK>¡Correcto! Bra jobbet!",err_t:"<NO>No exactamente",v2_t:"<BT>Regla V2",rule:"<BK><b>Regla:</b> ",corr:"Respuesta correcta:",listen:"<SD>Escuchar",mic:"<MC>Pronunciar",mic_l:"<MC>Escuchando…",mic_a:"<MC>Otra vez",pron_ok:"<OK>¡Gran pronunciación! Bra uttale!",pron_h:"<ER>Escuché:",pron_r:"Escucha el ejemplo e inténtalo de nuevo",mic_e:"Micrófono no disponible — revisa los permisos",done_l:"¡Lección completada!",done_p:"— ¡listo!",nxt_b:"Siguiente:",all_done:"<TR>¡Todas las lecciones completadas!",st_ok:"Correctas",st_err:"Errores",st_acc:"Precisión",to_ls:"A la lista de lecciones",share:"<SH>Compartir progreso",know:"Lo sé <CK>",tap_f:"Toca para ver la traducción",deck:"Quedan en el mazo:",w_of:"Vocabulario de la lección",w_pct:"aprendido",w_srs:"Repaso de palabras · intervalos SRS",in_d:"en el mazo:",w_done:"¡Palabras aprendidas!",w_rev_done:"¡Repaso completado!",sched:"<CL>Horario",sched_s:"Elige tus días — y sigue adelante",cal_leg:"practicaste · borde — planificado",days_t:"Días de estudio",time_t:"Hora del recordatorio",ics:"<CL>Añadir al calendario del teléfono (.ics)",notif_on:" Recordatorios del navegador activados",notif_off:" Activar recordatorios del navegador",sched_n:"Los recordatorios funcionan mientras Gå! está abierto.<br>Para asegurar, añade el horario al calendario.",pick_days:"Primero elige los días",rev_h:"<RD>Repaso",exam_h:"<GC>Examen · Lección",lang:"<GL>Idioma",wd:["Lu","Ma","Mi","Ju","Vi","Sá","Do"],mo:["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"]}
@@ -3272,13 +3277,13 @@ function intFirst(now){
   return { s:1, d:intMorning(now) };
 }
 function intFind(no){ const q = intQ(); for(let i=0;i<q.length;i++) if(q[i][0] === no) return i; return -1; }
-function intAdd(nos, now){
+function intAdd(nos, now, weak){
   now = now || Date.now();
   const q = intQ(), f = intFirst(now);
   nos.forEach(function(no){
     const i = intFind(no);
     if(i >= 0) q.splice(i, 1);                 // выучил заново — расписание с начала
-    q.push([no, f.s, f.d]);
+    q.push(weak && weak.indexOf(no) >= 0 ? [no, f.s, f.d, 1] : [no, f.s, f.d]);   // 4-й элемент: не встала — повторим первой
   });
   while(q.length > INT_CAP){                   // переполнение: убираем самую продвинутую
     let out = 0;
@@ -3289,7 +3294,7 @@ function intAdd(nos, now){
 }
 function intDueList(now){
   now = now || Date.now();
-  return intQ().filter(function(e){ return e[2] <= now; }).sort(function(a,b){ return a[2] - b[2]; });
+  return intQ().filter(function(e){ return e[2] <= now; }).sort(function(a,b){ return (b[3]||0) - (a[3]||0) || a[2] - b[2]; });
 }
 function intPass(no, now){
   now = now || Date.now();
@@ -3297,7 +3302,7 @@ function intPass(no, now){
   if(i < 0) return;
   const s = q[i][1] + 1;
   if(s > INT_LAST) q.splice(i, 1);
-  else { q[i][1] = s; q[i][2] = intDueFor(s, now); }
+  else { q[i] = [no, s, intDueFor(s, now)]; }
   saveMeta();
 }
 // Ошибка на повторе: ступень не выше «утра», срок — следующее утро.
@@ -3305,7 +3310,12 @@ function intFail(no, now){
   now = now || Date.now();
   const q = intQ(), i = intFind(no);
   if(i < 0) return;
-  q[i][1] = Math.min(q[i][1], 1); q[i][2] = intMorning(now);
+  q[i] = [no, Math.min(q[i][1], 1), intMorning(now), 1];
+  saveMeta();
+}
+function intMarkWeak(nos){
+  const q = intQ();
+  nos.forEach(function(no){ const i = intFind(no); if(i >= 0) q[i][3] = 1; });
   saveMeta();
 }
 // Прогноз нагрузки: сколько повторов выпадет на каждый из ближайших дней (0 = сегодня),
@@ -3983,7 +3993,9 @@ function startMistakes(){
   state.ai = false;
   intDrop();
   state.after = null; state.roundN = intPhraseList().length;
-  state.questions = shuffle(q);
+  state.lockNos = {};
+  q.slice(0, state.roundN).forEach(function(x){ state.lockNos[x.no] = 1; });
+  state.questions = intOrder(q.slice(0, state.roundN)).concat(shuffle(q.slice(state.roundN)));
   state.idx = 0; state.phase = "answering"; state.feedback = null;
   state.selected = []; state.textVal = "";
   state.score = 0; state.correctCount = 0;
@@ -4016,6 +4028,16 @@ function startExam(i){
 // ─── EXERCISE RENDER ──────────────────────────────────
 function render(){
   micStop();
+  // Закрепление новых фраз — всегда «напиши по памяти»: припоминание, а не выбор из чипов.
+  let lockedQ = false;
+  if(state.review && state.lockNos){
+    const cq = state.questions[state.idx];
+    if(cq && state.lockNos[cq.no]){
+      lockedQ = true;
+      if(state.modeBack === undefined) state.modeBack = state.mode;
+      state.mode = 'text';
+    } else if(state.modeBack !== undefined){ state.mode = state.modeBack; state.modeBack = undefined; }
+  }
   const {questions,idx,mode,phase,pool,selected,textVal,feedback,score} = state;
   const total = questions.length;
   const current = questions[idx];
@@ -4135,6 +4157,7 @@ function render(){
     }
   }
 
+  if(mode==="text") feedbackHTML = feedbackHTML.replace('и собери заново','и напиши заново').replace('and rebuild it','and write it again');
   const wordsTappable = phase==="revealed" && feedback && feedback.type==="ok";
   const hintOn = phase==="answering" && state.hintAt!==undefined && state.hintAt!==null;
   const builderHTML =
@@ -4169,7 +4192,7 @@ function render(){
     ' onkeydown="if(event.key===\'Enter\'&&state.phase===\'answering\')doSubmit()">';
 
   let buttonsHTML;
-  if(phase==="revealed" && feedback && feedback.type!=="ok" && !state.retryUsed && !state.exam && !state.int){
+  if(phase==="revealed" && feedback && feedback.type!=="ok" && !state.retryUsed && !state.exam && !state.int && !lockedQ){
     buttonsHTML = '<div class="btn-row">' +
       '<button class="submit-btn retry-btn" onclick="doRetry()">' + t('again') + '</button>' +
       '<button class="submit-btn next" onclick="advance()">' + t('nxt') + '</button>' +
@@ -4185,7 +4208,7 @@ function render(){
     '<div class="header">' +
       '<div class="logo" onclick="renderCourses()">' + GA_LOGO + '</div>' +
       '<div class="header-right">' +
-        '<div class="score-chip">' + ic('star',16) + '<span>' + score + ' / ' + idx + '</span></div>' +
+        ((state.review && state.roundN) ? '' : '<div class="score-chip">' + ic('star',16) + '<span>' + score + ' / ' + idx + '</span></div>') +
         '<button class="hb" aria-label="' + plainLabel(state.ai?(enLang()?'Vocabulary':'Словарь'):(state.review?t('back_h'):t('back_l'))) + '" onclick="' + backCall + '">' + ic('caret-left',20) + '</button>' +
       '</div>' +
     '</div>' +
@@ -4196,14 +4219,14 @@ function render(){
       '</div>' +
       '<div class="progress-track"><div class="progress-fill" style="width:' + pct + '%"></div></div>' +
     '</div>' +
-    '<div class="mode-toggle">' +
+    (lockedQ ? '' : '<div class="mode-toggle">' +
       '<button class="mode-btn ' + (mode==="builder"?"active":"") + '" onclick="switchMode(\'builder\')">' + t('mode_c') + '</button>' +
       '<button class="mode-btn ' + (mode==="text"?"active":"") + '" onclick="switchMode(\'text\')">' + t('mode_t') + '</button>' +
       '<button class="mode-btn ' + (mode==="listen"?"active":"") + '" onclick="switchMode(\'listen\')">' + t('mode_l') + '</button>' +
-    '</div>'
+    '</div>')
     )) +
     '<div class="card" id="q-card">' +
-      '<div class="type-badge">' + (state.int ? intStepLabel() : typeLabel(current.type)) + '</div>' +
+      '<div class="type-badge">' + (state.int ? intStepLabel() : lockedQ ? IL('Напиши по памяти','Write it from memory') : typeLabel(current.type)) + '</div>' +
       (mode==="listen" && phase!=="revealed"
         ? '<button class="play-big" onclick="speak(state.questions[state.idx].no)">' + t('play') + '</button>' +
           '<div class="listen-hint">' + t('l_hint') +
@@ -4544,12 +4567,13 @@ function intHead(){
   } else {
     // сегмент реагирует сразу на ответ: верно — на ступень выше, ошибка — падает в «пусто»
     const cur = (state.phase === 'revealed' && state.feedback && !I.gate) ? I.items[I.queue[0]] : null;
+    const curI = I.ph === 'g' ? (I.introI >= 0 ? I.introI : I.queue[0]) : -1;
     const lv = I.items.map(function(it){
       if(it !== cur) return Math.min(it.c, 2);
       return state.feedback.type === 'ok' ? Math.min(it.c + 1, 2) : 0;
     });
     right = lv.filter(function(v){ return v >= 2; }).length + ' / ' + I.items.length;
-    bar = '<div class="int-bar">' + lv.map(function(v){ return '<i class="s' + v + '"></i>'; }).join('') + '</div>';
+    bar = '<div class="int-bar">' + lv.map(function(v, ix){ return '<i class="s' + v + (ix === curI && !I.gate ? ' cur' : '') + '"></i>'; }).join('') + '</div>';
   }
   return '<div class="header">' +
       '<div class="logo" onclick="intLeave()">' + GA_LOGO + '</div>' +
@@ -4557,7 +4581,12 @@ function intHead(){
     '</div>' +
     '<div class="progress-section"><div class="progress-meta"><span>' + lab + '</span><span>' + right + '</span></div>' + bar + '</div>';
 }
-function intDrop(){ if(state.int && state.int.prevMode) state.mode = state.int.prevMode; state.int = null; }
+function intDrop(){
+  if(state.int && state.int.prevMode) state.mode = state.int.prevMode;
+  state.int = null;
+  if(state.modeBack !== undefined){ state.mode = state.modeBack; state.modeBack = undefined; }
+  state.lockNos = null;
+}
 function intLeave(){
   const I = state.int;
   if(I && I.prevMode) state.mode = I.prevMode;
@@ -4601,7 +4630,7 @@ function intNextQ(){
 }
 function intStepLabel(){
   const I = state.int;
-  if(I.ph === 'f') return IL('Проверка','Check');
+  if(I.ph === 'f') return IL('Без подсказок','No hints');
   return state.mode === 'text' ? IL('Напиши по памяти','Write it from memory') : IL('Собери фразу','Build the phrase');
 }
 // Вызывается из advance(), когда ответ уже показан.
@@ -4612,7 +4641,7 @@ function intAdvance(){
   const ok = !!(state.feedback && state.feedback.type === 'ok');
   if(ok) bumpDaily();                         // в кольцо фраз идёт каждый верный ответ
   if(I.ph === 'f'){
-    if(ok) I.finOk++;
+    if(ok) I.finOk++; else { (I.finBad = I.finBad || []).push(state.questions[0].no); }
     I.finIdx++;
     if(I.finIdx >= I.fin.length){ intFinish(); return; }
     intNextQ(); return;
@@ -4629,7 +4658,7 @@ function intAdvance(){
 function intGroupDone(){
   const I = state.int;
   const stood = I.items.filter(function(it){ return it.c >= 2; }).length;
-  intAdd(I.items.map(function(it){ return it.q.no; }));          // все показанные фразы — в очередь закрепления
+  intAdd(I.items.map(function(it){ return it.q.no; }), Date.now(), I.items.filter(function(it){ return it.weak; }).map(function(it){ return it.q.no; }));   // все показанные фразы — в очередь закрепления
   setPartProgress(I.l, I.p, I.from + I.g * INT_GROUP + I.items.length);
   touchLesson(I.l);
   meta.isess.g = I.g + 1; saveMeta();
@@ -4641,7 +4670,7 @@ function intGroupDone(){
 }
 function intBeginFinal(){
   const I = state.int;
-  I.ph = 'f'; I.gate = null; I.finIdx = 0; I.finOk = 0;
+  I.ph = 'f'; I.gate = null; I.finIdx = 0; I.finOk = 0; I.finBad = [];
   I.fin = shuffle(I.all);
   meta.isess.ph = 'f'; saveMeta();
   intNextQ();
@@ -4649,9 +4678,10 @@ function intBeginFinal(){
 function intGateHTML(){
   const g = state.int.gate, nx = state.int.g + 2;
   const all = g.stood === g.total;
-  return '<div class="feedback ok"><div class="fb-title">' + (all
-      ? IL('Группа ' + (state.int.g+1) + ': все ' + g.total + ' запомнились', 'Group ' + (state.int.g+1) + ': all ' + g.total + ' stuck')
-      : g.stood + IL(' из ',' of ') + g.total + IL(' — остальные вернутся на повторе',' — the rest will come back in review')) + '</div></div>' +
+  const miss = g.total - g.stood;
+  return '<div class="feedback ok"><div class="fb-title' + (all ? '' : ' fb-neutral') + '">' + (all
+      ? ic('check',16) + ' ' + IL('Группа ' + (state.int.g+1) + ': все ' + g.total + ' запомнились', 'Group ' + (state.int.g+1) + ': all ' + g.total + ' stuck')
+      : g.stood + IL(' из ',' of ') + g.total + IL(' встали · ',' stuck · ') + (miss === 1 ? IL('одну повторим первой',"we'll review the miss first") : IL('остальные повторим первыми',"we'll review the rest first"))) + '</div></div>' +
     '<button class="submit-btn next" onclick="advance()">' + IL('Дальше · группа ','Next · group ') + nx + IL(' из ',' of ') + state.int.groups.length + '</button>';
 }
 // ─── /ИНТЕНСИВ: ПОТОК ───
@@ -4663,9 +4693,9 @@ function intTileHTML(c){
   return '<div class="s-kps int-tiles">' +
     '<div class="s-kp"><b>~' + c.now + '<small>' + L(' мин',' min') + '</small></b><span>' + L('сейчас','now') + '</span></div>' +
     (c.today
-      ? '<div class="s-kp"><b>~' + c.todayMin + '<small>' + L(' мин',' min') + '</small></b><span>' + L('сегодня после ','today after ') + intTime(c.at) + '</span></div>'
+      ? '<div class="s-kp"><b>~' + c.todayMin + '<small>' + L(' мин',' min') + '</small></b><span>' + L('после ','after ') + intTime(c.at) + '</span></div>'
       : '<div class="s-kp"><b>~' + c.tomorrowMin + '<small>' + L(' мин',' min') + '</small></b><span>' + L('завтра','tomorrow') + '</span></div>') +
-    '<div class="s-kp"><b>~' + c.dayMin + '<small>' + L(' мин',' min') + '</small></b><span>' + L('в день на повторы','a day to review') + '</span></div>' +
+    '<div class="s-kp"><b>~' + c.dayMin + '<small>' + L(' мин',' min') + '</small></b><span>' + L('в день','daily') + '</span></div>' +
   '</div>';
 }
 function intSheetHTML(lock, n){
@@ -4677,9 +4707,9 @@ function intSheetHTML(lock, n){
       return '<button class="mode-btn' + (x === n ? ' active' : '') + '" onclick="intSheetDraw(' + (lock === undefined ? 'undefined' : lock) + ',' + x + ')">' + x + ' ' + plural(x,'фраза','фразы','фраз','phrase','phrases') + '</button>';
     }).join('') + '</div>' +
     intTileHTML(c) +
-    '<p class="int-note">' + IL('Без повторов большая часть забудется за неделю','Without review most of it is gone within a week') + '</p>' +
+    '<p class="int-note">' + IL('Без повторов большая часть забудется за\u00a0неделю','Without review most of it is gone within a\u00a0week') + '</p>' +
     '<button class="submit-btn" onclick="intStart(' + tg.l + ',' + tg.p + ',' + n + ')">' + IL('Начать','Start') + '</button>' +
-    '<p class="int-note">' + IL('Выйти можно в любой момент — прогресс сохранится','You can leave any time — progress is saved') + '</p>';
+    '<p class="int-note">' + IL('Выйти можно в любой момент — прогресс\u00a0сохранится','You can leave any time — progress is\u00a0saved') + '</p>';
 }
 function intSheetDraw(lock, n){
   const box = document.querySelector('#modal .modal-box');
@@ -4746,7 +4776,8 @@ function startRound(after, qs){
   screen = 'exercise';
   state.review = true; state.exam = false; state.ai = false;
   state.after = after || null; state.roundN = qs.length;
-  state.questions = shuffle(qs);
+  state.lockNos = {}; qs.forEach(function(q){ state.lockNos[q.no] = 1; });
+  state.questions = intOrder(qs);
   state.idx = 0; state.phase = 'answering'; state.feedback = null;
   state.selected = []; state.textVal = '';
   state.score = 0; state.correctCount = 0;
@@ -4754,15 +4785,19 @@ function startRound(after, qs){
   state.pool = makePool(state.questions[0].no);
   render();
 }
+// Не вставшие фразы — первыми, остальные вперемешку.
+function intOrder(qs){
+  const w = qs.filter(function(q){ const i = intFind(q.no); return i >= 0 && intQ()[i][3]; });
+  return w.concat(shuffle(qs.filter(function(q){ return w.indexOf(q) < 0; })));
+}
 function roundSkip(){ roundOff = Date.now() + 36e5; state.after = null; renderCourses(); }
-function intTileRow(c, skipNow){
+function intTileRow(c){          // финиш: сегодня (если есть) · завтра · в день; плитки делят ширину поровну
   const m = function(n){ return '<b>~' + n + '<small>' + IL(' мин',' min') + '</small></b>'; };
-  const tiles = (skipNow ? '' : '<div class="s-kp">' + m(c.now) + '<span>' + IL('сейчас','now') + '</span></div>') +
-    (c.today
-      ? '<div class="s-kp">' + m(c.todayMin) + '<span>' + IL('сегодня после ','today after ') + intTime(c.at) + '</span></div>'
-      : '<div class="s-kp">' + m(c.tomorrowMin) + '<span>' + IL('завтра','tomorrow') + '</span></div>') +
-    '<div class="s-kp">' + m(c.dayMin) + '<span>' + IL('в день на повторы','a day to review') + '</span></div>';
-  return '<div class="s-kps int-tiles' + (skipNow && !c.today ? ' g2' : skipNow ? '' : '') + '">' + tiles + '</div>';
+  const t = [];
+  if(c.today) t.push('<div class="s-kp">' + m(c.todayMin) + '<span>' + IL('после ','after ') + intTime(c.at) + '</span></div>');
+  t.push('<div class="s-kp">' + m(c.tomorrowMin) + '<span>' + IL('завтра','tomorrow') + '</span></div>');
+  t.push('<div class="s-kp">' + m(c.dayMin) + '<span>' + IL('в день','daily') + '</span></div>');
+  return '<div class="s-kps int-tiles' + (t.length === 2 ? ' g2' : '') + '">' + t.join('') + '</div>';
 }
 function intFinish(){
   const I = state.int;
@@ -4771,17 +4806,17 @@ function intFinish(){
   I.ph = 'done';
   const c = intCost(0);
   c.todayMin = intMin(intDueList(c.at).length * INT_SEC_ROUND);
-  const back = I.fin.length - I.finOk;
+  intMarkWeak(I.finBad || []);                 // ошибки проверки повторим первыми
+  const back = (I.finBad || []).length;
   const full = intWith0(function(){ return partDone(I.l, I.p); });
   const lesson = intWith0(function(){ return LESSONS[I.l]; });
   const title = IL('Интенсив пройден','Intensive complete');
   const sub = IL('Проверка: ','Check: ') + I.finOk + IL(' из ',' of ') + I.fin.length +
-    (back ? ' · ' + back + ' ' + plural(back,'фраза вернётся','фразы вернутся','фраз вернутся','phrase will come back','phrases will come back') + IL(' на повторе',' in review') : '');
+    (back ? ' · ' + (back === 1 ? IL('ошибку повторим первой',"we'll review the miss first") : IL('ошибки повторим первыми',"we'll review the misses first")) : '');
   document.getElementById('app').innerHTML = stateScreen({
     img:'S-lesson-done', h:title,
     p: (full ? IL('Блок «','Block “') + partTitle(lesson.parts[I.p]) + IL('» засчитан. ','” counted. ') : '') + sub,
-    extra: '<p class="int-note" style="margin:var(--sp-4) 0 0">' + IL('Дальше — повторы по расписанию','Review comes next, on schedule') + '</p>' + intTileRow(c, true) +
-           '<p class="int-note">' + IL('Без повторов большая часть забудется за неделю','Without review most of it is gone within a week') + '</p>',
+    extra: '<p class="int-note" style="margin:var(--sp-4) 0 0">' + IL('Дальше — повторы по расписанию','Review comes next, on schedule') + '</p>' + intTileRow(c),
     pri:[IL('На главную','Home'), 'intDrop();renderCourses()'], sec:[IL('К уроку','To the lesson'), 'intDrop();renderLesson(' + I.l + ')'] });
   buzz('win');
 }
