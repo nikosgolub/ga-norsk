@@ -4776,7 +4776,7 @@ function intFinish(){
   const lesson = intWith0(function(){ return LESSONS[I.l]; });
   const title = IL('Интенсив пройден','Intensive complete');
   const sub = IL('Проверка: ','Check: ') + I.finOk + IL(' из ',' of ') + I.fin.length +
-    (back ? IL(' · ' + back + ' ' + plural(back,'фраза вернётся','фразы вернутся','фраз вернутся','phrase will come back','phrases will come back') + ' на повторе','') : '');
+    (back ? ' · ' + back + ' ' + plural(back,'фраза вернётся','фразы вернутся','фраз вернутся','phrase will come back','phrases will come back') + IL(' на повторе',' in review') : '');
   document.getElementById('app').innerHTML = stateScreen({
     img:'S-lesson-done', h:title,
     p: (full ? IL('Блок «','Block “') + partTitle(lesson.parts[I.p]) + IL('» засчитан. ','” counted. ') : '') + sub,
