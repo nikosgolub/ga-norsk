@@ -142,11 +142,13 @@ body.light .season{--pcl:rgba(21,22,26,0.38)}
 .int-bar i.s2::after{width:100%}
 .int-no{font-family:var(--f-no);font-size:var(--fs-28);font-weight:800;line-height:1.25;letter-spacing:-.3px;margin-bottom:var(--sp-3)}
 .int-tr{font-size:var(--fs-16);color:var(--ink-2);margin-bottom:var(--sp-4)}
-.int-btn{min-height:56px;margin-top:var(--sp-3);margin-bottom:0}
-.home-go + .int-btn{margin-top:-4px}
+.day-card .home-go{margin-bottom:0}
+.int-btn{margin-top:0;margin-bottom:0}
+.night-card .int-btn.submit-btn.retry-btn{min-height:56px}
+.day-card .home-go + .int-btn{margin-top:calc(var(--sp-3) - var(--sp-4))}
 .night-card .int-btn.submit-btn.retry-btn{background:transparent!important;border:1px solid rgba(255,255,255,.2)!important;color:#fff!important;box-shadow:none!important;text-align:left;padding:14px var(--sp-4);border-radius:var(--r-sheet)!important;font-size:var(--fs-16);font-weight:700}
 .night-card .int-btn.submit-btn.retry-btn:active{background:rgba(255,255,255,.06)!important}
-.fb-title.fb-neutral{background:var(--surface-2,var(--surface))!important;color:var(--ink)!important;border:1px solid var(--line)}
+body .feedback.ok .fb-title.fb-neutral{background:var(--surface)!important;color:var(--ink)!important;border:1px solid var(--line)}
 .int-no .wc{border-bottom:1px dotted var(--ink-3);padding-bottom:4px}
 .int-sub{font-size:var(--fs-16);color:var(--ink-2);margin:0 0 var(--sp-4)}
 .int-note{font-size:var(--fs-14);color:var(--ink-3);margin:var(--sp-3) 0;text-align:center}
@@ -4083,7 +4085,7 @@ function render(){
       if(state.after){
         const go = state.after; state.after = null;
         app.innerHTML = stateScreen({ img:'S-mistakes', h:L('Закреплено','Locked in'),
-          p: L('Эти фразы вернутся по расписанию','These phrases will come back on schedule'), kps: kps3(), pri:[L('Дальше','Continue'), go] });
+          p: L('Эти фразы вернутся по расписанию','These phrases will come back on schedule'), kps: kps3(), pri:[(/^int/.test(go) ? L('К интенсиву','To intensive') : L('Продолжить урок','Continue the lesson')), go] });
         buzz("win"); return;
       }
       app.innerHTML = stateScreen({ img:'S-mistakes', h:(state.roundN ? L('Закреплено','Locked in') : L('Ошибки разобраны!','Mistakes reviewed!')),
@@ -4747,7 +4749,7 @@ function intBtnHTML(lock){
 function intLabel(lock){
   if(meta.isess) return IL('Продолжить интенсив','Resume intensive');
   const tg = intTarget(lock);
-  return IL('Интенсивом','Intensive') + (tg ? ' · ' + intN(tg.rem) + ' ' + plural(intN(tg.rem),'фраза','фразы','фраз','phrase','phrases') : '');
+  return IL('Интенсивом','Intensive') + (tg ? ' · ' + intN(tg.rem) + ' ' + plural(intN(tg.rem),'фраза','фразы','фраз','phrase','phrases') + ' · ~' + intCost(intN(tg.rem)).now + IL(' мин',' min') : '');
 }
 // ─── /ИНТЕНСИВ: ВХОД И НАСТРОЙКА ───
 
