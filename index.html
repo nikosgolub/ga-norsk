@@ -968,6 +968,7 @@ body.light .builder-answer.wrong-state,body.light .text-input.wrong-state{border
 .rvc-n{font-family:var(--f-no);font-size:var(--fs-40);font-weight:800;line-height:1}
 .rvc-s{font-size:var(--fs-12);color:var(--ink-2);line-height:1.35}
 .rvc-s b{color:var(--ink)}
+.rvc-act{color:var(--accent);font-weight:700}
 .rvc-btn{margin-top:6px;font:inherit;font-size:var(--fs-14);font-weight:700;color:var(--ink);background:transparent;border:1px solid var(--ink);border-radius:var(--r-chip);padding:var(--sp-2) var(--sp-3);cursor:pointer}
 .rvc-btn:disabled{border-color:var(--line);color:var(--ink-3);cursor:default}
 .home-rail{display:flex;flex-direction:column;gap:var(--sp-3);margin-bottom:var(--sp-6)}
@@ -2540,6 +2541,7 @@ function restoreCourse(){
 function resumeLast(){
   const m = meta.last;
   if(!m) return;
+  if(intGuard('resumeLast()')) return;
   const cIdx = m.c || 0;
   if(!COURSES[cIdx] || COURSES[cIdx].soon) return;
   ci = cIdx; LESSONS = COURSES[cIdx].L || []; WORDS = COURSES[cIdx].W || [];
@@ -2697,7 +2699,7 @@ function renderCourses(){
 
   // повторение
   const dueAll = srsDueAll(); let dueN = 0; for(const k in dueAll) dueN += dueAll[k];
-  const rq = reviewQueue(), badN = Math.min(mistakesDue().length, MIST_MAX);
+  const rq = reviewQueue(), badN = Math.min(mistakesDue().length, MIST_MAX), idueN = intPhraseList().length;
   function revCard(col, title, n, note, go, cls){
     return '<div class="rvc ' + cls + '">' +
       '<span class="rvc-k"><i style="background:var(' + col + ')"></i>' + title + '</span>' +
@@ -2710,7 +2712,7 @@ function renderCourses(){
     '<div class="sec-h"><h3>' + L('Повторение','Review') + '</h3><span>' + L('на сегодня','for today') + '</span></div>' +
     '<div class="home-rev">' +
       revCard('--ring-phrases', L('Фразы курса','Course phrases'), rq.length,
-        rq.length ? (badN ? L('С ошибками: <b>','With mistakes: <b>') + badN + '</b>' : L('Из пройденных уроков','From completed lessons')) : L('Пока нечего','Nothing yet'),
+        idueN ? '<span class="rvc-act">' + L('Закрепить','Lock in') + ' · ~' + intMin(idueN * INT_SEC_ROUND) + L(' мин',' min') + '</span>' : rq.length ? (badN ? L('С ошибками: <b>','With mistakes: <b>') + badN + '</b>' : L('Из пройденных уроков','From completed lessons')) : L('Пока нечего','Nothing yet'),
         'startMistakes()', 'rvc-p') +
       revCard('--ring-words', L('Слова','Words'), dueN,
         dueN ? L('Подошёл срок','Due now') : L('Новые появятся завтра','New ones tomorrow'), 'openSrsAll()', 'rvc-w') +
@@ -3232,10 +3234,12 @@ function recapPool(){
   return out;
 }
 function reviewQueue(){
-  const due = mistakesTake();
-  const seen = {}; due.forEach(function(m){ seen[m.no] = 1; });
+  const fresh = intPhraseList();                       // закрепление новых фраз — первым
+  const seen = {}; fresh.forEach(function(q){ seen[q.no] = 1; });
+  const due = mistakesTake().filter(function(m){ return !seen[m.no]; });
+  due.forEach(function(m){ seen[m.no] = 1; });
   const old = shuffle(recapPool().filter(function(q){ return !seen[q.no]; })).slice(0, RECAP_MAX);
-  return due.concat(old);
+  return fresh.concat(due, old);
 }
 function dnum(){ return Math.floor((Date.now()-new Date().getTimezoneOffset()*60000)/864e5); }
 const SRS_INT = [1,3,7,14,30];
@@ -3947,6 +3951,7 @@ function startNextPart(i){
 function startPart(i,p){
   if(!LESSONS || !LESSONS[i] || !LESSONS[i].parts[p]){ renderCourses(); return; }
   if(!partUnlocked(i,p)){ partLockHint(p); return; }
+  if(intGuard('startPart(' + i + ',' + p + ')')) return;
   currentLessonIdx = i;
   currentPartIdx = p;
   screen = "exercise";
@@ -3977,6 +3982,7 @@ function startMistakes(){
   state.exam = false;
   state.ai = false;
   intDrop();
+  state.after = null; state.roundN = intPhraseList().length;
   state.questions = shuffle(q);
   state.idx = 0; state.phase = "answering"; state.feedback = null;
   state.selected = []; state.textVal = "";
@@ -4015,8 +4021,8 @@ function render(){
   const current = questions[idx];
   const pct = Math.round(state.correctCount/total*100);
   const lesson = LESSONS[currentLessonIdx];
-  const headSpan = state.ai ? (ic('star',13) + (enLang()?' Practising your own words':' Тренировка своих слов')) : state.exam ? (t('exam_h') + ' ' + (currentLessonIdx+1)) : state.review ? t('rev_h') : (lesTitle(lesson) + ' · ' + partTitle(lesson.parts[currentPartIdx]));
-  const backCall = state.ai ? 'renderMyWords()' : state.review ? 'renderCourses()' : 'renderLesson(currentLessonIdx)';
+  const headSpan = state.ai ? (ic('star',13) + (enLang()?' Practising your own words':' Тренировка своих слов')) : state.exam ? (t('exam_h') + ' ' + (currentLessonIdx+1)) : state.review ? (state.after ? IL('СНАЧАЛА ПОВТОР · ','REVIEW FIRST · ') + state.roundN + ' ' + plural(state.roundN,'ФРАЗА','ФРАЗЫ','ФРАЗ','PHRASE','PHRASES') : t('rev_h')) : (lesTitle(lesson) + ' · ' + partTitle(lesson.parts[currentPartIdx]));
+  const backCall = state.ai ? 'renderMyWords()' : state.review ? (state.after ? 'roundSkip()' : 'renderCourses()') : 'renderLesson(currentLessonIdx)';
 
   if(phase==="done"){
     const L = function(ru,en){ return enLang() ? en : ru; };
@@ -4052,7 +4058,13 @@ function render(){
       return;
     }
     if(state.review){
-      app.innerHTML = stateScreen({ img:'S-mistakes', h:L('Ошибки разобраны!','Mistakes reviewed!'),
+      if(state.after){
+        const go = state.after; state.after = null;
+        app.innerHTML = stateScreen({ img:'S-mistakes', h:L('Закреплено','Locked in'),
+          p: L('Эти фразы вернутся по расписанию','These phrases will come back on schedule'), kps: kps3(), pri:[L('Дальше','Continue'), go] });
+        buzz("win"); return;
+      }
+      app.innerHTML = stateScreen({ img:'S-mistakes', h:(state.roundN ? L('Закреплено','Locked in') : L('Ошибки разобраны!','Mistakes reviewed!')),
         p: meta.mistakes.length===0 ? L('Колода ошибок пуста — отличная работа!','Your mistakes deck is empty — great work!')
            : L('Осталось фраз на повторение: ','Phrases left to review: ') + meta.mistakes.length + L('. Они дождутся следующего захода.',". They'll wait for your next round."),
         kps: kps3(), pri:[L('На главную','Home'),'renderCourses()'] });
@@ -4398,9 +4410,10 @@ function doSubmit(){
     state.feedback={type:"ok", alt:alt, defn:defn, canon:correct,
       v2:alt && !defn && timeAt(normalize(correct).split(' '),0)>0};
     buzz("ok");
-    if(state.review) promoteMistake(correct);
+    if(state.review){ promoteMistake(correct); if(!state.retryMode && intIsDue(correct)) intPass(correct); }
   } else {
     if(!state.retryMode && !state.int) addMistake(state.questions[state.idx]);
+    if(state.review && !state.retryMode && intIsDue(correct)) intFail(correct);
     const target = closestForm(userAnswer, correct);
     state.target = target;
     const diff = diffAnswers(userAnswer,target);
@@ -4696,13 +4709,87 @@ function intBtnHTML(lock){
   return '<button class="submit-btn retry-btn int-btn" onclick="intSheet(' + (lock === undefined ? '' : lock) + ')">' +
     IL('Интенсивом','Intensive') + ' · ' + n + ' ' + plural(n,'фраза','фразы','фраз','phrase','phrases') + ' · ~' + intCost(n).now + IL(' мин',' min') + '</button>';
 }
-function intGuard(call){ return false; }
 function intLabel(lock){
   if(meta.isess) return IL('Продолжить интенсив','Resume intensive');
   const tg = intTarget(lock);
   return IL('Интенсивом','Intensive') + (tg ? ' · ' + intN(tg.rem) + ' ' + plural(intN(tg.rem),'фраза','фразы','фраз','phrase','phrases') : '');
 }
 // ─── /ИНТЕНСИВ: ВХОД И НАСТРОЙКА ───
+
+// ─── ИНТЕНСИВ: ЗАКРЕПЛЕНИЕ И ФИНИШ ───
+const INT_ROUND_MAX = 12;       // фраз закрепления за один заход
+let roundOff = 0;               // до этого момента «сначала повтор» не навязываем (вышел из него)
+function intPhraseList(max){
+  return intDueList().map(function(e){ return phraseByNo(e[0]); }).filter(Boolean).slice(0, max || INT_ROUND_MAX);
+}
+function intIsDue(no){
+  const i = intFind(no);
+  return i >= 0 && intQ()[i][2] <= Date.now();
+}
+// Назревшее закрепление идёт первым в любой сессии. call — что запустить после.
+function intGuard(call){
+  if(Date.now() < roundOff || state.int) return false;
+  const qs = intPhraseList();
+  if(!qs.length) return false;
+  startRound(call, qs);
+  return true;
+}
+function startRound(after, qs){
+  qs = qs || intPhraseList();
+  if(!qs.length){ renderCourses(); return; }
+  intDrop();
+  screen = 'exercise';
+  state.review = true; state.exam = false; state.ai = false;
+  state.after = after || null; state.roundN = qs.length;
+  state.questions = shuffle(qs);
+  state.idx = 0; state.phase = 'answering'; state.feedback = null;
+  state.selected = []; state.textVal = '';
+  state.score = 0; state.correctCount = 0;
+  state.retryUsed = false; state.retryMode = false;
+  state.pool = makePool(state.questions[0].no);
+  render();
+}
+function roundSkip(){ roundOff = Date.now() + 36e5; state.after = null; renderCourses(); }
+function intTileRow(c, skipNow){
+  const m = function(n){ return '<b>~' + n + '<small>' + IL(' мин',' min') + '</small></b>'; };
+  const tiles = (skipNow ? '' : '<div class="s-kp">' + m(c.now) + '<span>' + IL('сейчас','now') + '</span></div>') +
+    (c.today
+      ? '<div class="s-kp">' + m(c.todayMin) + '<span>' + IL('сегодня после ','today after ') + intTime(c.at) + '</span></div>'
+      : '<div class="s-kp">' + m(c.tomorrowMin) + '<span>' + IL('завтра','tomorrow') + '</span></div>') +
+    '<div class="s-kp">' + m(c.dayMin) + '<span>' + IL('в день на повторы','a day to review') + '</span></div>';
+  return '<div class="s-kps int-tiles' + (skipNow && !c.today ? ' g2' : skipNow ? '' : '') + '">' + tiles + '</div>';
+}
+function intFinish(){
+  const I = state.int;
+  intCredit(I);
+  delete meta.isess; meta.intSeen = 1; saveMeta();
+  I.ph = 'done';
+  const c = intCost(0);
+  c.todayMin = intMin(intDueList(c.at).length * INT_SEC_ROUND);
+  const back = I.fin.length - I.finOk;
+  const full = intWith0(function(){ return partDone(I.l, I.p); });
+  const lesson = intWith0(function(){ return LESSONS[I.l]; });
+  const title = IL('Интенсив пройден','Intensive complete');
+  const sub = IL('Проверка: ','Check: ') + I.finOk + IL(' из ',' of ') + I.fin.length +
+    (back ? IL(' · ' + back + ' ' + plural(back,'фраза вернётся','фразы вернутся','фраз вернутся','phrase will come back','phrases will come back') + ' на повторе','') : '');
+  document.getElementById('app').innerHTML = stateScreen({
+    img:'S-lesson-done', h:title,
+    p: (full ? IL('Блок «','Block “') + partTitle(lesson.parts[I.p]) + IL('» засчитан. ','” counted. ') : '') + sub,
+    extra: '<p class="int-note" style="margin:var(--sp-4) 0 0">' + IL('Дальше — повторы по расписанию','Review comes next, on schedule') + '</p>' + intTileRow(c, true) +
+           '<p class="int-note">' + IL('Без повторов большая часть забудется за неделю','Without review most of it is gone within a week') + '</p>',
+    pri:[IL('На главную','Home'), 'intDrop();renderCourses()'], sec:[IL('К уроку','To the lesson'), 'intDrop();renderLesson(' + I.l + ')'] });
+  buzz('win');
+}
+// Блок засчитан, когда интенсивом пройдены все его фразы; ряд фраз по группам уже записан в intGroupDone.
+function intCredit(I){
+  intWith0(function(){
+    const size = partSize(I.l, I.p);
+    setPartProgress(I.l, I.p, Math.min(size, I.from + I.n));
+    if(I.from + I.n >= size) setPartAcc(I.l, I.p, Math.max(PART_PASS, Math.round(I.finOk / Math.max(1, I.fin.length) * 100)));
+    touchLesson(I.l);
+  });
+}
+// ─── /ИНТЕНСИВ: ЗАКРЕПЛЕНИЕ И ФИНИШ ───
 
 // ─── FLASHCARDS (с SRS) ──────────────────────────────
 let wordsState = { deck: [], flipped: false, mode: "no-ru", review: false, my: false };
