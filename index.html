@@ -3889,7 +3889,7 @@ function render(){
   const current = questions[idx];
   const pct = Math.round(state.correctCount/total*100);
   const lesson = LESSONS[currentLessonIdx];
-  const headSpan = state.ai ? (ic('star',13) + (enLang()?' Practising your own words':' Тренировка своих слов')) : state.exam ? (t('exam_h') + ' ' + (currentLessonIdx+1)) : state.review ? t('rev_h') : (t('lesson') + ' ' + (currentLessonIdx+1) + ' · ' + partTitle(lesson.parts[currentPartIdx]));
+  const headSpan = state.ai ? (ic('star',13) + (enLang()?' Practising your own words':' Тренировка своих слов')) : state.exam ? (t('exam_h') + ' ' + (currentLessonIdx+1)) : state.review ? t('rev_h') : (lesTitle(lesson) + ' · ' + partTitle(lesson.parts[currentPartIdx]));
   const backCall = state.ai ? 'renderMyWords()' : state.review ? 'renderCourses()' : 'renderLesson(currentLessonIdx)';
 
   if(phase==="done"){
@@ -5442,7 +5442,7 @@ document.addEventListener('click', function(e){
 });
 
 function myAddSet(){
-  askText((enLang()?'New section':'Новый раздел'), (enLang()?'E.g. lesson 5, food, work':'Например: урок 5, еда, работа'), function(n){
+  askText((enLang()?'New section':'Новый раздел'), (enLang()?'E.g. food, work, trips':'Например: еда, работа, поездки'), function(n){
     const name = (n||'').replace(/[<>&"]/g,'').trim().slice(0,30);
     if(!name) return;
     const id = 's' + Date.now();
@@ -5532,11 +5532,11 @@ function renderMyDecks(){
   const dueAll = myDue(all).length;
   document.getElementById('app').innerHTML =
     scrTop('renderCourses()', L('Мои карточки','My Cards'), nWords(all.length)) +
-    '<p class="s-mut" style="margin-bottom:var(--sp-3)">' + L('Разделы со своими словами и повторениями','Sections with your own words and reviews') + '</p>' +
+    '<p class="s-mut" style="margin-bottom:var(--sp-3)">' + L('Слова из уроков сами попадают в раздел урока','Words from lessons go to their lesson section automatically') + '</p>' +
     '<div class="s-list">' +
       sets.map(function(x){ return row(x.id, x.name); }).join('') +
       (noneN ? row('none', L('Без раздела','No section')) : '') +
-      '<div class="s-li s-li-add" onclick="myAddSet()"><span class="s-li-ic">+</span><div class="s-lt"><b>' + L('Новый раздел','New section') + '</b><span>' + L('Например: урок 5, еда, работа','E.g. lesson 5, food, work') + '</span></div></div>' +
+      '<div class="s-li s-li-add" onclick="myAddSet()"><span class="s-li-ic">+</span><div class="s-lt"><b>' + L('Новый раздел','New section') + '</b><span>' + L('Например: еда, работа, поездки','E.g. food, work, trips') + '</span></div></div>' +
     '</div>' +
     (all.length ? scrDock([L('Учить всё','Learn everything') + (dueAll ? ' · ' + dueAll : ''), "openDeck('all')"]) : '');
 }
