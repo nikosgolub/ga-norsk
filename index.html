@@ -365,6 +365,7 @@ body.light .ch-msg.ai{background:rgba(0,0,0,0.04)}
 .wc{cursor:pointer;-webkit-tap-highlight-color:transparent}
 .dw.wc{display:inline-block;padding:6px 10px;margin:0 2px 6px 0;transition:transform .1s}
 .dw.wc:active{transform:scale(.96)}
+.word-chip.wc:active{transform:scale(.96)}
 .wc-tip{font-size:var(--fs-12);color:var(--ink-3);margin-top:2px}
 .wcard-w{font-size:var(--fs-28);font-weight:800;letter-spacing:-0.5px;line-height:1.15}
 .wcard-tr{font-size:var(--fs-20);font-weight:500;color:var(--ink);margin-top:4px}
@@ -2091,17 +2092,33 @@ function makePool(sentence){
 
 const SR = (typeof window!=="undefined") && (window.SpeechRecognition || window.webkitSpeechRecognition);
 
+// One recognizer at a time. WebViews (Telegram/iOS) often never fire onend/onerror
+// when no speech comes, which left the button stuck on «Слушаю…» — hence stop + timeout.
+let micRec = null, micTimer = null;
+function micStop(){
+  clearTimeout(micTimer); micTimer = null;
+  const r = micRec; micRec = null;
+  if(r){ r.onresult = r.onerror = r.onend = null; try{ r.abort(); }catch(e){} }
+}
+function micReset(){
+  const b = document.getElementById('mic-btn');
+  if(b && b.textContent.indexOf('Слушаю')>=0) b.innerHTML = icp('<MC>') + 'Произнести';
+}
 function pronounce(){
   if(!SR) return;
+  if(micRec){ micStop(); micReset(); return; }   // second tap while listening = stop
   const target = state.questions[state.idx].no;
   const btn = document.getElementById('mic-btn');
   if(btn) btn.innerHTML = icp('<MC>') + 'Слушаю…';
   try{
     const rec = new SR();
+    micRec = rec;
+    micTimer = setTimeout(function(){ micStop(); micReset(); }, 8000);
     rec.lang = 'nb-NO';
     rec.interimResults = false;
     rec.maxAlternatives = 5;
     rec.onresult = function(e){
+      micStop();
       let ok = false, heard = '';
       const res = e.results[0];
       for(let i=0;i<res.length;i++){
@@ -2116,17 +2133,15 @@ function pronounce(){
       if(b) b.innerHTML = icp('<MC>') + 'Ещё раз';
     };
     rec.onerror = function(){
+      micStop();
       const b = document.getElementById('mic-btn');
       if(b) b.innerHTML = icp('<MC>') + 'Произнести';
       const box = document.getElementById('pron-res');
       if(box) box.innerHTML = 'Микрофон недоступен — проверь разрешения браузера';
     };
-    rec.onend = function(){
-      const b = document.getElementById('mic-btn');
-      if(b && b.textContent.indexOf('Слушаю')>=0) b.innerHTML = icp('<MC>') + 'Произнести';
-    };
+    rec.onend = function(){ micStop(); micReset(); };
     rec.start();
-  }catch(e){}
+  }catch(e){ micStop(); micReset(); }
 }
 
 // ─── ГОЛОС ─────────────────────────────────────────────────────────
@@ -3858,6 +3873,7 @@ function startExam(i){
 
 // ─── EXERCISE RENDER ──────────────────────────────────
 function render(){
+  micStop();
   const {questions,idx,mode,phase,pool,selected,textVal,feedback,score} = state;
   const total = questions.length;
   const current = questions[idx];
@@ -3952,7 +3968,7 @@ function render(){
           '<button class="listen-btn" onclick="speak(state.questions[state.idx].no)">' + t('listen') + '</button>' +
           (SR ? '<button class="listen-btn" id="mic-btn" onclick="pronounce()">' + t('mic') + '</button>' : '') +
         '</div>' +
-        '<div class="diff-view" lang="nb">' + wcSentence(current.no) + '</div>' + wcTip() +
+        wcTip() +
         '<div class="pron-res" id="pron-res"></div></div>';
     } else if(feedback.type==="v2"){
       feedbackHTML = '<div class="feedback v2">' +
@@ -3972,13 +3988,16 @@ function render(){
     }
   }
 
+  const wordsTappable = phase==="revealed" && feedback && feedback.type==="ok";
   const hintOn = phase==="answering" && state.hintAt!==undefined && state.hintAt!==null;
   const builderHTML =
     '<div class="pool-label">' + t('your') + '</div>' +
     '<div class="builder-answer ' + inputCls + (hintOn && state.hintAt<0 ? ' hint-more' : '') + '" id="builder-ans" lang="nb">' +
       (selected.length===0
         ? '<span class="placeholder">' + t('tap_w') + '</span>'
-        : selected.map((w,i)=>'<span class="word-chip selected' + (hintOn && state.hintAt===i ? ' hint-bounce' : '') +
+        : selected.map((w,i)=> wordsTappable
+            ? '<span class="word-chip selected wc" data-wc="' + escHT(wcClean(w)).replace(/"/g,'&quot;') + '">' + escHT(w) + '</span>'
+            : '<span class="word-chip selected' + (hintOn && state.hintAt===i ? ' hint-bounce' : '') +
             '" data-src="ans" data-i="' + i + '" onclick="removeWord(' + i + ')">' + w + '</span>').join("")) +
     '</div>' +
     (hintOn ? '<div class="hint-note">' + (state.exam
@@ -3991,8 +4010,10 @@ function render(){
       pool.map((w,i)=>'<span class="word-chip pool" data-src="pool" data-i="' + i + '" onclick="addWord(' + i + ')">' + w + '</span>').join("") +
     '</div>';
 
-  const textHTML =
-    '<input id="text-inp" class="text-input ' + inputCls + '" type="text" lang="nb" autocapitalize="sentences" placeholder="'+t('inp_ph')+'"' +
+  const textHTML = wordsTappable
+    ? '<div class="pool-label">' + t('your') + '</div><div class="builder-answer correct-state" lang="nb">' +
+        textVal.trim().split(/\s+/).filter(Boolean).map(w=>'<span class="word-chip selected wc" data-wc="' + escHT(wcClean(w)).replace(/"/g,'&quot;') + '">' + escHT(w) + '</span>').join("") + '</div>'
+    : '<input id="text-inp" class="text-input ' + inputCls + '" type="text" lang="nb" autocapitalize="sentences" placeholder="'+t('inp_ph')+'"' +
     ' value="' + textVal.replace(/"/g,'&quot;') + '"' +
     (phase==="revealed"?" disabled":"") +
     ' oninput="onTextInput(this.value)"' +
