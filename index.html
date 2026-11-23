@@ -134,6 +134,13 @@ body.light .season{--pcl:rgba(21,22,26,0.38)}
 .progress-meta{display:flex;justify-content:space-between;font-size:var(--fs-12);color:var(--ink-3);margin-bottom:4px;font-weight:500;text-transform:uppercase;letter-spacing:.04em}
 .progress-track{height:8px;background:var(--line);border-radius:var(--r-chip);overflow:hidden}
 .progress-fill{height:100%;background:var(--ink);border-radius:var(--r-chip);transition:width .45s cubic-bezier(.4,0,.2,1)}
+.int-bar{display:flex;gap:4px}
+.int-bar i{flex:1;height:8px;border-radius:var(--r-chip);background:var(--line);position:relative;overflow:hidden}
+.int-bar i::after{content:"";position:absolute;inset:0;background:var(--accent);opacity:0;transition:opacity .2s}
+.int-bar i.s1::after{opacity:.4}
+.int-bar i.s2::after{opacity:1}
+.int-no{font-family:var(--f-no);font-size:var(--fs-28);font-weight:800;line-height:1.25;letter-spacing:-.3px;margin-bottom:var(--sp-3)}
+.int-tr{font-size:var(--fs-16);color:var(--ink-2);margin-bottom:var(--sp-4)}
 
 .mode-toggle{display:flex;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-card);padding:4px;margin-bottom:20px;width:fit-content}
 .mode-btn{padding:8px 20px;font-size:var(--fs-14);font-weight:500;border:none;background:none;color:var(--ink-2);border-radius:var(--r-chip);cursor:pointer;transition:all .2s;font-family:inherit;min-height:38px}
@@ -3522,6 +3529,7 @@ let state = {
   review: false,
   exam: false,
   ai: false,
+  int: null,
 };
 
 // ─── SCREENS ──────────────────────────────────────────
@@ -3933,6 +3941,7 @@ function startPart(i,p){
   state.review = false;
   state.exam = false;
   state.ai = false;
+  intDrop();
   meta.last = {c:ci, l:i, p:p}; saveMeta();
   state.questions = shuffle(LESSONS[i].parts[p].q);
   state.idx = 0;
@@ -3955,6 +3964,7 @@ function startMistakes(){
   state.review = true;
   state.exam = false;
   state.ai = false;
+  intDrop();
   state.questions = shuffle(q);
   state.idx = 0; state.phase = "answering"; state.feedback = null;
   state.selected = []; state.textVal = "";
@@ -3971,6 +3981,7 @@ function startExam(i){
   state.exam = true;
   state.review = false;
   state.ai = false;
+  intDrop();
   let all = [];
   LESSONS[i].parts.forEach(p => all = all.concat(p.q));
   state.questions = shuffle(all).slice(0, EXAM_N);
@@ -4134,7 +4145,7 @@ function render(){
     ' onkeydown="if(event.key===\'Enter\'&&state.phase===\'answering\')doSubmit()">';
 
   let buttonsHTML;
-  if(phase==="revealed" && feedback && feedback.type!=="ok" && !state.retryUsed && !state.exam){
+  if(phase==="revealed" && feedback && feedback.type!=="ok" && !state.retryUsed && !state.exam && !state.int){
     buttonsHTML = '<div class="btn-row">' +
       '<button class="submit-btn retry-btn" onclick="doRetry()">' + t('again') + '</button>' +
       '<button class="submit-btn next" onclick="advance()">' + t('nxt') + '</button>' +
@@ -4146,6 +4157,7 @@ function render(){
   }
 
   document.getElementById("app").innerHTML =
+    (state.int ? intHead() : (
     '<div class="header">' +
       '<div class="logo" onclick="renderCourses()">' + GA_LOGO + '</div>' +
       '<div class="header-right">' +
@@ -4164,9 +4176,10 @@ function render(){
       '<button class="mode-btn ' + (mode==="builder"?"active":"") + '" onclick="switchMode(\'builder\')">' + t('mode_c') + '</button>' +
       '<button class="mode-btn ' + (mode==="text"?"active":"") + '" onclick="switchMode(\'text\')">' + t('mode_t') + '</button>' +
       '<button class="mode-btn ' + (mode==="listen"?"active":"") + '" onclick="switchMode(\'listen\')">' + t('mode_l') + '</button>' +
-    '</div>' +
+    '</div>'
+    )) +
     '<div class="card" id="q-card">' +
-      '<div class="type-badge">' + typeLabel(current.type) + '</div>' +
+      '<div class="type-badge">' + (state.int ? intStepLabel() : typeLabel(current.type)) + '</div>' +
       (mode==="listen" && phase!=="revealed"
         ? '<button class="play-big" onclick="speak(state.questions[state.idx].no)">' + t('play') + '</button>' +
           '<div class="listen-hint">' + t('l_hint') +
@@ -4177,7 +4190,7 @@ function render(){
     '</div>' +
     '<div class="dock-spacer" id="dock-spacer"></div>' +
     (phase==="revealed"
-      ? '<div class="dock fb-sheet glass" id="dock">' + feedbackHTML + buttonsHTML + '</div>'
+      ? '<div class="dock fb-sheet glass" id="dock">' + (state.int && state.int.gate ? intGateHTML() : feedbackHTML + buttonsHTML) + '</div>'
       : '<div class="dock" id="dock">' + buttonsHTML + '</div>');
   fitDock();
 }
@@ -4316,7 +4329,12 @@ if(typeof document!=='undefined' && document.addEventListener){
     if(dragEatClick){ e.stopPropagation(); e.preventDefault(); }
   }, true);
 }
-function onTextInput(v){ state.textVal=v; }
+function onTextInput(v){
+  state.textVal = v;
+  // the check button was rendered disabled for an empty field and never woke up while typing
+  const b = document.querySelector('#dock > .submit-btn:not(.next)');
+  if(b && state.phase === 'answering') b.disabled = !v.trim();
+}
 
 function switchMode(m){
   state.mode=m;state.phase="answering";state.feedback=null;
@@ -4370,7 +4388,7 @@ function doSubmit(){
     buzz("ok");
     if(state.review) promoteMistake(correct);
   } else {
-    if(!state.retryMode) addMistake(state.questions[state.idx]);
+    if(!state.retryMode && !state.int) addMistake(state.questions[state.idx]);
     const target = closestForm(userAnswer, correct);
     state.target = target;
     const diff = diffAnswers(userAnswer,target);
@@ -4401,6 +4419,7 @@ function doRetry(){
 }
 
 function advance(){
+  if(state.int){ intAdvance(); return; }
   const next=state.idx+1;
   bumpDaily();
   if(!state.review && !state.exam && !state.ai) setPartProgress(currentLessonIdx, currentPartIdx, next);
@@ -4412,6 +4431,200 @@ function advance(){
   state.pool=makePool(state.questions[next].no);
   render();
 }
+
+// ─── ИНТЕНСИВ: ПОТОК ───
+// Цикл группы из 4 фраз: знакомство → закрепление (сборка чипами → ввод по памяти, верно
+// подряд 2 раза = «встала») → следующая группа. В конце сессии — общая проверка текстом.
+// Экран вопроса — тот же render(), его ведёт state.int.
+function IL(ru, en){ return enLang() ? en : ru; }
+function intWith0(fn){
+  const sL = LESSONS, sW = WORDS, sci = ci;
+  ci = 0; LESSONS = COURSES[0].L || []; WORDS = COURSES[0].W;
+  try{ return fn(); } finally { ci = sci; LESSONS = sL; WORDS = sW; }
+}
+// Что учим: следующий непройденный блок (тот же, что даёт «Продолжить»), с места, где остановился.
+function intTarget(lock){
+  return intWith0(function(){
+    let l = lock;
+    if(l === undefined){
+      if(meta.last && (meta.last.c||0)===0 && lessonUnlocked(meta.last.l) && !lessonDone(meta.last.l)) l = meta.last.l;
+      else for(let i=0;i<LESSONS.length;i++) if(lessonUnlocked(i) && !lessonDone(i)){ l = i; break; }
+    }
+    if(l === undefined || !LESSONS[l] || !lessonUnlocked(l)) return null;
+    for(let p=0;p<nParts(l);p++){
+      if(!partPassed(l,p) && partUnlocked(l,p)){
+        const size = partSize(l,p), from = partDone(l,p) ? 0 : partProgress(l,p);
+        return { l:l, p:p, from:from, rem:size - from };
+      }
+    }
+    return null;
+  });
+}
+function intSizes(rem){
+  const o = [4,8,12].filter(function(x){ return x <= rem; });
+  if(!o.length) o.push(rem);
+  else if(rem < 12 && o.indexOf(rem) < 0 && rem - o[o.length-1] >= 2) o.push(rem);
+  return o;
+}
+function intN(rem){
+  const o = intSizes(rem), want = meta.intn || 8;
+  let n = o[0]; o.forEach(function(x){ if(x <= want) n = x; });
+  return n;
+}
+function intPhrases(l, p, from, n){ return intWith0(function(){ return LESSONS[l].parts[p].q.slice(from, from + n); }); }
+
+function intStart(l, p, n){
+  const tg = intTarget(l);
+  if(!tg || tg.p !== p) return;
+  n = Math.min(n, tg.rem);
+  closeModal();
+  meta.intn = n;
+  meta.isess = { l:l, p:p, from:tg.from, n:n, g:0, ph:'g' };
+  intLaunch();
+}
+// Запуск (или возобновление) по meta.isess.
+function intLaunch(){
+  const s = meta.isess;
+  const qs = s ? intPhrases(s.l, s.p, s.from, s.n) : [];
+  if(!s || !qs.length || qs.length !== s.n){ delete meta.isess; saveMeta(); renderCourses(); return; }
+  ci = 0; LESSONS = COURSES[0].L || []; WORDS = COURSES[0].W; meta.course = 0;
+  currentLessonIdx = s.l; currentPartIdx = s.p;
+  meta.last = { c:0, l:s.l, p:s.p };
+  const groups = [];
+  for(let i=0;i<qs.length;i+=INT_GROUP) groups.push(qs.slice(i, i + INT_GROUP));
+  state.review = false; state.exam = false; state.ai = false; state.round = false;
+  state.int = { l:s.l, p:s.p, from:s.from, n:s.n, all:qs, groups:groups, g:0, items:[], queue:[], ph:'g',
+                introI:0, fin:[], finOk:0, started:Date.now(), prevMode:(state.int && state.int.prevMode) || state.mode, gate:null };
+  screen = 'exercise';
+  saveMeta();
+  if(s.ph === 'f') intBeginFinal(); else intBeginGroup(Math.min(s.g, groups.length - 1));
+}
+function intBeginGroup(g){
+  const I = state.int;
+  I.g = g; I.ph = 'g'; I.gate = null;
+  I.items = I.groups[g].map(function(q){ return { q:q, c:0, e:0, weak:false }; });
+  I.queue = I.items.map(function(_, i){ return i; });
+  I.introI = 0;
+  meta.isess.g = g; meta.isess.ph = 'g'; saveMeta();
+  intShowIntro();
+}
+function intHead(){
+  const I = state.int;
+  const lab = I.ph === 'f' ? IL('ИНТЕНСИВ · ПРОВЕРКА','INTENSIVE · CHECK')
+    : IL('ИНТЕНСИВ','INTENSIVE') + (I.groups.length > 1 ? ' · ' + IL('ГРУППА ','GROUP ') + (I.g+1) + IL(' ИЗ ',' OF ') + I.groups.length : '');
+  let right, bar;
+  if(I.ph === 'f'){
+    right = I.finOk + ' / ' + I.all.length;
+    bar = '<div class="progress-track"><div class="progress-fill" style="width:' + Math.round((I.finIdx||0) / I.all.length * 100) + '%"></div></div>';
+  } else {
+    const k = I.items.filter(function(it){ return it.c >= 2; }).length;
+    right = k + ' / ' + I.items.length;
+    bar = '<div class="int-bar">' + I.items.map(function(it){ return '<i class="s' + Math.min(it.c,2) + '"></i>'; }).join('') + '</div>';
+  }
+  return '<div class="header">' +
+      '<div class="logo" onclick="intLeave()">' + GA_LOGO + '</div>' +
+      '<div class="header-right"><button class="hb" aria-label="' + IL('Выйти','Leave') + '" onclick="intLeave()">' + ic('caret-left',20) + '</button></div>' +
+    '</div>' +
+    '<div class="progress-section"><div class="progress-meta"><span>' + lab + '</span><span>' + right + '</span></div>' + bar + '</div>';
+}
+function intDrop(){ if(state.int && state.int.prevMode) state.mode = state.int.prevMode; state.int = null; }
+function intLeave(){
+  const I = state.int;
+  if(I && I.prevMode) state.mode = I.prevMode;
+  state.int = null;
+  renderCourses();
+}
+// Знакомство: фраза + перевод + звук, без ответа.
+function intShowIntro(){
+  const I = state.int, it = I.items[I.introI], q = it.q;
+  const last = I.introI === I.items.length - 1;
+  document.getElementById('app').innerHTML = intHead() +
+    '<div class="card int-intro" id="q-card">' +
+      '<div class="type-badge">' + IL('НОВАЯ ФРАЗА · ','NEW PHRASE · ') + (I.introI+1) + IL(' ИЗ ',' OF ') + I.items.length + '</div>' +
+      '<div class="int-no" lang="nb">' + q.no.split(/\s+/).filter(Boolean).map(function(w){ return '<span class="wc" data-wc="' + escHT(wcClean(w)).replace(/"/g,'&quot;') + '">' + escHT(w) + '</span>'; }).join(' ') + '</div>' +
+      '<div class="int-tr">' + srcHTML(q) + '</div>' +
+      '<div class="fb-actions"><button class="listen-btn" onclick="speak(\'' + q.no.replace(/\\/g,'\\\\').replace(/'/g,"\\'") + '\')">' + t('listen') + '</button></div>' +
+      wcTip() +
+    '</div>' +
+    '<div class="dock-spacer" id="dock-spacer"></div>' +
+    '<div class="dock" id="dock"><button class="submit-btn" onclick="intIntroNext()">' + (last ? IL('К закреплению','Start practice') : IL('Дальше','Next')) + '</button></div>';
+  fitDock();
+  try{ window.scrollTo(0,0); }catch(e){}
+  setTimeout(function(){ if(state.int === I && I.ph === 'g' && I.introI >= 0 && !I.gate) speak(q.no); }, 250);
+}
+function intIntroNext(){
+  const I = state.int;
+  if(I.introI < I.items.length - 1){ I.introI++; intShowIntro(); }
+  else { I.introI = -1; intNextQ(); }
+}
+function intNextQ(){
+  const I = state.int;
+  let q, mode;
+  if(I.ph === 'f'){ q = I.fin[I.finIdx]; mode = 'text'; }
+  else { const it = I.items[I.queue[0]]; q = it.q; mode = it.c >= 1 ? 'text' : 'builder'; }
+  state.questions = [q]; state.idx = 0;
+  state.mode = mode; state.phase = 'answering'; state.feedback = null;
+  state.selected = []; state.textVal = ''; state.hintAt = null;
+  state.score = 0; state.correctCount = 0; state.retryUsed = false; state.retryMode = false;
+  state.pool = makePool(q.no);
+  render();
+}
+function intStepLabel(){
+  const I = state.int;
+  if(I.ph === 'f') return IL('Проверка','Check');
+  return state.mode === 'text' ? IL('Напиши по памяти','Write it from memory') : IL('Собери фразу','Build the phrase');
+}
+// Вызывается из advance(), когда ответ уже показан.
+function intAdvance(){
+  const I = state.int;
+  if(!I) return;
+  if(I.gate){ intBeginGroup(I.g + 1); return; }
+  const ok = !!(state.feedback && state.feedback.type === 'ok');
+  if(ok) bumpDaily();                         // в кольцо фраз идёт каждый верный ответ
+  if(I.ph === 'f'){
+    if(ok) I.finOk++;
+    I.finIdx++;
+    if(I.finIdx >= I.fin.length){ intFinish(); return; }
+    intNextQ(); return;
+  }
+  const idx = I.queue.shift(), it = I.items[idx];
+  if(ok){ it.c++; if(it.c < 2) I.queue.push(idx); }
+  else {
+    it.c = 0; it.e++;
+    if(it.e >= 3) it.weak = true; else I.queue.push(idx);
+  }
+  if(I.queue.length){ intNextQ(); return; }
+  intGroupDone();
+}
+function intGroupDone(){
+  const I = state.int;
+  const stood = I.items.filter(function(it){ return it.c >= 2; }).length;
+  intAdd(I.items.map(function(it){ return it.q.no; }));          // все показанные фразы — в очередь закрепления
+  setPartProgress(I.l, I.p, I.from + I.g * INT_GROUP + I.items.length);
+  touchLesson(I.l);
+  meta.isess.g = I.g + 1; saveMeta();
+  if(I.g < I.groups.length - 1){
+    I.gate = { stood:stood, total:I.items.length };
+    render(); return;                                             // лист поверх последнего вопроса
+  }
+  intBeginFinal();
+}
+function intBeginFinal(){
+  const I = state.int;
+  I.ph = 'f'; I.gate = null; I.finIdx = 0; I.finOk = 0;
+  I.fin = shuffle(I.all);
+  meta.isess.ph = 'f'; saveMeta();
+  intNextQ();
+}
+function intGateHTML(){
+  const g = state.int.gate, nx = state.int.g + 2;
+  const all = g.stood === g.total;
+  return '<div class="feedback ok"><div class="fb-title">' + (all
+      ? IL('Группа ' + (state.int.g+1) + ': все ' + g.total + ' запомнились', 'Group ' + (state.int.g+1) + ': all ' + g.total + ' stuck')
+      : g.stood + IL(' из ',' of ') + g.total + IL(' — остальные вернутся на повторе',' — the rest will come back in review')) + '</div></div>' +
+    '<button class="submit-btn next" onclick="advance()">' + IL('Дальше · группа ','Next · group ') + nx + IL(' из ',' of ') + state.int.groups.length + '</button>';
+}
+// ─── /ИНТЕНСИВ: ПОТОК ───
 
 // ─── FLASHCARDS (с SRS) ──────────────────────────────
 let wordsState = { deck: [], flipped: false, mode: "no-ru", review: false, my: false };
@@ -5042,7 +5255,7 @@ async function aiPractice(){
     state.selected = []; state.textVal = '';
     state.score = 0; state.correctCount = 0;
     state.retryUsed = false; state.retryMode = false;
-    state.review = false; state.exam = false; state.ai = true;
+    state.review = false; state.exam = false; state.ai = true; intDrop();
     state.pool = makePool(state.questions[0].no);
     screen = 'exercise';
     render();
