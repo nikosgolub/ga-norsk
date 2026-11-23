@@ -362,6 +362,13 @@ body.light .ch-msg.ai{background:rgba(0,0,0,0.04)}
 .modal-text{font-size:var(--fs-14);color:var(--ink-2);line-height:1.5;margin-bottom:16px}
 .modal-row{display:flex;gap:12px;margin-top:12px}
 .modal-row .submit-btn{flex:1}
+.wc{cursor:pointer;-webkit-tap-highlight-color:transparent}
+.wc-tip{font-size:var(--fs-12,12px);color:var(--ink-3);margin-top:6px}
+.wcard-w{font-size:var(--fs-28,28px);font-weight:800;letter-spacing:-0.5px;line-height:1.15}
+.wcard-tr{font-size:var(--fs-18,18px);color:var(--ink);margin-top:6px}
+.wcard-base{font-size:var(--fs-14);color:var(--ink-2);margin-top:6px}
+.wcard-base b{color:var(--ink);font-weight:700}
+.wcard-in{font-size:var(--fs-14);font-weight:700;color:var(--ok);margin-top:12px}
 .modal-list{display:flex;flex-direction:column;gap:8px;max-height:50vh;overflow-y:auto}
 .set-row{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 4px}
 
@@ -3942,19 +3949,20 @@ function render(){
           '<button class="listen-btn" onclick="speak(state.questions[state.idx].no)">' + t('listen') + '</button>' +
           (SR ? '<button class="listen-btn" id="mic-btn" onclick="pronounce()">' + t('mic') + '</button>' : '') +
         '</div>' +
+        '<div class="diff-view" lang="nb">' + wcSentence(current.no) + '</div>' + wcTip() +
         '<div class="pron-res" id="pron-res"></div></div>';
     } else if(feedback.type==="v2"){
       feedbackHTML = '<div class="feedback v2">' +
         '<div class="fb-title">' + (feedback.diag ? icp('<BT>') + feedback.diag.title : t('v2_t')) + '</div>' +
         '<div class="diff-view"><span class="diff-label">' + t('corr') + '</span><span lang="nb">' +
-          feedback.diff.map(d=>'<span class="dw ' + d.status + '">' + d.word + '</span>').join(" ") + '</span></div>' +
+          feedback.diff.map(wcSpan).join(" ") + '</span></div>' + wcTip() +
         (state.exam ? '' : explainHTML(current)) +
         (state.exam ? '' : '<button class="why-btn" id="ai-why" onclick="aiExplain()">' + ic('ai',16) + (enLang()?' Why?</button><div class="pron-res" id="ai-exp"></div>':' Почему?</button><div class="pron-res" id="ai-exp"></div>')) +
       '</div>';
     } else {
       feedbackHTML = '<div class="feedback err">' +
         '<div class="fb-title">' + t('err_t') + '</div>' +
-        '<div class="diff-view" lang="nb">' + feedback.diff.map(d=>'<span class="dw ' + d.status + '">' + d.word + '</span>').join(" ") + '</div>' +
+        '<div class="diff-view" lang="nb">' + feedback.diff.map(wcSpan).join(" ") + '</div>' + wcTip() +
         (state.exam ? '' : explainHTML(current)) +
         (state.exam ? '' : '<button class="why-btn" id="ai-why" onclick="aiExplain()">' + ic('ai',16) + (enLang()?' Why?</button><div class="pron-res" id="ai-exp"></div>':' Почему?</button><div class="pron-res" id="ai-exp"></div>')) +
       '</div>';
@@ -5187,6 +5195,136 @@ function myFiltered(){
   return all.filter(function(w){ return w.set===myCur; });
 }
 function myDue(list){ const t = dnum(); return (list||myList()).filter(function(w){ return (w.d===undefined ? true : w.d <= t); }); }
+
+// Common function words and verbs that are not in the lesson word lists: n — dictionary form, f — forms in phrases
+const WC_EXTRA = [
+  ['jeg','я','I',['jeg']],['du','ты','you',['du']],['han','он','he',['han']],['hun','она','she',['hun']],['vi','мы','we',['vi']],
+  ['dere','вы','you (pl.)',['dere']],['de','они','they',['de']],['det','это / оно','it, that',['det']],['den','он / она / оно (о предмете)','it',['den']],
+  ['man','man — «кто-то», безличное «ты / они»','one, you (generic)',['man']],['seg','себя','oneself',['seg']],
+  ['min','мой','my',['min','mi','mitt','mine']],['din','твой','your',['din','di','ditt','dine']],['sin','свой','his/her own',['sin','si','sitt','sine']],
+  ['denne','этот','this',['denne','dette','disse']],['ikke','не','not',['ikke']],['med','с','with',['med']],['for','для / за','for',['for']],
+  ['av','из / от','of, from',['av']],['her','здесь','here',['her']],['der','там','there',['der']],['opp','вверх','up',['opp']],['ut','наружу','out',['ut']],
+  ['inn','внутрь','in',['inn']],['da','тогда','then',['da']],['før','раньше / до','before',['før']],['tilbake','назад','back',['tilbake']],
+  ['veldig','очень','very',['veldig']],['bra','хорошо','good, well',['bra']],['alt','всё','everything',['alt']],['hver','каждый','each, every',['hver']],
+  ['lenge','долго','for a long time',['lenge']],['takk','спасибо','thanks',['takk']],['hvilken','какой','which',['hvilken','hvilket','hvilke']],
+  ['å','частица перед инфинитивом','infinitive marker',['å']],['en','артикль: он. род','a (article)',['en','ei','et']],
+  ['å være','быть','to be',['være','er','var','vært']],['å ha','иметь','to have',['ha','har','hadde','hatt']],
+  ['å gå','идти','to walk, to go',['gå','går','gikk','gått']],['å komme','приходить','to come',['komme','kommer','kom','kommet']],
+  ['å holde','держать','to hold',['holde','holder','holdt']],['å ta','брать','to take',['ta','tar','tok','tatt']],['å gi','давать','to give',['gi','gir','ga','gitt']],
+  ['å sove','спать','to sleep',['sove','sover','sov','sovet']],['å drikke','пить','to drink',['drikke','drikker','drakk','drukket']],
+  ['å like','нравиться','to like',['like','liker','likte','likt']],['å lage','делать, готовить','to make',['lage','lager','laget']],
+  ['å ligge','лежать','to lie',['ligge','ligger','lå','ligget']],['å stå','стоять','to stand',['stå','står','sto','stått']],
+  ['å lese','читать','to read',['lese','leser','leste','lest']],['å lære','учить, учиться','to learn',['lære','lærer','lærte','lært']],
+  ['å gjøre','делать','to do',['gjøre','gjør','gjorde','gjort']],['å åpne','открывать','to open',['åpne','åpner','åpnet']],
+  ['å koste','стоить','to cost',['koste','koster','kostet']],['å henge','висеть','to hang',['henge','henger','hang']],
+  ['å trenge','нуждаться','to need',['trenge','trenger','trengte']],['å leke','играть','to play',['leke','leker','lekte']],
+  ['å møtes','встречаться','to meet',['møtes']]
+];
+// ─── СЛОВО ПО НАЖАТИЮ → КАРТОЧКА → «МОИ КАРТОЧКИ» ───
+function wcClean(w){ return String(w||'').toLowerCase().replace(/^[^a-zæøåäöü0-9]+|[^a-zæøåäöü0-9]+$/gi,''); }
+function wcBase(n){ return String(n).replace(/^(å|en|ei|et) /,''); }
+function wcKind(n){ return /^å /.test(n) ? 'v' : /^(en|ei|et) /.test(n) ? 'n' : 'o'; }
+// forms of a dictionary entry that equal the token tok (null — no match)
+function wcMatch(e, tok){
+  const base = wcBase(e.n), k = wcKind(e.n);
+  if(base.indexOf(' ')>=0) return null;
+  if(tok===base) return 'base';
+  if(k==='v'){
+    const g = VERB_GROUPS.find(function(x){ return x[0]===base; });
+    return g && g.indexOf(tok)>0 ? 'form' : null;
+  }
+  if(k==='n') return (isDefOf(base,tok) || isPlurOf(base,tok) || isPlurDefOf(base,tok)) ? 'form' : null;
+  const fa = ADJ_GROUPS.find(function(x){ return x[0]===base; }), fd = DEG_GROUPS.find(function(x){ return x[0]===base; });
+  return ((fa && fa.indexOf(tok)>0) || (fd && fd.indexOf(tok)>0)) ? 'form' : null;
+}
+function wcAllWords(){ const r = []; (WORDS||[]).forEach(function(l){ (l||[]).forEach(function(e){ r.push(e); }); }); return r; }
+// tokens: whole phrase (for multi-word entries like «i dag»), i: index of the tapped word
+function wcLookup(tokens, i){
+  const all = wcAllWords(), tok = tokens[i];
+  for(const e of all){                       // multi-word entries first
+    const b = wcBase(e.n).split(' ');
+    if(b.length<2) continue;
+    for(let s=Math.max(0,i-b.length+1); s<=i && s+b.length<=tokens.length; s++){
+      if(b.every(function(x,k){ return tokens[s+k]===x; })) return { e:e, kind:'base' };
+    }
+  }
+  let form = null;
+  for(const e of all){
+    const m = wcMatch(e, tok);
+    if(m==='base') return { e:e, kind:'base' };
+    if(m && !form) form = { e:e, kind:'form' };
+  }
+  if(form) return form;
+  for(const x of WC_EXTRA){
+    if(x[3].indexOf(tok)>=0) return { e:{ n:x[0], r:x[1], en:x[2] }, kind: wcBase(x[0])===tok ? 'base' : 'form' };
+  }
+  return null;
+}
+function wcTokens(s){ return String(s||'').split(/\s+/).map(wcClean).filter(Boolean); }
+function wcSpan(d){
+  if(d.status==='extra') return '<span class="dw extra">' + d.word + '</span>';
+  return '<span class="dw ' + d.status + ' wc" data-wc="' + escHT(wcClean(d.word)).replace(/"/g,'&quot;') + '">' + d.word + '</span>';
+}
+function wcSentence(s){
+  return String(s||'').split(/\s+/).filter(Boolean).map(function(w){ return wcSpan({status:'correct', word:escHT(w)}); }).join(' ');
+}
+function wcTip(){ return '<div class="wc-tip">' + (enLang() ? 'Tap a word to save it to My Cards' : 'Нажми на слово — сохранить в «Мои карточки»') + '</div>'; }
+
+let wcCur = null;
+function wcInDict(n, base){
+  const k = String(n).toLowerCase(), b = wcBase(n).toLowerCase();
+  return myList().some(function(w){ const x = String(w.n).toLowerCase(); return x===k || wcBase(x)===b; });
+}
+function openWordCard(tok){
+  const q = (state.questions||[])[state.idx];
+  const tokens = wcTokens(q && q.no);
+  let i = tokens.indexOf(tok); if(i<0){ tokens.push(tok); i = tokens.length-1; }
+  const hit = wcLookup(tokens, i);
+  wcCur = hit ? { n:hit.e.n, r:wordSrc(hit.e), word:(wcBase(hit.e.n).indexOf(' ')>=0 && wcKind(hit.e.n)==='o' ? hit.e.n : tok), form:hit.kind==='form' } : { n:tok, r:'', word:tok, form:false, unknown:true };
+  renderWordCard();
+}
+function renderWordCard(){
+  const c = wcCur, L = function(ru,en){ return enLang() ? en : ru; };
+  const have = c.r && wcInDict(c.n);
+  openModal(
+    '<div class="wcard-w" lang="nb">' + escHT(c.word) + '</div>' +
+    (c.unknown
+      ? '<div class="wcard-base" id="wc-tr">' + L('Этого слова нет в словаре курса','This word is not in the course vocabulary') + '</div>'
+      : '<div class="wcard-tr" id="wc-tr">' + escHT(c.r) + '</div>') +
+    (c.form && c.n!==c.word ? '<div class="wcard-base">' + L('Начальная форма: ','Base form: ') + '<b lang="nb">' + escHT(c.n) + '</b></div>' : '') +
+    (have ? '<div class="wcard-in">✓ ' + L('Уже в словаре','Already in My Cards') + '</div>' : '') +
+    '<div class="modal-row">' +
+      '<button class="submit-btn retry-btn" onclick="closeModal()">' + L('Закрыть','Close') + '</button>' +
+      (have ? '' : c.r
+        ? '<button class="submit-btn" onclick="wcAdd()">' + L('В словарь','Add to My Cards') + '</button>'
+        : '<button class="submit-btn" id="wc-ai" onclick="wcAsk()">' + L('Узнать перевод','Get translation') + '</button>') +
+    '</div>');
+}
+function wcAdd(){
+  const c = wcCur; if(!c || !c.r) return;
+  if(!wcInDict(c.n)){ myList().unshift({ n:c.n, r:c.r, s:0, d:dnum() }); saveMeta(); buzz('ok'); }
+  renderWordCard();
+}
+async function wcAsk(){
+  const c = wcCur, btn = document.getElementById('wc-ai');
+  if(btn){ btn.disabled = true; btn.innerHTML = '…'; }
+  try{
+    const r = await aiAsk((enLang()?'You are an assistant in a Norwegian (bokmål) learning app, level A1-A2. ':'Ты помощник в приложении для изучения норвежского (bokmål), уровень A1–A2. ') +
+      (enLang()?'Word from a phrase: "':'Слово из фразы: "') + c.word + '"' + (state.questions && state.questions[state.idx] ? (enLang()?', phrase: "':', фраза: "') + state.questions[state.idx].no + '"' : '') +
+      (enLang()?'. Return JSON: {"no": "dictionary form (en/ei/et for nouns, å for verbs)", "ru": "short English translation"}. JSON only.':'. Верни JSON: {"no": "начальная форма (en/ei/et для существительных, å для глаголов)", "ru": "короткий перевод на русский"}. Только JSON.'), true);
+    const tr = String(r.ru||'').replace(/[<>&"]/g,'').trim().slice(0,60), no = String(r.no||'').replace(/[<>&"]/g,'').trim().slice(0,60);
+    if(!tr) throw new Error(aiErrText('other'));
+    wcCur = { n:no||c.word, r:tr, word:c.word, form:!!no && no!==c.word };
+    renderWordCard();
+  }catch(e){
+    if(btn){ btn.disabled = false; btn.textContent = enLang()?'Get translation':'Узнать перевод'; }
+    const t = document.getElementById('wc-tr'); if(t) t.textContent = (e && e.message) ? e.message : aiErrText('other');
+  }
+}
+document.addEventListener('click', function(e){
+  const el = e.target && e.target.closest ? e.target.closest('[data-wc]') : null;
+  if(el) openWordCard(el.getAttribute('data-wc'));
+});
 
 function myAddSet(){
   askText((enLang()?'New section':'Новый раздел'), (enLang()?'E.g. lesson 5, food, work':'Например: урок 5, еда, работа'), function(n){
