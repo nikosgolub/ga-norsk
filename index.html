@@ -371,6 +371,7 @@ body.light .ch-msg.ai{background:rgba(0,0,0,0.04)}
 .wcard-tr{font-size:var(--fs-20);font-weight:500;color:var(--ink);margin-top:4px}
 .wcard-load{display:flex;align-items:center;gap:8px;font-size:var(--fs-14);color:var(--ink-2);margin-top:8px}
 .wcard-load i{width:6px;height:6px;border-radius:50%;background:var(--ink-2);animation:chDot 1.2s infinite}
+@media (prefers-reduced-motion:reduce){.wcard-load i{animation:none;opacity:.6}}
 .wcard-load i:nth-child(2){animation-delay:.15s}.wcard-load i:nth-child(3){animation-delay:.3s}
 .wcard-base{font-size:var(--fs-14);color:var(--ink-2);margin-top:8px}
 .wcard-base b{color:var(--ink);font-weight:700}
@@ -1027,7 +1028,7 @@ body.light .builder-answer.wrong-state,body.light .text-input.wrong-state{border
 .s-top{display:flex;align-items:center;gap:var(--sp-2);min-height:44px;margin-bottom:var(--sp-4)}
 .s-back{display:grid;place-items:center;width:36px;height:36px;margin-left:-8px;background:none;border:none;color:var(--ink);cursor:pointer;border-radius:var(--r-chip)}
 .s-back:focus-visible{outline:2px solid var(--accent)}
-.s-ttl{flex:1;min-width:0;font-weight:800;font-size:var(--fs-16);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.s-ttl{flex:1;min-width:0;font-weight:800;font-size:var(--fs-16);overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
 .s-r{font-size:var(--fs-12);font-weight:700;color:var(--ink-2);white-space:nowrap}
 .s-h2{font-size:var(--fs-28);font-weight:800;line-height:1.2;text-wrap:balance;margin:0}
 .s-mut{font-size:var(--fs-14);color:var(--ink-2);margin:0}
@@ -5378,7 +5379,7 @@ function renderWordCard(){
       ? '<div class="wcard-base" id="wc-tr">' + L('Этого слова нет в словаре курса','This word is not in the course vocabulary') + '</div>'
       : '<div class="wcard-tr" id="wc-tr">' + escHT(c.r) + '</div>') +
     (c.form && c.n!==c.word ? '<div class="wcard-base">' + L('Начальная форма: ','Base form: ') + '<b lang="nb">' + escHT(c.n) + '</b></div>' : '') +
-    (have ? '<div class="wcard-in">✓ ' + L('В карточках','In My Cards') + wcSecLabel(c.n) + '</div>' : '') +
+    (have ? '<div class="wcard-in">✓ ' + L('В карточках','In My Cards') + '</div>' + wcSecLine(c.n) : '') +
     '<div class="modal-row">' +
       '<button class="submit-btn retry-btn" onclick="closeModal()">' + L('Закрыть','Close') + '</button>' +
       (have ? '' : c.r
@@ -5386,10 +5387,10 @@ function renderWordCard(){
         : '<button class="submit-btn" id="wc-ai" onclick="wcAsk()">' + L('Узнать перевод','Get translation') + '</button>') +
     '</div>');
 }
-function wcSecLabel(n){
+function wcSecLine(n){
   const k = String(n).toLowerCase(), b = wcBase(k);
   const w = myList().find(function(x){ const y = String(x.n).toLowerCase(); return y===k || wcBase(y)===b; });
-  return w && w.set ? ' · ' + escHT(setName(w.set)) : '';
+  return w && w.set ? '<div class="wcard-base">' + (enLang()?'Section: ':'Раздел: ') + '<b>' + escHT(setName(w.set)) + '</b></div>' : '';
 }
 function wcAdd(){
   const c = wcCur; if(!c || !c.r) return;
@@ -5406,7 +5407,7 @@ async function wcAsk(){
   const c = wcCur, btn = document.getElementById('wc-ai'), tr = document.getElementById('wc-tr'), L = function(ru,en){ return enLang() ? en : ru; };
   const seq = ++wcAskSeq;
   if(btn){ btn.disabled = true; btn.textContent = L('Ищу…','Looking up…'); }
-  if(tr){ tr.className = 'wcard-load'; tr.innerHTML = '<i></i><i></i><i></i><span>' + L('Ищу перевод — это до 20 секунд','Looking up the translation — up to 20 seconds') + '</span>'; }
+  if(tr){ tr.className = 'wcard-load'; tr.innerHTML = '<i></i><i></i><i></i><span>' + L('Обычно это занимает до 20 секунд','Usually takes up to 20 seconds') + '</span>'; }
   const fail = function(msg){
     if(seq !== wcAskSeq) return;
     if(btn){ btn.disabled = false; btn.textContent = L('Повторить','Try again'); }
@@ -5417,7 +5418,7 @@ async function wcAsk(){
       (enLang()?'Word from a phrase: "':'Слово из фразы: "') + c.word + '"' + (state.questions && state.questions[state.idx] ? (enLang()?', phrase: "':', фраза: "') + state.questions[state.idx].no + '"' : '') +
       (enLang()?'. Return JSON: {"no": "dictionary form (en/ei/et for nouns, å for verbs)", "ru": "short English translation"}. JSON only.':'. Верни JSON: {"no": "начальная форма (en/ei/et для существительных, å для глаголов)", "ru": "короткий перевод на русский"}. Только JSON.'), true);
     let timer;
-    const limit = new Promise(function(_, rej){ timer = setTimeout(function(){ rej(new Error(L('Сервер отвечает слишком долго. Нажми «Повторить».','The server is taking too long. Tap "Try again".'))); }, 20000); });
+    const limit = new Promise(function(_, rej){ timer = setTimeout(function(){ rej(new Error(L('Перевод не пришёл за 20 секунд. Попробуй ещё раз.','No translation within 20 seconds. Please try again.'))); }, 20000); });
     let r;
     try{ r = await Promise.race([ask, limit]); } finally { clearTimeout(timer); }
     if(seq !== wcAskSeq || wcCur !== c) return;
@@ -5509,7 +5510,7 @@ function deckWords(id){
 function deckLearned(id){ return deckWords(id).filter(function(w){ return (w.s||0) >= 3; }).length; }
 
 function renderMyDecks(){
-  screen = 'mydecks';
+  screen = 'mydecks'; wcMigrate();
   const L = function(ru,en){ return enLang() ? en : ru; };
   const all = myList(), sets = mySets(), noneN = deckWords('none').length;
   if(!all.length && !sets.length){
