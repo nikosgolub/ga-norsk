@@ -5340,7 +5340,9 @@ function wcLessonSet(li){
 function wcMigrate(){
   if(meta.wcMig) return;
   meta.wcMig = 1;
-  const loose = myList().filter(function(w){ return !w.set; });
+  // Only words tapped in a lesson (lw flag). Words added before the flag existed: only never-reviewed ones dated from the feature release (23.11.2026). Words typed by hand earlier stay untouched.
+  const since = Math.floor(Date.UTC(2026,10,23)/864e5);
+  const loose = myList().filter(function(w){ return !w.set && (w.lw || (w.lw===undefined && !w.s && w.d>=since)); });
   if(loose.length){
     const want = {}; loose.forEach(function(w){ want[String(w.n).toLowerCase()] = null; });
     const Ls = wcLessons();
@@ -5395,7 +5397,7 @@ function wcSecLine(n){
 function wcAdd(){
   const c = wcCur; if(!c || !c.r) return;
   if(!wcInDict(c.n)){
-    const w = { n:c.n, r:c.r, s:0, d:dnum() };
+    const w = { n:c.n, r:c.r, s:0, d:dnum(), lw:1 };
     const q = (state.questions||[])[state.idx], li = q ? wcLessonOf(q.no) : -1;
     if(li>=0) w.set = wcLessonSet(li);
     myList().unshift(w); saveMeta(); buzz('ok');
