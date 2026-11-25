@@ -2336,8 +2336,8 @@ function voiceTip(){
   const pf = (TG && TG.platform) || '';
   const en = enLang();
   if(pf === 'ios' || /iPhone|iPad|iPod/i.test(ua))
-    return en ? 'Settings → Accessibility → Spoken Content → Voices → Norwegian → Nora, pick the Enhanced version.'
-              : 'Настройки → Универсальный доступ → Устный контент → Голоса → Норвежский → Nora, вариант «Улучшенный».';
+    return en ? 'Settings → Accessibility: find the section with voices for reading text aloud (called Spoken Content or Read & Speak, depending on iOS version) and download an Enhanced Norwegian voice. Some apps may still use the basic one.'
+              : 'Настройки → Универсальный доступ: найди раздел с голосами для чтения текста вслух (называется «Устный контент» или «Чтение и речь» — зависит от версии iOS) и скачай норвежский голос с пометкой «Улучшенный». Но часть приложений всё равно может читать простым.';
   if(pf === 'android' || /Android/i.test(ua))
     return en ? 'Settings → Accessibility → Text-to-speech → Google → install Norwegian.'
               : 'Настройки → Спец. возможности → Синтез речи → Google → установить норвежский.';
