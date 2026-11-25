@@ -151,6 +151,14 @@ body.light .season{--pcl:rgba(21,22,26,0.38)}
 body .feedback.ok .fb-title.fb-neutral{background:var(--surface)!important;color:var(--ink)!important;border:1px solid var(--line)}
 .int-no .wc{border-bottom:1px dotted var(--ink-3);padding-bottom:4px}
 .int-sub{font-size:var(--fs-16);color:var(--ink-2);margin:0 0 var(--sp-4)}
+.pn-card{display:flex;flex-direction:column;gap:var(--sp-3);padding:var(--sp-4);margin-bottom:var(--sp-3);border:1px solid var(--line);border-radius:var(--r-card);background:var(--surface)}
+.pn-tx{display:flex;flex-direction:column;gap:2px;font-size:var(--fs-14);color:var(--ink-2)}
+.pn-tx b{color:var(--ink);font-weight:700;font-size:var(--fs-16,16px)}
+.pn-btns{display:flex;gap:var(--sp-2);align-items:center}
+.pn-x{height:44px;padding:0 var(--sp-5,20px);border-radius:22px;border:1px solid var(--line);background:none;color:var(--ink);font:inherit;font-weight:700;cursor:pointer}
+.pn-x.ghost{border-color:transparent;color:var(--ink-2)}
+.pn-rest{margin-top:var(--sp-4);text-align:left}
+.rest-t{font-size:56px;font-weight:700;text-align:center;font-variant-numeric:tabular-nums;margin:var(--sp-4) 0}
 .int-note{font-size:var(--fs-14);color:var(--ink-3);margin:var(--sp-3) 0;text-align:center}
 .int-seg{margin-bottom:var(--sp-4)!important}
 .int-seg .mode-btn{flex:1}
@@ -2777,6 +2785,7 @@ function renderCourses(){
     '<div class="home-greet" onclick="renderName()">' + (meta.name ? 'Hei, ' + meta.name + '!' : 'Hei!') + '<span class="edit-hint">' + ic('pencil',13) + '</span></div>' +
     (isPlannedToday() && (tc < DAILY_GOAL || lm < LISTEN_GOAL)
       ? '<div class="plan-banner" onclick="renderSchedule()">' + t('plan') + ' ' + sched().time + '</div>' : '') +
+    restCardHTML() + hintCardHTML() +
     '<div class="night-card day-card">' +
       '<div class="rings-hero home-rings" onclick="renderGoalEdit()" title="' + L('Изменить цели','Edit goals') + '">' +
         '<div class="rings-wrap">' + trioRings(216, 20, 24, true) + '</div>' +
@@ -3164,6 +3173,106 @@ function bumpDaily(){
   if(meta.hist.indexOf(t)<0){ meta.hist.push(t); if(meta.hist.length>400) meta.hist.shift(); }
   saveMeta();
 }
+// ─── ПРОТОКОЛЫ ОБУЧЕНИЯ: время занятий, подсказка о сложности, отдых ───
+const STUDY_CAP_MIN = 80;        // после этого — мягкое «на сегодня хватит»
+const STUDY_GAP_MAX = 30;        // секунд за одно касание максимум: пауза/фон/забытый телефон время не копят
+let studyLast = 0;
+function studyToday(){ return meta.tday===dstr(0) ? (meta.tsec||0) : 0; }
+function studyTick(now){
+  now = now || Date.now();
+  const gap = studyLast ? Math.min((now - studyLast) / 1000, STUDY_GAP_MAX) : 0;
+  studyLast = now;
+  if(gap <= 0 || (typeof document !== 'undefined' && document.hidden)) return;
+  const t = dstr(0);
+  if(meta.tday!==t){ meta.tday = t; meta.tsec = 0; }
+  meta.tsec = (meta.tsec||0) + gap;
+  const k = Math.floor(meta.tsec / 10);            // на диск — не чаще, чем раз в 10 секунд
+  if(k !== studyTick.k){ studyTick.k = k; saveMeta(); }
+}
+function studyOver(){ return studyToday() >= STUDY_CAP_MIN * 60; }
+try{
+  ['pointerdown','keydown'].forEach(function(ev){ document.addEventListener(ev, function(){ studyTick(); }, true); });
+}catch(e){}
+function restNoteHTML(){
+  return studyOver() ? '<p class="int-note">' + IL('Сегодня уже ' + STUDY_CAP_MIN + ' минут занятий — дальше выученное закрепляется хуже. Лучше закончить и вернуться завтра.',
+    STUDY_CAP_MIN + ' minutes of study today — past this, retention drops. Better to stop and come back tomorrow.') + '</p>' : '';
+}
+function restCardHTML(){
+  if(!studyOver() || meta.t80d === dstr(0)) return '';
+  return '<div class="pn-card"><div class="pn-tx"><b>' + IL('На сегодня хватит','That’s enough for today') + '</b><span>' +
+    IL('Уже ' + STUDY_CAP_MIN + ' минут занятий — дальше закрепляется хуже. Сон закрепит выученное.',
+       STUDY_CAP_MIN + ' minutes in — past this, retention drops. Sleep will lock in what you learned.') + '</span></div>' +
+    '<div class="pn-btns"><button class="pn-x" onclick="noteDismiss(\'t80d\')">' + IL('Ок','OK') + '</button></div></div>';
+}
+function noteDismiss(key){
+  meta[key] = key === 'hintD' ? dnum() : dstr(0);
+  saveMeta(); renderCourses();
+}
+
+// История точности в режиме «Чипы»: [[dayNum, верных, всего], …], 14 дней
+const ACC_DAYS = 14, ACC_MIN_N = 15, ACC_NEED = 4, ACC_PCT = 95, ACC_TOTAL = 80, ACC_QUIET = 14;
+function accAdd(ok){
+  if(!Array.isArray(meta.acc)) meta.acc = [];
+  const d = dnum();
+  let e = meta.acc[meta.acc.length-1];
+  if(!e || e[0] !== d){ e = [d, 0, 0]; meta.acc.push(e); }
+  e[2]++; if(ok) e[1]++;
+  meta.acc = meta.acc.filter(function(x){ return x[0] > d - ACC_DAYS; });
+  saveMeta();
+}
+// Сигнал «слишком легко»: последние ACC_NEED дней занятий (≥ ACC_MIN_N ответов) все ≥ ACC_PCT %.
+function accHint(acc, today, quietUntil){
+  if(quietUntil && today < quietUntil) return null;
+  const days = (acc||[]).filter(function(x){ return x[2] >= ACC_MIN_N && x[0] > today - ACC_DAYS; }).sort(function(a,b){ return a[0]-b[0]; });
+  const last = days.slice(-ACC_NEED);
+  if(last.length < ACC_NEED) return null;
+  let ok = 0, n = 0;
+  for(const x of last){ if(x[1] / x[2] * 100 < ACC_PCT) return null; ok += x[1]; n += x[2]; }
+  if(n < ACC_TOTAL) return null;
+  return { pct: Math.round(ok / n * 100), days: last.length };
+}
+function accHintNow(){
+  if(state.mode !== 'builder') return null;
+  return accHint(meta.acc, dnum(), meta.hintD ? meta.hintD + ACC_QUIET : 0);
+}
+function hintCardHTML(){
+  const h = accHintNow(); if(!h) return '';
+  return '<div class="pn-card"><div class="pn-tx"><b>' + IL('Пора усложнить','Time to level up') + '</b><span>' +
+    IL('Верных ' + h.pct + '% уже ' + h.days + ' занятия подряд — слишком легко. Лучше всего учится на ~85%: попробуй «Текст».',
+       h.pct + '% correct for ' + h.days + ' sessions in a row — too easy. Learning is best near 85%: try “Text”.') + '</span></div>' +
+    '<div class="pn-btns"><button class="pn-x" onclick="hintTry()">' + IL('Включить','Switch') + '</button>' +
+    '<button class="pn-x ghost" onclick="noteDismiss(\'hintD\')">' + IL('Позже','Later') + '</button></div></div>';
+}
+function hintTry(){ state.mode = 'text'; meta.hintD = dnum(); saveMeta(); renderCourses(); }
+
+// Отдых после интенсива: таймер по метке времени — переживает сворачивание
+const REST_MIN = 15;
+let restEnd = 0, restTimer = null;
+function restStop(){ if(restTimer){ clearInterval(restTimer); restTimer = null; } }
+function restLeft(){ return Math.max(0, Math.ceil((restEnd - Date.now()) / 1000)); }
+function restFmt(s){ return Math.floor(s/60) + ':' + ('0' + (s%60)).slice(-2); }
+function intRest(){
+  restEnd = Date.now() + REST_MIN * 60000; studyLast = 0;
+  restDraw();
+  restStop(); restTimer = setInterval(restTick, 500);
+}
+function restTick(){
+  const el = document.getElementById('rest-t'); if(!el){ restStop(); return; }
+  const s = restLeft();
+  if(s <= 0){ restStop(); restDraw(true); buzz('win'); return; }
+  el.textContent = restFmt(s);
+}
+function restDraw(done){
+  document.getElementById('app').innerHTML = stateScreen({
+    img:'S-all-done',
+    h: done ? IL('Готово','Done') : IL('Отдых','Rest'),
+    p: done ? IL('Теперь ночной сон закрепит выученное.','Tonight’s sleep will lock in what you learned.')
+            : IL('Без телефона и новой информации: сядь или ляг, глаза закрыты. Не засыпай.','No phone, nothing new: sit or lie down, eyes closed. Don’t fall asleep.'),
+    extra: done ? '' : '<div class="rest-t" id="rest-t" aria-live="off">' + restFmt(restLeft()) + '</div>',
+    pri: done ? [IL('Готово','Done'), 'restStop();renderCourses()'] : null,
+    sec: done ? null : [IL('Закончить отдых','End rest'), 'restStop();renderCourses()'] });
+}
+// ─── /ПРОТОКОЛЫ ОБУЧЕНИЯ ───
 // Повторение фраз по тем же интервалам, что и карточки слов. Состояние по каждой из
 // 1275 фраз хранить нельзя — ro_meta уходит в облако Telegram, где на ключ 4096 байт.
 // Поэтому ведём очередь только для того, что человек не знает: ошибся — фраза вернулась,
@@ -4114,7 +4223,7 @@ function render(){
       : isLastPart
         ? L('Все блоки сданы — открыт экзамен урока «','All blocks passed — exam unlocked for lesson “') + lesTitle(lesson) + L('».','”.')
         : L('Блок сдан. Ещё ','Block passed. ') + (nP-currentPartIdx-1) + ' ' + (enLang()?(nP-currentPartIdx-1===1?'block':'blocks'):blockWord(nP-currentPartIdx-1)) + L(' до экзамена.',' to go before the exam.');
-    app.innerHTML = stateScreen({ img: passedPart ? 'S-lesson-done' : 'S-exam-fail', h:title, p:sub, kps:kps3(),
+    app.innerHTML = stateScreen({ img: passedPart ? 'S-lesson-done' : 'S-exam-fail', h:title, p:sub, kps:kps3(), extra:restNoteHTML(),
       pri:pri, sec:[L('К урокам','To lessons'),'renderLessons()'] });
     buzz(passedPart ? "win" : "err");
     return;
@@ -4427,7 +4536,9 @@ function doSubmit(){
     return;
   }
 
+  const accOn = state.mode==='builder' && !state.retryMode && !state.int && !state.exam && !state.review && !state.ai;
   if(isCorrect(userAnswer,correct)){
+    if(accOn) accAdd(true);
     if(!state.retryMode){ state.score++; }
     state.correctCount += state.retryMode ? 0 : 1;
     const alt = normalize(userAnswer) !== normalize(correct);
@@ -4437,6 +4548,7 @@ function doSubmit(){
     buzz("ok");
     if(state.review){ promoteMistake(correct); if(!state.retryMode && intIsDue(correct)) intPass(correct); }
   } else {
+    if(accOn) accAdd(false);
     if(!state.retryMode && !state.int) addMistake(state.questions[state.idx]);
     if(state.review && !state.retryMode && intIsDue(correct)) intFail(correct);
     const target = closestForm(userAnswer, correct);
@@ -4818,7 +4930,11 @@ function intFinish(){
   document.getElementById('app').innerHTML = stateScreen({
     img:'S-lesson-done', h:title,
     p: (full ? IL('Блок «','Block “') + partTitle(lesson.parts[I.p]) + IL('» засчитан. ','” counted. ') : '') + sub,
-    extra: '<p class="int-note" style="margin:var(--sp-4) 0 0">' + IL('Дальше — повторы по расписанию','Review comes next, on schedule') + '</p>' + intTileRow(c),
+    extra: '<p class="int-note" style="margin:var(--sp-4) 0 0">' + IL('Дальше — повторы по расписанию','Review comes next, on schedule') + '</p>' + intTileRow(c) +
+      '<div class="pn-card pn-rest"><div class="pn-tx"><b>' + (studyOver() ? IL('На сегодня хватит','That’s enough for today') : IL('Сначала отдохни','Rest first')) + '</b><span>' +
+        (studyOver() ? IL('Уже '+STUDY_CAP_MIN+' минут занятий — дальше закрепляется хуже. Ночной сон закрепит выученное.',STUDY_CAP_MIN+' minutes in — past this, retention drops. Sleep tonight will lock this in.')
+                     : IL('Ночной сон закрепит выученное, а '+REST_MIN+' минут отдыха без телефона усилят эффект.','Sleep tonight will lock this in; '+REST_MIN+' minutes of rest without your phone boosts it.')) + '</span></div>' +
+        '<div class="pn-btns"><button class="pn-x" onclick="intRest()">' + IL('Отдохнуть '+REST_MIN+' минут','Rest for '+REST_MIN+' min') + '</button></div></div>',
     pri:[IL('На главную','Home'), 'intDrop();renderCourses()'], sec:[IL('К уроку','To the lesson'), 'intDrop();renderLesson(' + I.l + ')'] });
   buzz('win');
 }
@@ -6890,6 +7006,9 @@ function mergeMeta(a, b){            // a — локальное, b — обла
   pickByDate(out, a, b, 'day', 'dayCount');            // фразы за день
   pickByDate(out, a, b, 'lday', 'lsec');               // секунды аудио за день
   out.streak = Math.max(a.streak||0, b.streak||0);
+  pickByDate(out, a, b, 'tday', 'tsec');               // секунды занятий за день
+  out.t80d = (a.t80d===undefined?b.t80d:a.t80d); out.hintD = Math.max(a.hintD||0, b.hintD||0) || undefined;
+  out.acc = accMerge(a.acc, b.acc);
 
   out.log = {};                                        // журнал: максимум по каждому дню
   const days = {};
@@ -6915,6 +7034,15 @@ function mergeMeta(a, b){            // a — локальное, b — обла
     out.srs[k] = (!y || (x.s||0) >= (y.s||0)) ? x : y;
   });
   return out;
+}
+function accMerge(a, b){
+  const by = {};
+  (a||[]).concat(b||[]).forEach(function(e){
+    if(!e || e.length < 3) return;
+    const y = by[e[0]];
+    if(!y || e[2] > y[2]) by[e[0]] = e;
+  });
+  return Object.keys(by).map(function(k){ return by[k]; }).sort(function(x,y){ return x[0]-y[0]; }).slice(-ACC_DAYS);
 }
 function intMerge(a, b){
   const by = {};
