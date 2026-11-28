@@ -44,3 +44,12 @@ export function streak(){
   for(;; off--){ if(daySec(dstr(off)) >= STREAK_MIN_SEC) n++; else break; }
   return n;
 }
+
+// stage = последний выбранный режим (решение по ревью 28.11; «Следить» — режим, а не заперт). done/speak/exam не трогаем.
+export function setStage(id, stage){
+  update(s => {
+    const p = s.path[id] || (s.path[id] = { stage: 'listen', sec: { l: 0, f: 0, s: 0 }, heard: [], rec: {} });
+    if(p.stage === 'listen' || p.stage === 'follow' || stage === 'done' || stage === 'listen' || stage === 'follow') p.stage = stage;
+  });
+}
+export const dlgTotal = id => { const s = dlgState(id).sec; return s.l + s.f + s.s; };

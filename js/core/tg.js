@@ -30,3 +30,9 @@ export function buzz(kind){
     } else if(navigator.vibrate){ navigator.vibrate(kind === 'win' ? [50, 50, 50] : 12); }
   }catch(e){}
 }
+
+// Нативная «Назад» Telegram есть с 6.1 — тогда свою кнопку скрываем (одна кнопка «Назад», ревью 28.11).
+export const nativeBack = !!(inTelegram && TG.BackButton && TG.isVersionAtLeast && TG.isVersionAtLeast('6.1'));
+if(nativeBack) document.documentElement.classList.add('tg-native');
+// Свайп вниз сворачивает Mini App — на экране с прокруткой текста мешает (7.7+).
+export function swipes(on){ try{ if(inTelegram && TG.isVersionAtLeast('7.7')) on ? TG.enableVerticalSwipes() : TG.disableVerticalSwipes(); }catch(e){} }

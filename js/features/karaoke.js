@@ -25,6 +25,7 @@ export function karaoke({ audio, host, scroller, lines, timing, onSeek, onWord, 
     if(w && onWord){ onWord(w.textContent, k); return; }
     if(starts[k] !== null) onSeek(Math.max(0, starts[k] - LEAD));
   });
+  scroller.addEventListener('touchstart', () => { userScrollUntil = performance.now() + 3000; }, { passive: true });   // цель не движется под пальцем
   scroller.addEventListener('scroll', () => { if(!programmatic) userScrollUntil = performance.now() + 4000; showBack(); }, { passive: true });
   const back = document.createElement('button');
   back.className = 'kl-back'; back.hidden = true; back.textContent = '↓';

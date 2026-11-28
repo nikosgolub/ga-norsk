@@ -20,5 +20,6 @@ export function trackAudio(audio, id, getKind){
   on('pause', stop); on('ended', stop); on('waiting', stop); on('stalled', stop); on('error', stop);
   document.addEventListener('visibilitychange', flush);
   if(!audio.paused && !audio.ended && audio.readyState > 2) begin();
-  return { flush, stop, dispose(){ stop(); document.removeEventListener('visibilitychange', flush); } };
+  const pending = () => rest + (t0 === null ? 0 : (now() - t0) / 1000);   // ещё не записанные секунды (для «живых» счётчиков)
+  return { flush, stop, pending, dispose(){ stop(); document.removeEventListener('visibilitychange', flush); } };
 }

@@ -6,3 +6,6 @@ export const fmtDur = sec => {            // «1 ч 12 мин» (м:сс — т�
   const m = Math.floor(sec / 60), h = Math.floor(m / 60);
   return h ? h + L(' ч ', ' h ') + (m % 60) + L(' мин', ' min') : m + L(' мин', ' min');
 };
+
+export const fmtLive = sec => (sec < 60 ? Math.floor(sec / 60) + ':' + String(Math.floor(sec % 60)).padStart(2, '0') : fmtDur(sec));   // «0:42» до первой минуты
+export const wordsN = n => { const k = n % 10, h = n % 100; return n + ' ' + L(h >= 11 && h <= 14 ? 'слов' : k === 1 ? 'слово' : k >= 2 && k <= 4 ? 'слова' : 'слов', n === 1 ? 'word' : 'words'); };

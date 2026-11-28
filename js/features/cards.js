@@ -7,10 +7,10 @@ export const dnum = () => Math.floor((Date.now() - new Date().getTimezoneOffset(
 export const list = () => state.cards.list;
 export const isIn = n => { const k = String(n).toLowerCase(), b = base(k); return list().some(w => { const x = String(w.n).toLowerCase(); return x === k || base(x) === b; }); };
 export const due = () => list().filter(w => w.d === undefined || w.d <= dnum());
-export function add(n, r){
+export function add(n, r, ctx){
   n = String(n).replace(/[<>&"]/g, '').trim().slice(0, 60); r = String(r).replace(/[<>&"]/g, '').trim().slice(0, 60);
   if(!n || !r || isIn(n)) return false;
-  update(s => { s.cards.list.unshift({ n, r, s: 0, d: dnum() }); });
+  update(s => { s.cards.list.unshift(Object.assign({ n, r, s: 0, d: dnum() }, ctx ? { ctx: String(ctx).slice(0, 160) } : {})); });
   return true;
 }
 export function remove(w){ update(s => { const i = s.cards.list.indexOf(w); if(i >= 0) s.cards.list.splice(i, 1); }); }
@@ -22,3 +22,5 @@ export function grade(i, ok){
     else { w.s = 0; w.d = dnum(); }
   });
 }
+export function removeByName(n){ update(s => { const k = String(n).toLowerCase(); const i = s.cards.list.findIndex(w => String(w.n).toLowerCase() === k); if(i >= 0) s.cards.list.splice(i, 1); }); }
+export const nextDue = () => { const t = dnum(), ds = list().map(w => w.d).filter(d => d !== undefined && d > t); return ds.length ? Math.min(...ds) - t : 0; };

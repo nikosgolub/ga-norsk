@@ -15,7 +15,7 @@ function ringArt(){
   const R = 90, C = 2 * Math.PI * R;
   return '<div class="ob-ring night-card"><div class="ring"><svg viewBox="0 0 216 216"><circle class="trk" cx="108" cy="108" r="' + R + '" fill="none" stroke-width="20"/>' +
     '<circle class="arc" cx="108" cy="108" r="' + R + '" fill="none" stroke-width="20" stroke-dasharray="' + C + '" stroke-dashoffset="' + (C * 0.62) + '"/></svg>' +
-    '<div class="mid"><b>1 ч 54 мин</b><small>из ' + (DAY_GOAL_SEC / 3600) + ' ч</small></div></div></div>';
+    '<div class="mid"><b>1 ч 54 мин</b><small>из ' + (DAY_GOAL_SEC / 3600) + ' ч</small></div></div><span class="ob-cap">пример</span></div>';
 }
 
 register('onboarding', app => {
