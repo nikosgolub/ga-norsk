@@ -5,7 +5,7 @@ import { dlgState, currentIndex, daySec, DAY_GOAL_SEC } from '../core/path.js';
 import { register, go } from '../core/router.js';
 import { toggleTheme } from '../core/theme.js';
 import { rerender } from '../core/router.js';
-import { state } from '../core/store.js';
+import { state, update } from '../core/store.js';
 
 const STAGE_NAME = { listen: ['Слушать', 'Listen'], follow: ['Следить', 'Follow'], speak: ['Говорить', 'Speak'], exam: ['Экзамен', 'Exam'], done: ['Пройден', 'Done'] };
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -23,6 +23,11 @@ function ring(sec){
     '<div class="mid"><b>' + fmtDur(sec) + '</b><small>' + L('из 3 ч', 'of 3 h') + '</small></div></div>';
 }
 
+function noteHTML(){
+  const n = state.importNote;
+  if(!n || !n.dialogs) return '';
+  return '<button class="import-note" id="imp">' + L('Перенесено из старого приложения: ', 'Imported from the old app: ') + fmtDur(n.sec) + L(' слушания, диалогов: ', ' of listening, dialogues: ') + n.dialogs + (n.cards ? L(', слов в карточках: ', ', cards: ') + n.cards : '') + ' ✕</button>';
+}
 register('home', app => {
   const cur = currentIndex(), cd = DIALOGS[cur], cs = dlgState(cd.id);
   const sec = daySec();
@@ -35,10 +40,12 @@ register('home', app => {
   }).join('');
   app.innerHTML =
     '<div class="top"><span class="t">Gå!</span><button class="hb" id="th" aria-label="' + L('Тема', 'Theme') + '">◐</button></div>' +
+    noteHTML() +
     '<div class="night-card day-card" style="margin-top:var(--sp-4)">' + ring(sec) +
       '<button class="btn" id="go">' + BTN(cs, cur) + '</button></div>' +
     '<div class="sec-h"><h3>' + L('Путь', 'Path') + '</h3><span class="mut">' + DIALOGS.length + '</span></div>' +
     '<div class="list">' + rows + '</div>';
+  const imp = app.querySelector('#imp'); if(imp) imp.onclick = () => { update(st => { delete st.importNote; }); rerender(); };
   app.querySelector('#th').onclick = () => { toggleTheme(); rerender(); };
   app.querySelector('#go').onclick = () => go('dialog', { i: cur });
   app.querySelectorAll('.row').forEach(b => { b.onclick = () => go('dialog', { i: +b.dataset.i }); });

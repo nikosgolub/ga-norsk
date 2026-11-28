@@ -72,3 +72,5 @@
 .cb{min-width:44px;height:44px;border-radius:22px;display:grid;place-items:center;color:var(--ink-2)}
 .cb.txt{font-weight:700;font-size:var(--fs-14);font-variant-numeric:tabular-nums}
 .play{width:56px;height:56px;border-radius:50%;background:var(--accent);color:var(--on-accent);display:grid;place-items:center}
+
+.import-note{display:block;width:100%;text-align:left;margin:var(--sp-2) 0;padding:var(--sp-3);border-radius:var(--r-card);background:var(--surface);color:var(--ink-2);font-size:var(--fs-14)}
