@@ -63,20 +63,23 @@ register('dialog', (app, { i, mode: startMode }) => {
     if(mode === 'follow'){
       kar = karaoke({ audio, host: app.querySelector('#kh'), scroller: app.querySelector('#sc'), lines: lines(), timing,
         onSeek: t => { audio.currentTime = t; },
-        heard: dlgState(d.id).heard, onHeard: k => { toggleHeard(d.id, k); const h = app.querySelector('#heard b'); if(h) h.textContent = dlgState(d.id).heard.length; },
+        heard: dlgState(d.id).heard, onHeard: k => { toggleHeard(d.id, k); const h = app.querySelector('#hc'); if(h) h.textContent = dlgState(d.id).heard.length; },
         onWord: (w, k) => /^\d+$/.test(w.replace(/\W/g, '')) ? null : openWordCard(w, d.lines[k].no.replace(/^[^:]{1,24}:\s*/, '').replace(/^[–-]\s*/, '')) });
     }
     tick();
   }
 
+  let opened = false;
   const followHead = () => {
-    const n = dlgState(d.id).heard.length, hint = dlgState(d.id).sec.f < 600 ? '<p class="method">Следи за текстом, пока слышишь каждое слово. Нажми на незнакомое — оно сохранится в карточки.</p>' : '';
-    return hint + '<p class="heard" id="heard">Слышу <b>' + n + '</b> из ' + d.lines.length + ' реплик</p>';
+    const n = dlgState(d.id).heard.length;
+    if(!opened){ opened = true; update(st => { st.followOpens = (st.followOpens || 0) + 1; }); }
+    const hint = (state.followOpens || 0) <= 3 && dlgState(d.id).sec.f < 600 ? '<p class="method">Следи за текстом, пока слышишь каждое слово. Нажми на незнакомое — оно сохранится в карточки.</p>' : '';
+    return hint + '<p class="heard"><span>Слышу каждое слово</span><span><b id="hc">' + n + '</b> из ' + d.lines.length + '</span></p>';
   };
   function listenBody(heardL){
     const sec = daySec(), f = Math.min(1, sec / DAY_GOAL_SEC), C = 2 * Math.PI * 17;
     const ready = heardL >= 3 * 3600;
-    const listenMsg = h => h >= 7200 ? 'Два часа. Знакомые куски начнут всплывать сами. Не всё сразу — это нормально.' : h >= 3600 ? 'Час позади. Мозг делит кашу звуков на слова, даже если пока не слышно.' : 'Не ищи смысл. Просто слушай — уши привыкают к звукам.';
+    const listenMsg = h => h >= 7200 ? 'Два часа на этом диалоге. Знакомые куски начнут всплывать сами. Не всё сразу — это нормально.' : h >= 3600 ? 'Час на этом диалоге. Мозг делит кашу звуков на слова, даже если пока не слышно.' : 'Не ищи смысл. Просто слушай — уши привыкают к звукам.';
     return '<div class="listen"><img class="art" src="' + cover(d.id) + '" alt="" width="640" height="478">' +
       '<h2 class="h1 lt" lang="nb">' + esc(d.title) + '</h2><p class="mut">' + esc(d.sub) + '</p>' +
       '<div class="lday"><svg viewBox="0 0 40 40" width="40" height="40" aria-hidden="true"><circle cx="20" cy="20" r="17" fill="none" stroke="var(--tint-2)" stroke-width="6"/>' +

@@ -45,9 +45,9 @@ register('home', app => {
     '<div class="night-card day-card" style="margin-top:var(--sp-4)">' + ring(sec) +
       '<button class="btn" id="go">' + BTN(cs, cur) + '</button></div>' +
     '<button class="row" id="cards" style="margin-top:var(--sp-4)"><span class="tx"><b>' + L('Мои карточки', 'My Cards') + '</b><small>' + cards.list().length + L(' слов', ' words') + (cards.due().length ? ' · ' + L('к повтору: ', 'due: ') + cards.due().length : '') + '</small></span><span class="mut">›</span></button>' +
-    '<button class="row" id="how" style="margin-top:var(--sp-2)"><span class="tx"><b>Как это работает</b><small>Метод Замяткина за 4 экрана</small></span><span class="mut">›</span></button>' +
     '<div class="sec-h"><h3>' + L('Путь', 'Path') + '</h3><span class="mut">' + DIALOGS.length + '</span></div>' +
-    '<div class="list">' + rows + '</div>';
+    '<div class="list">' + rows + '</div>' +
+    '<button class="row" id="how" style="margin-top:var(--sp-2)"><span class="tx"><b>Как это работает</b><small>Метод Замяткина за 4 экрана</small></span><span class="mut">›</span></button>';
   const imp = app.querySelector('#imp'); if(imp) imp.onclick = () => { update(st => { delete st.importNote; }); rerender(); };
   app.querySelector('#th').onclick = () => { toggleTheme(); rerender(); };
   app.querySelector('#how').onclick = () => go('onboarding');

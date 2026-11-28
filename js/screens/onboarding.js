@@ -10,6 +10,7 @@ const SLIDES = [
   { ring: true, h: 'Три часа в день', p: 'Одно кольцо. Оно растёт, пока играет диалог или идёт проговаривание. Первые пять диалогов — самые важные, на каждый уходит около двух недель. Переход к следующему этапу решаешь ты — когда слышишь все звуки.' }
 ];
 
+const nb = t => t.replace(/ ([^ ]{1,3}) /g, ' $1\u00a0').replace(/ ([^ ]+)$/, '\u00a0$1');   // без висячих коротких слов и вдов
 function ringArt(){
   const R = 90, C = 2 * Math.PI * R;
   return '<div class="ob-ring night-card"><div class="ring"><svg viewBox="0 0 216 216"><circle class="trk" cx="108" cy="108" r="' + R + '" fill="none" stroke-width="20"/>' +
@@ -25,7 +26,7 @@ register('onboarding', app => {
     app.innerHTML =
       '<div class="ob"><div class="top"><span class="t"></span>' + (last ? '' : '<button class="skip" id="skip">Пропустить</button>') + '</div>' +
       '<div class="ob-art">' + (s.ring ? ringArt() : '<img src="' + s.img + '" alt="" width="640" height="640">') + '</div>' +
-      '<h1 class="h1">' + s.h + '</h1><p class="ob-p">' + s.p + '</p>' +
+      '<h1 class="h1">' + nb(s.h) + '</h1><p class="ob-p">' + nb(s.p) + '</p>' +
       '<div class="ob-foot"><div class="dots" aria-hidden="true">' + SLIDES.map((_, k) => '<i class="' + (k === i ? 'on' : '') + '"></i>').join('') + '</div>' +
       '<button class="btn" id="next">' + (last ? 'Начать' : 'Дальше') + '</button></div></div>';
     app.querySelector('#next').onclick = () => { if(last){ done(); back(); } else { i++; draw(); } };
