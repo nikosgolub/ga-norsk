@@ -23,10 +23,12 @@ function grab(name){
   return JSON.parse(src.slice(start, i + 1));
 }
 
-const dialogs = grab('DIALOGS').map(d => ({
-  id: d.id, file: d.file, title: d.title, sub: d.sub,
-  lines: d.lines.map(l => ({ no: l.no, ru: l.ru, en: l.en }))
-}));
+const fixes = JSON.parse(fs.readFileSync(path.join(root, 'tools/dialog-fixes.json'), 'utf8'));
+const dialogs = grab('DIALOGS').map(d => {
+  const o = { id: d.id, file: d.file, title: d.title, sub: d.sub,
+    lines: d.lines.map(l => ({ no: l.no, ru: l.ru, en: l.en })) };
+  return Object.assign(o, fixes[d.id] || {});
+});
 const body = dialogs.map(d => JSON.stringify(d)).join(',\n');
 fs.writeFileSync(path.join(root, 'js/data/dialogs.js'),
   '// Сгенерировано tools/extract-data.mjs — не править руками.\nexport const DIALOGS = [\n' + body + '\n];\n');

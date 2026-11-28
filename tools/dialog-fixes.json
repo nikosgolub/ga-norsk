@@ -1,0 +1,30 @@
+{
+  "_note": "Правки данных диалогов поверх старого DIALOGS. 23nor: в старом приложении текст был дублем 24nor (Linn), а в аудио — Amir. Текст восстановлен из расшифровки whisper, перевод написан заново: ПРОВЕРИТЬ носителем (места: «vikarer», «kollegene», «alders- og sykehjem»).",
+  "23nor": {
+    "title": "Hva driver du med? – 4",
+    "draft": true,
+    "lines": [
+      {"no": "– Hvor jobber du, Amir?", "ru": "Где ты работаешь, Амир?", "en": "– Where do you work, Amir?"},
+      {"no": "– Jeg er pleieassistent på et alders- og sykehjem.", "ru": "Я помощник по уходу в доме престарелых.", "en": "– I'm a care assistant at a care home."},
+      {"no": "– Liker du det?", "ru": "Тебе нравится?", "en": "– Do you like it?"},
+      {"no": "– Ja, det gjør jeg.", "ru": "Да, нравится.", "en": "– Yes, I do."},
+      {"no": "Det er en hard jobb med mange tunge løft.", "ru": "Это тяжёлая работа, много тяжёлого подъёма.", "en": "It's hard work with a lot of heavy lifting."},
+      {"no": "Men jeg synes det er veldig interessant.", "ru": "Но мне кажется, это очень интересно.", "en": "But I find it very interesting."},
+      {"no": "Det er spennende å snakke med de gamle.", "ru": "Интересно разговаривать со стариками.", "en": "It's exciting to talk to the old people."},
+      {"no": "De er så glade når jeg har tid til å prate med dem.", "ru": "Они так рады, когда у меня есть время с ними поговорить.", "en": "They're so happy when I have time to chat with them."},
+      {"no": "Og de forteller mye om hvordan samfunnet var før i tida.", "ru": "И они много рассказывают о том, каким было общество раньше.", "en": "And they tell me a lot about what society used to be like."},
+      {"no": "Noen av dem hjelper meg med norsken også.", "ru": "Некоторые из них помогают мне и с норвежским.", "en": "Some of them help me with my Norwegian too."},
+      {"no": "– Jobber du full tid?", "ru": "Ты работаешь на полную ставку?", "en": "– Do you work full time?"},
+      {"no": "– Nei, foreløpig er det deltid.", "ru": "Нет, пока что на неполную.", "en": "– No, for now it's part time."},
+      {"no": "Men de trenger ofte vikarer.", "ru": "Но им часто нужны замены.", "en": "But they often need substitutes."},
+      {"no": "Derfor får jeg mange ekstra vakter i helgene.", "ru": "Поэтому в выходные у меня много дополнительных смен.", "en": "That's why I get a lot of extra shifts at weekends."},
+      {"no": "– Kommer du til å fortsette med denne jobben?", "ru": "Ты собираешься продолжать эту работу?", "en": "– Are you going to carry on with this job?"},
+      {"no": "– Ja, men bare til jeg har lært mer norsk.", "ru": "Да, но только пока не выучу больше норвежского.", "en": "– Yes, but only until I've learned more Norwegian."},
+      {"no": "Jeg var ferdig med legeutdanningen min før jeg kom hit.", "ru": "Я закончил учёбу на врача до приезда сюда.", "en": "I had finished my medical degree before I came here."},
+      {"no": "– Kan du ikke arbeide som lege her?", "ru": "Разве ты не можешь работать здесь врачом?", "en": "– Can't you work as a doctor here?"},
+      {"no": "– Jo da, men jeg må ta noen kurs først.", "ru": "Могу, но сначала нужно пройти несколько курсов.", "en": "– Yes, but I have to take some courses first."},
+      {"no": "Og på de kursene krever de veldig gode norskkunnskaper.", "ru": "А на этих курсах требуют очень хорошего знания норвежского.", "en": "And those courses require very good Norwegian skills."},
+      {"no": "Heldigvis lærer jeg mye medisinsk språk av kollegene på sykehjemmet.", "ru": "К счастью, я многому учусь медицинскому языку у коллег в доме ухода.", "en": "Luckily, I learn a lot of medical language from my colleagues at the care home."}
+    ]
+  }
+}
