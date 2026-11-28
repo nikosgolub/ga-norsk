@@ -1,0 +1,87 @@
+/* Gå! — дизайн-токены v1.0 (16.11.2026, Арт-директор)
+   Палитра H. Главное правило: брендовые цвета ОДИНАКОВЫЕ в светлой и тёмной теме.
+   Меняются только фон / поверхность / линии / текст. */
+
+
+:root{
+  /* --- Тема: тёмная (по умолчанию) --- */
+  --bg:#141414;
+  --surface:#1F1F24;
+  --line:#34333D;
+  --ink:#F4F2EE;          /* основной текст, 16+:1 */
+  --ink-2:#B4B0C8;        /* вторичный текст, 8,8:1 */
+  --ink-3:#8C8A96;        /* третичный: только 20+ px или 700 (ревью 28.11); ≈5,4:1 */
+  --glass-bg:rgba(20,20,20,.74);
+  --glass-line:rgba(244,242,238,.10);
+  --scrim:rgba(20,20,20,.9);   /* над размытой обложкой: плотнее стекла, чтобы тёмная тема оставалась тёмной */
+  --tint:rgba(244,242,238,.06);--tint-2:rgba(244,242,238,.12);
+
+  /* --- Одинаковые в обеих темах --- */
+  --accent:#5A57E0;       /* главное действие; белый текст 5,4:1 */
+  --on-accent:#FFFFFF;
+
+  --night:#1E1C2E;        /* фиксированная подложка карточки дня и статистики */
+  --night-ink:#F4F2EE;
+  --night-ink-2:#B4B0C8;
+  --night-line:#34314A;
+
+  --ring-phrases:#7D7AFF; /* фразы: кольцо, точки, график, путь до A2 */
+  --ring-words:#F2A2F0;   /* слова */
+  --ring-audio:#F2F29A;   /* аудио */
+  --ring-day:#7D7AFF;     /* Gå! 2: единственное кольцо «3 часа в день» (решение владельца 28.11) */
+
+  --ok:#4CC38A;           /* «верно» — ТОЛЬКО заливка с тёмным текстом (8,3:1) */
+  --bad:#F07575;          /* «ошибка» — ТОЛЬКО заливка с тёмным текстом (6,6:1) */
+  --on-sem:#141414;
+
+  --paper:#F4F2EE;        /* подложка иллюстраций в обеих темах */
+
+  /* --- Типографика: 6 кеглей, интерфейс Manrope, норвежский Bricolage --- */
+  --f-ui:'Manrope',-apple-system,system-ui,sans-serif;
+  --f-no:'Bricolage Grotesque','Manrope',system-ui,sans-serif;
+  --fs-12:12px; --fs-14:14px; --fs-16:16px; --fs-20:20px; --fs-28:28px; --fs-40:40px;
+  /* веса: 500 и 700 для интерфейса, 800 — заголовки и норвежский display */
+
+  /* --- Радиусы: 3 --- */
+  --r-chip:8px; --r-card:16px; --r-sheet:24px;
+
+  /* --- Отступы: шаг 4 --- */
+  --sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px; --sp-6:24px; --sp-8:32px;
+
+  /* --- Стекло (только таб-бар, шапка при прокрутке, шит обратной связи) --- */
+  --glass-blur:blur(20px) saturate(140%);
+
+  color-scheme:dark;
+}
+
+/* Светлая тема: Telegram colorScheme === 'light' */
+.theme-light{
+  --bg:#F4F2EE;
+  --surface:#FFFFFF;
+  --line:#DEDBE6;
+  --ink:#141414;
+  --ink-2:#5C5868;        /* 6,2:1 */
+  --ink-3:#85818F;        /* ≈3,4:1 — только крупный/жирный */
+  --glass-bg:rgba(244,242,238,.78);
+  --glass-line:rgba(20,20,20,.08);
+  --scrim:rgba(244,242,238,.88);
+  --tint:rgba(20,20,20,.05);--tint-2:rgba(20,20,20,.12);
+  color-scheme:light;
+}
+
+/* Весь норвежский текст: фразы, блоки, слово в заголовке */
+[lang="nb"]{font-family:var(--f-no)}
+
+/* Стекло с запасным вариантом для слабых устройств */
+.glass{
+  background:var(--glass-bg);
+  border-top:1px solid var(--glass-line);
+  -webkit-backdrop-filter:var(--glass-blur);
+  backdrop-filter:var(--glass-blur);
+}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  .glass{background:var(--surface)}
+}
+
+/* Карточки с брендовыми цветами — всегда на ночной подложке */
+.night-card{background:var(--night);color:var(--night-ink);border-radius:var(--r-sheet)}
