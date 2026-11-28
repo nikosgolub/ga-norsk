@@ -20,20 +20,20 @@ function BTN(cs, cur){
 }
 const R = 90, C = 2 * Math.PI * R;
 function ring(sec){
-  const f = Math.min(1, sec / DAY_GOAL_SEC), a = 2 * Math.PI * (STREAK_MIN_SEC / DAY_GOAL_SEC) - Math.PI / 2;
+  const f = Math.min(1, sec / DAY_GOAL_SEC), a = 2 * Math.PI * (STREAK_MIN_SEC / DAY_GOAL_SEC);   // svg повёрнут на −90°, поэтому угол без поправки
   const tx = 108 + Math.cos(a) * R, ty = 108 + Math.sin(a) * R, ux = Math.cos(a), uy = Math.sin(a);
   return '<div class="ring"><svg viewBox="0 0 216 216"><circle class="trk" cx="108" cy="108" r="' + R + '" fill="none" stroke-width="20"/>' +
-    '<circle class="arc" id="arc" cx="108" cy="108" r="' + R + '" fill="none" stroke-width="20" stroke-dasharray="' + C + '" stroke-dashoffset="' + (C * (1 - f)) + '" stroke-linecap="' + (f < 0.03 ? 'butt' : 'round') + '"/>' +
+    '<circle class="arc" id="arc" cx="108" cy="108" r="' + R + '" fill="none" stroke-width="20" stroke-dasharray="' + C + '" stroke-dashoffset="' + (C * (1 - f)) + '" stroke-linecap="' + (f < 0.015 ? 'butt' : 'round') + '"/>' +
     '<line class="notch" x1="' + (tx - ux * 10) + '" y1="' + (ty - uy * 10) + '" x2="' + (tx + ux * 10) + '" y2="' + (ty + uy * 10) + '" stroke-width="2"/></svg>' +
     '<div class="mid"><b id="rnow">' + fmtLive(sec) + '</b><small>' + L('из 3 ч', 'of 3 h') + '</small></div></div>';
 }
-const streakLine = sec => sec >= STREAK_MIN_SEC ? L('Серия за сегодня засчитана', "Today's streak is counted") : L('До серии ещё ', 'To keep the streak: ') + Math.max(1, Math.ceil((STREAK_MIN_SEC - sec) / 60)) + L(' мин', ' min');
+const streakLine = sec => sec >= STREAK_MIN_SEC ? L('Ещё ', 'Still ') + fmtDur(Math.max(60, DAY_GOAL_SEC - sec)) + L(' до цели', ' to the goal') : L('До серии ещё ', 'To keep the streak: ') + Math.max(1, Math.ceil((STREAK_MIN_SEC - sec) / 60)) + L(' мин', ' min');
 const dayWord = n => { const k = n % 10, h = n % 100; return L(h >= 11 && h <= 14 ? 'дней' : k === 1 ? 'день' : k >= 2 && k <= 4 ? 'дня' : 'дней', n === 1 ? 'day' : 'days'); };
 function streakHTML(){
   const n = streak();
   if(!n) return '';
   const today = daySec() >= STREAK_MIN_SEC;
-  return '<span class="streak' + (today ? ' today' : '') + '" aria-label="' + L('Серия: ', 'Streak: ') + n + ' ' + dayWord(n) + (today ? '' : L(' — сегодня ещё нет', ' — not yet today')) + '"><svg width="16" height="16" viewBox="0 0 24 24" fill="' + (today ? 'currentColor' : 'none') + '" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg><b>' + n + '</b> ' + dayWord(n) + '</span>';
+  return '<span class="streak' + (today ? ' today' : '') + '" aria-label="' + L('Серия: ', 'Streak: ') + n + ' ' + dayWord(n) + (today ? '' : L(' — сегодня ещё нет', ' — not yet today')) + '">' + (today ? '<span class="chk" aria-hidden="true">✓</span>' : '') + '<svg width="16" height="16" viewBox="0 0 24 24" fill="' + (today ? 'currentColor' : 'none') + '" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg><b>' + n + '</b> ' + dayWord(n) + '</span>';
 }
 function noteHTML(){
   const n = state.importNote;
@@ -66,7 +66,7 @@ register('home', app => {
   // живое кольцо: пока играет звук — обновляем раз в секунду
   const live = () => {
     const s = P.liveDaySec(), f = Math.min(1, s / DAY_GOAL_SEC);
-    const arc = app.querySelector('#arc'); if(arc){ arc.setAttribute('stroke-dashoffset', C * (1 - f)); arc.setAttribute('stroke-linecap', f < 0.03 ? 'butt' : 'round'); }
+    const arc = app.querySelector('#arc'); if(arc){ arc.setAttribute('stroke-dashoffset', C * (1 - f)); arc.setAttribute('stroke-linecap', f < 0.015 ? 'butt' : 'round'); }
     const n = app.querySelector('#rnow'); if(n) n.textContent = fmtLive(s);
     const l = app.querySelector('#sline'); if(l) l.textContent = streakLine(s);
   };

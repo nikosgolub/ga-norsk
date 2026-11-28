@@ -66,7 +66,7 @@
 .kl.on .kw.done{color:var(--ink)}
 .kl:not(.on) .kw.done{color:inherit}
 .kw.now{background:linear-gradient(90deg,var(--ink) var(--p,0%),var(--ink-2) var(--p,0%));-webkit-background-clip:text;background-clip:text;color:transparent}
-.kl-back{position:absolute;right:var(--sp-4);bottom:130px;width:44px;height:44px;border-radius:50%;background:var(--ink);color:var(--bg);font-size:var(--fs-20);z-index:3}
+.kl-back{position:absolute;right:var(--sp-4);bottom:calc(var(--dock-h,150px) + 76px);width:44px;height:44px;border-radius:50%;background:var(--ink);color:var(--bg);font-size:var(--fs-20);z-index:3}
 .dlg > .dock{position:absolute;left:0;right:0;bottom:0;padding:var(--sp-3) var(--sp-4) calc(var(--sp-3) + env(safe-area-inset-bottom));border-top:1px solid var(--line);z-index:4}
 .trk-row{display:flex;align-items:center;gap:var(--sp-3);max-width:560px;margin:0 auto}
 .tm{font-size:var(--fs-12);color:var(--ink-2);min-width:34px;font-variant-numeric:tabular-nums}
@@ -113,9 +113,6 @@
 /* ── Онбординг, самооценка «слышу» ── */
 .ob{display:flex;flex-direction:column;min-height:calc(100dvh - 24px);gap:var(--sp-3)}
 .skip{margin-left:auto;min-height:44px;padding:0 var(--sp-2);color:var(--ink-2);font-weight:700;font-size:var(--fs-14)}
-\.ob-art{border-radius:var(--r-sheet);overflow:hidden;background:var(--paper);border:1px solid var(--line);width:min(100%,354px,50vh);aspect-ratio:1;align-self:center;position:relative}
-.ob-cap{position:absolute;left:0;right:0;bottom:var(--sp-3);text-align:center;color:var(--night-ink-2);font-size:var(--fs-12)}
-.ob-art img{width:100%;height:100%;object-fit:cover}
 .ob-ring{display:flex;justify-content:center;height:100%;align-items:center;border-radius:0}
 .ob-ring .ring{width:min(216px,60vw)}
 .ob-p{font-size:var(--fs-16);color:var(--ink-2);line-height:1.5}
@@ -175,3 +172,18 @@
 .listen.has-strip .art{max-height:min(22dvh,170px)}
 .strip .btn{white-space:nowrap;padding:0 var(--sp-3)}
 .strip .link{flex-shrink:0}
+
+/* ── Вторая очередь правок (ревью r2, 28.11) ── */
+.ob-art{border-radius:var(--r-sheet);overflow:hidden;background:var(--paper);border:1px solid var(--line);align-self:center;aspect-ratio:1/1.18;height:min(418px,50dvh);width:auto;max-width:100%}
+.ob-art img{width:100%;height:100%;object-fit:cover}
+.ob-ring{flex-direction:column;gap:var(--sp-3);justify-content:center}
+.ob-cap{position:static;font-size:var(--fs-12);font-weight:700;color:var(--ink-2);text-align:center}
+.ob-art .ob-ring .ob-cap{color:var(--night-ink-2)}
+.toast{background:var(--surface);color:var(--ink);border:1px solid var(--line)}
+.toast button{color:var(--ink)}
+.saved-row{display:flex;align-items:center;gap:var(--sp-3);margin-top:var(--sp-4)}
+.saved-row .btn{flex:1}
+.done-btn.all{background:var(--accent);color:var(--on-accent);border-color:var(--accent);min-height:56px;position:sticky;bottom:calc(var(--dock-h,150px) + var(--sp-3));z-index:2}
+.streak .chk{color:var(--ok);font-weight:800}
+.rcard .spk.under{position:static;width:48px;height:48px;color:var(--night-ink)}
+.rcard .spk.under svg{width:26px;height:26px}

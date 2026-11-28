@@ -8,5 +8,7 @@ export function toast(msg, { action, onAction, ms = 4000 } = {}){
   el.firstChild.textContent = msg;
   if(action) el.querySelector('button').onclick = () => { clearTimeout(timer); el.remove(); el = null; if(onAction) onAction(); };
   document.body.appendChild(el);
+  const dock = document.querySelector('#dock'), mini = document.querySelector('.mini');   // не перекрываем плеер
+  el.style.bottom = 'calc(' + ((dock ? dock.offsetHeight : mini ? 76 : 12) + 12 + (document.querySelector('#mastered.all') ? 80 : 0)) + 'px + env(safe-area-inset-bottom))';
   timer = setTimeout(() => { if(el){ el.remove(); el = null; } }, ms);
 }

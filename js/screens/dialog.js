@@ -69,7 +69,7 @@ register('dialog', (app, { i, autoplay }) => {
           toggleHeard(d.id, k); const n = dlgState(d.id).heard.length;
           const h = app.querySelector('#hc'); if(h) h.textContent = n;
           const lab = app.querySelector('#hl'); if(lab) lab.textContent = n ? L('Слышу каждое слово', 'I hear every word') : L('Отметь реплики, которые слышишь целиком', 'Mark lines you hear in full');
-          if(n === d.lines.length) toast(L('Диалог ', 'Dialogue ') + (i + 1) + L(': слышу все ', ': I hear all ') + n + L(' реплик', ' lines'));
+          if(n === d.lines.length){ const m = app.querySelector('#mastered'); if(m){ m.classList.add('all'); m.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } toast(L('Все ', 'All ') + n + L(' реплик. Дальше?', ' lines. Next?')); }
         },
         onWord: (w, k) => {
           if(/^\d+$/.test(w.replace(/\W/g, ''))) return;
@@ -105,7 +105,7 @@ register('dialog', (app, { i, autoplay }) => {
       '<p class="sh-t" lang="nb">' + esc(d.title) + '</p>' + (offline ? '<p class="method">' + L('Нет меток слов: подсветка недоступна, звук работает.', 'No word timings: highlighting unavailable, audio works.') + '</p>' : '') + hint +
       '<p class="heard"><span id="hl">' + (n ? L('Слышу каждое слово', 'I hear every word') : L('Отметь реплики, которые слышишь целиком', 'Mark lines you hear in full')) + '</span><span><b id="hc">' + n + '</b> ' + L('из ', 'of ') + d.lines.length + '</span></p>' +
       '<div id="kh"></div>' +
-      (next ? '<button class="btn sec done-btn" id="mastered">' + L('Диалог освоен → к диалогу ', 'Dialogue mastered → to dialogue ') + (i + 2) + '</button>' : '') +
+      (next ? '<button class="btn sec done-btn' + (n === d.lines.length ? ' all' : '') + '" id="mastered">' + L('Диалог освоен → к диалогу ', 'Dialogue mastered → to dialogue ') + (i + 2) + '</button>' : '') +
       '<div class="sheet-end"></div></div></div>';
   }
 

@@ -49,7 +49,7 @@ register('review', app => {
     }
     const w = cards.list()[queue[0]];
     app.innerHTML = topbar(L('Повторение', 'Review') + ' · ' + queue.length) +
-      '<div class="rwrap"><div class="rcard" id="flip"><div class="rq" lang="nb">' + esc(w.n) + '</div>' + (flipped ? '<div class="rr">' + esc(w.r) + '</div>' : '') + (flipped && w.ctx ? '<div class="rc" lang="nb">' + esc(w.ctx) + '</div>' : '') + spk(w, 'on-night') + '</div>' +
+      '<div class="rwrap"><div class="rcard" id="flip"><div class="rq" lang="nb">' + esc(w.n) + '</div>' + spk(w, 'under') + (flipped ? '<div class="rr">' + esc(w.r) + '</div>' : '') + (flipped && w.ctx ? '<div class="rc" lang="nb">' + esc(w.ctx) + '</div>' : '')  + '</div>' +
       (flipped ? '<div class="two"><button class="btn bad" id="no">' + L('Не помню', 'Again') + '</button><button class="btn good" id="yes">' + L('Помню', 'Got it') + '</button></div>'
                : '<button class="btn" id="show">' + L('Показать перевод', 'Show translation') + '</button>') + '</div>';
     app.querySelector('#bk').onclick = back;

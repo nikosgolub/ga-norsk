@@ -5,7 +5,6 @@ import { lookup, tokens, clean, base, kind } from './lookup.js';
 import * as cards from './cards.js';
 import { aiAsk } from './ai.js';
 import { buzz } from '../core/tg.js';
-import { toast } from './toast.js';
 
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 let root = null, onCloseCb = null;
@@ -32,7 +31,7 @@ export function openWordCard(word, lineText, onClose){
   let c = hit
     ? { n: hit.e.n, r: state.lang === 'en' ? (hit.e.en || hit.e.r) : hit.e.r, word: (base(hit.e.n).indexOf(' ') >= 0 && kind(hit.e.n) === 'o') ? hit.e.n : tok, form: hit.kind === 'form', name: !!hit.e.name }
     : { n: tok, r: '', word: tok, form: false, unknown: true };
-  let seq = 0;
+  let seq = 0, justAdded = false;
   const draw = () => {
     const have = c.r && cards.isIn(c.n);
     const sh = openSheet(
@@ -40,9 +39,10 @@ export function openWordCard(word, lineText, onClose){
       (c.unknown ? '<div class="wcard-base" id="wc-tr">' + L('Этого слова нет в словаре курса', 'This word is not in the course vocabulary') + '</div>'
                  : '<div class="wcard-tr" id="wc-tr">' + esc(c.r) + '</div>') +
       (c.form && c.n !== c.word ? '<div class="wcard-base">' + L('Начальная форма: ', 'Base form: ') + '<b lang="nb">' + esc(c.n) + '</b></div>' : '') +
-      (have ? '<button class="btn sec" disabled>✓ ' + L('В карточках', 'In My Cards') + '</button>' : c.name ? '' : c.r ? '<button class="btn" id="wc-add">' + L('В карточки', 'Add to My Cards') + '</button>'
+      (have ? '<div class="saved-row"><button class="btn sec" disabled>✓ ' + L('В карточках', 'In My Cards') + '</button>' + (justAdded ? '<button class="link" id="wc-undo">' + L('Отменить', 'Undo') + '</button>' : '') + '</div>' : c.name ? '' : c.r ? '<button class="btn" id="wc-add">' + L('В карточки', 'Add to My Cards') + '</button>'
                        : '<button class="btn" id="wc-ai">' + L('Узнать перевод', 'Get translation') + '</button>'));
-    const a = sh.querySelector('#wc-add'); if(a) a.onclick = () => { if(cards.add(c.n, c.r, lineText)){ buzz('ok'); toast(L('Слово сохранено', 'Word saved'), { action: L('Отменить', 'Undo'), onAction: () => { cards.removeByName(c.n); } }); } draw(); };
+    const a = sh.querySelector('#wc-add'); if(a) a.onclick = () => { if(cards.add(c.n, c.r, lineText)){ buzz('ok'); justAdded = true; } draw(); };
+    const u = sh.querySelector('#wc-undo'); if(u) u.onclick = () => { cards.removeByName(c.n); justAdded = false; draw(); };
     const q = sh.querySelector('#wc-ai'); if(q) q.onclick = () => ask(sh);
   };
   const ask = async sh => {
