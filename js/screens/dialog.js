@@ -13,6 +13,11 @@ import { buzz } from '../core/tg.js';
 const mmss = s => { s = Math.max(0, Math.floor(s || 0)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
 const PLAY = '<svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></svg>';
 const PAUSE = '<svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h4v14H7zM13 5h4v14h-4z" fill="currentColor"/></svg>';
+const ICON = {
+  back: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>',
+  ccw: '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/><text x="12" y="15.5" text-anchor="middle" font-size="8.5" font-weight="700" stroke="none" fill="currentColor" font-family="Manrope,system-ui">5</text></svg>',
+  cw: '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/><text x="12" y="15.5" text-anchor="middle" font-size="8.5" font-weight="700" stroke="none" fill="currentColor" font-family="Manrope,system-ui">5</text></svg>'
+};
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
 register('dialog', (app, { i, mode: startMode }) => {
@@ -23,7 +28,7 @@ register('dialog', (app, { i, mode: startMode }) => {
   const stageOf = () => (mode === 'listen' ? 'l' : 'f');
 
   const audio = new Audio('audio/' + d.file);
-  audio.preload = 'metadata'; audio.loop = !!state.loop; audio.playbackRate = state.rate || 1;
+  audio.preload = 'metadata'; audio.loop = true;   // по методу цикл всегда включён (аудио — «волна за волной») audio.playbackRate = state.rate || 1;
   const clock = trackAudio(audio, d.id, stageOf);
   const msOff = setMediaSession(audio, { title: d.title, artist: 'Gå! · ' + L('Диалог ', 'Dialogue ') + (i + 1), cover: cover(d.id) });
 
@@ -31,7 +36,8 @@ register('dialog', (app, { i, mode: startMode }) => {
     if(disposed) return; timing = t; if(mode === 'follow') draw();
   });
 
-  const lines = () => d.lines.map(l => Object.assign({}, l, { tr: showTr ? (state.lang === 'en' ? l.en : l.ru) : '' }));
+  const stripWho = t => String(t || '').replace(/^[–-]\s*/, '').replace(/^[^:]{1,20}:\s*/, '');
+  const lines = () => d.lines.map(l => Object.assign({}, l, { tr: showTr ? stripWho(state.lang === 'en' ? l.en : l.ru) : '' }));
 
   function draw(){
     clock.flush(); if(kar){ kar.dispose(); kar = null; }
@@ -39,17 +45,18 @@ register('dialog', (app, { i, mode: startMode }) => {
     app.innerHTML =
       '<div class="dlg ' + mode + '">' +
         '<div class="dlg-bg"><img src="' + cover(d.id) + '" alt=""></div>' +
-        '<div class="dlg-top"><button class="hb glass-btn" id="bk" aria-label="' + L('Назад', 'Back') + '">‹</button>' +
+        '<div class="dlg-top"><button class="hb glass-btn" id="bk" aria-label="' + L('Назад', 'Back') + '">' + ICON.back + '</button>' +
           '<div class="seg" role="tablist"><button role="tab" data-m="listen" aria-selected="' + (mode === 'listen') + '">' + L('Слушать', 'Listen') + '</button>' +
           '<button role="tab" data-m="follow" aria-selected="' + (mode === 'follow') + '">' + L('Следить', 'Follow') + '</button></div>' +
-          (mode === 'follow' ? '<button class="hb glass-btn' + (showTr ? ' on' : '') + '" id="tr" aria-pressed="' + showTr + '" aria-label="' + L('Перевод', 'Translation') + '">' + (state.lang === 'en' ? 'EN' : 'RU') + '</button>' : '<span class="hb"></span>') +
+          (mode === 'follow' ? '<button class="hb glass-btn txt' + (showTr ? ' on' : '') + '" id="tr" aria-pressed="' + showTr + '" aria-label="' + L('Перевод', 'Translation') + '">' + (state.lang === 'en' ? 'EN' : 'RU') + '</button>' : '<span class="hb"></span>') +
         '</div>' +
-        (mode === 'listen' ? listenBody(heardL) : '<div class="sheet"><div class="sheet-in" id="sc"><h2 class="h2" lang="nb">' + esc(d.title) + '</h2><div id="kh"></div><div class="sheet-end"></div></div></div>') +
+        (mode === 'listen' ? listenBody(heardL) : '<div class="sheet"><i class="grip"></i><div class="sheet-in" id="sc"><div id="kh"></div><div class="sheet-end"></div></div></div>') +
         '<div class="dock glass">' +
           '<div class="trk-row"><span class="tm" id="cur">0:00</span><div class="pl-track" id="trk"><i id="fill"></i></div><span class="tm" id="dur">--:--</span></div>' +
-          '<div class="ctl"><button class="cb" id="rate">' + ((state.rate || 1) === 1 ? '1×' : '0.75×') + '</button>' +
-            '<button class="cb" id="m5">−5</button><button class="play" id="play" aria-label="' + L('Играть', 'Play') + '">' + (audio.paused ? PLAY : PAUSE) + '</button><button class="cb" id="p5">+5</button>' +
-            '<button class="cb' + (state.loop ? ' on' : '') + '" id="loop" aria-pressed="' + !!state.loop + '" aria-label="' + L('Цикл', 'Loop') + '">⟳</button></div>' +
+          '<div class="ctl"><button class="cb txt" id="rate" aria-label="' + L('Скорость', 'Speed') + '">' + ((state.rate || 1) === 1 ? '1×' : '0.75×') + '</button>' +
+            '<button class="cb" id="m5" aria-label="' + L('Назад на 5 секунд', 'Back 5 seconds') + '">' + ICON.ccw + '</button>' +
+            '<button class="play" id="play" aria-label="' + L('Играть', 'Play') + '">' + (audio.paused ? PLAY : PAUSE) + '</button>' +
+            '<button class="cb" id="p5" aria-label="' + L('Вперёд на 5 секунд', 'Forward 5 seconds') + '">' + ICON.cw + '</button></div>' +
         '</div></div>';
     bind();
     if(mode === 'follow'){
@@ -60,12 +67,17 @@ register('dialog', (app, { i, mode: startMode }) => {
   }
 
   function listenBody(heardL){
-    const sec = daySec();
+    const sec = daySec(), f = Math.min(1, sec / DAY_GOAL_SEC), C = 2 * Math.PI * 17;
+    const ready = heardL >= 3 * 3600;
     return '<div class="listen"><img class="art" src="' + cover(d.id) + '" alt="" width="640" height="478">' +
-      '<div class="lcard glass"><h2 class="h2" lang="nb">' + esc(d.title) + '</h2><p class="mut">' + esc(d.sub) + '</p>' +
-        '<p class="big">' + fmtDur(sec) + ' <small>' + L('из 3 ч сегодня', 'of 3 h today') + '</small></p>' +
-        '<p class="mut">' + L('На этом диалоге: ', 'On this dialogue: ') + fmtDur(heardL) + '</p></div>' +
-      '<button class="btn sec glass" id="toFollow">' + L('Слышу все звуки — перейти к «Следить»', 'I hear every sound — go to Follow') + '</button></div>';
+      '<h2 class="h1 lt" lang="nb">' + esc(d.title) + '</h2><p class="mut">' + esc(d.sub) + '</p>' +
+      '<div class="lday"><svg viewBox="0 0 40 40" width="40" height="40" aria-hidden="true"><circle cx="20" cy="20" r="17" fill="none" stroke="var(--tint-2)" stroke-width="6"/>' +
+        '<circle cx="20" cy="20" r="17" fill="none" stroke="var(--ring-day)" stroke-width="6" stroke-linecap="round" stroke-dasharray="' + C + '" stroke-dashoffset="' + (C * (1 - f)) + '" transform="rotate(-90 20 20)"/></svg>' +
+        '<b>' + fmtDur(sec) + '</b><span>' + L('из 3 ч сегодня', 'of 3 h today') + '</span></div>' +
+      '<p class="mut">' + L('На этом диалоге: ', 'On this dialogue: ') + fmtDur(heardL) + '</p>' +
+      (ready ? '<button class="btn sec slim" id="toFollow">' + L('Слышу все звуки → Следить', 'I hear every sound → Follow') + '</button>'
+             : '<p class="method">' + L('Не ищи смысл. Просто слушай — уши сейчас привыкают к звукам.', "Don't look for meaning. Just listen — your ears are getting used to the sounds.") + '</p>') +
+      '</div>';
   }
 
   function bind(){
@@ -77,7 +89,6 @@ register('dialog', (app, { i, mode: startMode }) => {
     q('#rate').onclick = () => { update(s => { s.rate = (s.rate || 1) === 1 ? 0.75 : 1; }); audio.playbackRate = state.rate; q('#rate').textContent = state.rate === 1 ? '1×' : '0.75×'; };
     q('#m5').onclick = () => { audio.currentTime = Math.max(0, audio.currentTime - 5); };
     q('#p5').onclick = () => { audio.currentTime = Math.min(audio.duration || 1e9, audio.currentTime + 5); };
-    q('#loop').onclick = () => { update(s => { s.loop = s.loop ? 0 : 1; }); audio.loop = !!state.loop; q('#loop').classList.toggle('on', !!state.loop); };
     q('#trk').onclick = e => { if(!audio.duration) return; const r = q('#trk').getBoundingClientRect(); audio.currentTime = (e.clientX - r.left) / r.width * audio.duration; };
     const tf = q('#toFollow');
     if(tf) tf.onclick = () => { update(s => { const p = s.path[d.id] || (s.path[d.id] = { stage: 'listen', sec: { l: 0, f: 0, s: 0 }, heard: [], rec: {} }); if(p.stage === 'listen') p.stage = 'follow'; }); mode = 'follow'; draw(); };
