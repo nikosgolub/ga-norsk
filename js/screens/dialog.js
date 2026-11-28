@@ -4,7 +4,7 @@ import { cover } from '../data/covers.js';
 import { register, back } from '../core/router.js';
 import { L, fmtDur } from '../core/i18n.js';
 import { state, update } from '../core/store.js';
-import { dlgState, daySec, DAY_GOAL_SEC } from '../core/path.js';
+import { dlgState, daySec, DAY_GOAL_SEC, toggleHeard } from '../core/path.js';
 import { trackAudio } from '../core/clock.js';
 import { karaoke } from '../features/karaoke.js';
 import { setMediaSession } from '../features/mediasession.js';
@@ -51,7 +51,7 @@ register('dialog', (app, { i, mode: startMode }) => {
           '<button role="tab" data-m="follow" aria-selected="' + (mode === 'follow') + '">' + L('Следить', 'Follow') + '</button></div>' +
           (mode === 'follow' ? '<button class="hb glass-btn txt' + (showTr ? ' on' : '') + '" id="tr" aria-pressed="' + showTr + '" aria-label="' + L('Перевод', 'Translation') + '">' + (state.lang === 'en' ? 'EN' : 'RU') + '</button>' : '<span class="hb"></span>') +
         '</div>' +
-        (mode === 'listen' ? listenBody(heardL) : '<div class="sheet"><i class="grip"></i><div class="sheet-in" id="sc"><div id="kh"></div><div class="sheet-end"></div></div></div>') +
+        (mode === 'listen' ? listenBody(heardL) : '<div class="sheet"><i class="grip"></i><div class="sheet-in" id="sc">' + followHead() + '<div id="kh"></div><div class="sheet-end"></div></div></div>') +
         '<div class="dock glass">' +
           '<div class="trk-row"><span class="tm" id="cur">0:00</span><div class="pl-track" id="trk"><i id="fill"></i></div><span class="tm" id="dur">--:--</span></div>' +
           '<div class="ctl"><button class="cb txt" id="rate" aria-label="' + L('Скорость', 'Speed') + '">' + ((state.rate || 1) === 1 ? '1×' : '0.75×') + '</button>' +
@@ -63,22 +63,28 @@ register('dialog', (app, { i, mode: startMode }) => {
     if(mode === 'follow'){
       kar = karaoke({ audio, host: app.querySelector('#kh'), scroller: app.querySelector('#sc'), lines: lines(), timing,
         onSeek: t => { audio.currentTime = t; },
+        heard: dlgState(d.id).heard, onHeard: k => { toggleHeard(d.id, k); const h = app.querySelector('#heard b'); if(h) h.textContent = dlgState(d.id).heard.length; },
         onWord: (w, k) => /^\d+$/.test(w.replace(/\W/g, '')) ? null : openWordCard(w, d.lines[k].no.replace(/^[^:]{1,24}:\s*/, '').replace(/^[–-]\s*/, '')) });
     }
     tick();
   }
 
+  const followHead = () => {
+    const n = dlgState(d.id).heard.length, hint = dlgState(d.id).sec.f < 600 ? '<p class="method">Следи за текстом, пока слышишь каждое слово. Нажми на незнакомое — оно сохранится в карточки.</p>' : '';
+    return hint + '<p class="heard" id="heard">Слышу <b>' + n + '</b> из ' + d.lines.length + ' реплик</p>';
+  };
   function listenBody(heardL){
     const sec = daySec(), f = Math.min(1, sec / DAY_GOAL_SEC), C = 2 * Math.PI * 17;
     const ready = heardL >= 3 * 3600;
+    const listenMsg = h => h >= 7200 ? 'Два часа. Знакомые куски начнут всплывать сами. Не всё сразу — это нормально.' : h >= 3600 ? 'Час позади. Мозг делит кашу звуков на слова, даже если пока не слышно.' : 'Не ищи смысл. Просто слушай — уши привыкают к звукам.';
     return '<div class="listen"><img class="art" src="' + cover(d.id) + '" alt="" width="640" height="478">' +
       '<h2 class="h1 lt" lang="nb">' + esc(d.title) + '</h2><p class="mut">' + esc(d.sub) + '</p>' +
       '<div class="lday"><svg viewBox="0 0 40 40" width="40" height="40" aria-hidden="true"><circle cx="20" cy="20" r="17" fill="none" stroke="var(--tint-2)" stroke-width="6"/>' +
         '<circle cx="20" cy="20" r="17" fill="none" stroke="var(--ring-day)" stroke-width="6" stroke-linecap="round" stroke-dasharray="' + C + '" stroke-dashoffset="' + (C * (1 - f)) + '" transform="rotate(-90 20 20)"/></svg>' +
         '<b>' + fmtDur(sec) + '</b><span>' + L('из 3 ч сегодня', 'of 3 h today') + '</span></div>' +
       '<p class="mut">' + L('На этом диалоге: ', 'On this dialogue: ') + fmtDur(heardL) + '</p>' +
-      (ready ? '<button class="btn sec slim" id="toFollow">' + L('Слышу все звуки → Следить', 'I hear every sound → Follow') + '</button>'
-             : '<p class="method">' + L('Не ищи смысл. Просто слушай — уши сейчас привыкают к звукам.', "Don't look for meaning. Just listen — your ears are getting used to the sounds.") + '</p>') +
+      (ready ? '<p class="method">Три часа — ориентир метода. Слышишь все звуки? Тогда переходи к «Следить». Нет — слушай дальше.</p><button class="btn sec slim" id="toFollow">' + L('Слышу все звуки → Следить', 'I hear every sound → Follow') + '</button>'
+             : '<p class="method">' + listenMsg(heardL) + '</p>') +
       '</div>';
   }
 

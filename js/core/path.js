@@ -26,3 +26,12 @@ export function addTime(id, kind, sec){
     while(keys.length > 60) delete s.days[keys.shift()];
   });
 }
+
+// Самооценка: отметка «слышу эту реплику целиком» (по номеру реплики).
+export function toggleHeard(id, k){
+  update(s => {
+    const p = s.path[id] || (s.path[id] = { stage: 'listen', sec: { l: 0, f: 0, s: 0 }, heard: [], rec: {} });
+    const i = p.heard.indexOf(k);
+    if(i >= 0) p.heard.splice(i, 1); else p.heard.push(k);
+  });
+}

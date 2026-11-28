@@ -105,3 +105,24 @@
 .rcard{flex:1;border-radius:var(--r-sheet);background:var(--night);color:var(--night-ink);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--sp-3);padding:var(--sp-6);text-align:center}
 .rcard .rq{font-size:var(--fs-40);font-weight:800;font-family:var(--f-no);line-height:1.1}
 .rcard .rr{font-size:var(--fs-20);font-weight:500;color:var(--night-ink-2)}
+
+/* ── Онбординг, самооценка «слышу» ── */
+.ob{display:flex;flex-direction:column;min-height:calc(100dvh - 24px);gap:var(--sp-3)}
+.skip{margin-left:auto;min-height:44px;padding:0 var(--sp-2);color:var(--ink-2);font-weight:700;font-size:var(--fs-14)}
+.ob-art{border-radius:var(--r-sheet);overflow:hidden;background:var(--paper);aspect-ratio:1;max-height:42vh;align-self:center;width:auto;max-width:100%}
+.ob-art img{height:100%;width:auto;aspect-ratio:1;object-fit:cover}
+.ob-ring{display:flex;justify-content:center;padding:var(--sp-4);height:100%;align-items:center}
+.ob-ring .ring{width:min(216px,60vw)}
+.ob-p{font-size:var(--fs-16);color:var(--ink-2);line-height:1.5}
+.ob-foot{margin-top:auto;display:flex;flex-direction:column;gap:var(--sp-4);padding-top:var(--sp-4)}
+.dots{display:flex;gap:var(--sp-2);justify-content:center}
+.dots i{width:8px;height:8px;border-radius:50%;background:var(--line)}.dots i.on{background:var(--ink)}
+.kl{display:flex;align-items:flex-start;gap:var(--sp-2)}
+.kl-body{flex:1;min-width:0}
+.kl-ear{flex-shrink:0;width:44px;height:44px;display:grid;place-items:center;margin:-8px -10px 0 0}
+.kl-ear i{width:24px;height:24px;border-radius:50%;border:2px solid var(--ink-3);display:block;position:relative}
+.kl-ear[aria-pressed=true] i{background:var(--ink);border-color:var(--ink)}
+.kl-ear[aria-pressed=true] i::after{content:'';position:absolute;left:7px;top:3px;width:6px;height:11px;border:solid var(--bg);border-width:0 2.5px 2.5px 0;transform:rotate(45deg)}
+.heard{font-size:var(--fs-14);color:var(--ink-2);margin:0 0 var(--sp-2)}
+.heard b{color:var(--ink);font-variant-numeric:tabular-nums}
+.sheet-in .method{margin:0 0 var(--sp-3);color:var(--ink-2);font-size:var(--fs-14)}

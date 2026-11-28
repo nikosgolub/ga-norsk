@@ -2,20 +2,23 @@
 // Механика Apple Music: текущая реплика в фокусе, слово заливается по ходу, автопрокрутка с паузой при ручной прокрутке.
 const LEAD = 0.12;   // реплика становится текущей чуть раньше первого слова
 
-export function karaoke({ audio, host, scroller, lines, timing, onSeek, onWord }){
+export function karaoke({ audio, host, scroller, lines, timing, onSeek, onWord, heard = [], onHeard }){
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const starts = lines.map((l, k) => (timing && timing.l[k] && timing.l[k].w.length) ? timing.l[k].s : null);
   host.innerHTML = lines.map((l, k) => {
     const m = /^([^:]{1,24}):\s*(.*)$/.exec(l.no);
     const words = timing && timing.l[k] && timing.l[k].w.length ? timing.l[k].w.map(w => w[0]) : (m ? m[2] : l.no).split(/\s+/);
-    return '<div class="kl" data-k="' + k + '">' + (m ? '<span class="kl-who">' + esc(m[1]) + '</span>' : '') +
+    return '<div class="kl" data-k="' + k + '"><div class="kl-body">' + (m ? '<span class="kl-who">' + esc(m[1]) + '</span>' : '') +
       '<p class="kl-no" lang="nb">' + words.map((w, j) => '<span class="kw" data-j="' + j + '">' + esc(w) + '</span>').join(' ') + '</p>' +
-      '<p class="kl-tr">' + esc(l.tr || '') + '</p></div>';
+      '<p class="kl-tr">' + esc(l.tr || '') + '</p></div>' +
+      (onHeard ? '<button class="kl-ear" data-ear="' + k + '" aria-pressed="' + heard.includes(k) + '" aria-label="Слышу эту реплику целиком"><i></i></button>' : '') + '</div>';
   }).join('');
   const els = Array.from(host.querySelectorAll('.kl'));
   let cur = -1, lastWord = -1, raf = 0, userScrollUntil = 0, programmatic = 0;
 
   host.addEventListener('click', e => {
+    const ear = e.target.closest('.kl-ear');
+    if(ear){ const k = +ear.dataset.ear; ear.setAttribute('aria-pressed', ear.getAttribute('aria-pressed') === 'true' ? 'false' : 'true'); onHeard(k); return; }
     const w = e.target.closest('.kw'), line = e.target.closest('.kl');
     if(!line) return;
     const k = +line.dataset.k;

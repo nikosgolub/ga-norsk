@@ -6,9 +6,11 @@ import { go } from './core/router.js';
 import './screens/home.js';
 import './screens/dialog.js';
 import './screens/cards.js';
+import './screens/onboarding.js';
+import { state } from './core/store.js';
 
 tgInit();
 applyTheme();
 cloudRestore().catch(() => false)
   .then(() => importLegacy().catch(() => false))
-  .then(() => { applyTheme(); go('home'); });
+  .then(() => { applyTheme(); go('home'); if(!state.onboarded) go('onboarding'); });

@@ -4,7 +4,7 @@ import { TG, hasCloud } from './tg.js';
 
 const KEY = 'ga2_state';
 const CHUNK = 3800, MAX_CHUNKS = 8;
-const DEFAULT = () => ({ v: 1, name: '', lang: 'ru', theme: 'auto', rate: 1, loop: 1, path: {}, days: {}, cards: { list: [], sets: [] }, imported: false });
+const DEFAULT = () => ({ v: 1, name: '', lang: 'ru', theme: 'auto', rate: 1, loop: 1, path: {}, days: {}, cards: { list: [], sets: [] }, imported: false, onboarded: false });
 
 export let state = DEFAULT();
 const listeners = new Set();
