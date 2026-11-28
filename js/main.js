@@ -5,6 +5,7 @@ import { importLegacy } from './core/legacy.js';
 import { go } from './core/router.js';
 import './screens/home.js';
 import './screens/dialog.js';
+import './screens/cards.js';
 
 tgInit();
 applyTheme();

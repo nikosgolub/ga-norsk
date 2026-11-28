@@ -9,6 +9,7 @@ import { trackAudio } from '../core/clock.js';
 import { karaoke } from '../features/karaoke.js';
 import { setMediaSession } from '../features/mediasession.js';
 import { buzz } from '../core/tg.js';
+import { openWordCard, closeSheet } from '../features/wordcard.js';
 
 const mmss = s => { s = Math.max(0, Math.floor(s || 0)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
 const PLAY = '<svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></svg>';
@@ -61,7 +62,8 @@ register('dialog', (app, { i, mode: startMode }) => {
     bind();
     if(mode === 'follow'){
       kar = karaoke({ audio, host: app.querySelector('#kh'), scroller: app.querySelector('#sc'), lines: lines(), timing,
-        onSeek: t => { audio.currentTime = t; }, onWord: null });
+        onSeek: t => { audio.currentTime = t; },
+        onWord: (w, k) => /^\d+$/.test(w.replace(/\W/g, '')) ? null : openWordCard(w, d.lines[k].no.replace(/^[^:]{1,24}:\s*/, '').replace(/^[–-]\s*/, '')) });
     }
     tick();
   }
@@ -105,5 +107,5 @@ register('dialog', (app, { i, mode: startMode }) => {
   audio.addEventListener('play', sync); audio.addEventListener('pause', sync); audio.addEventListener('ended', sync);
 
   draw();
-  return () => { disposed = true; clock.dispose(); audio.pause(); audio.removeAttribute('src'); audio.load(); if(kar) kar.dispose(); msOff(); cancelAnimationFrame(tickRaf); };
+  return () => { closeSheet(); disposed = true; clock.dispose(); audio.pause(); audio.removeAttribute('src'); audio.load(); if(kar) kar.dispose(); msOff(); cancelAnimationFrame(tickRaf); };
 });

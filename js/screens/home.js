@@ -6,6 +6,7 @@ import { register, go } from '../core/router.js';
 import { toggleTheme } from '../core/theme.js';
 import { rerender } from '../core/router.js';
 import { state, update } from '../core/store.js';
+import * as cards from '../features/cards.js';
 
 const STAGE_NAME = { listen: ['Слушать', 'Listen'], follow: ['Следить', 'Follow'], speak: ['Говорить', 'Speak'], exam: ['Экзамен', 'Exam'], done: ['Пройден', 'Done'] };
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -43,10 +44,12 @@ register('home', app => {
     noteHTML() +
     '<div class="night-card day-card" style="margin-top:var(--sp-4)">' + ring(sec) +
       '<button class="btn" id="go">' + BTN(cs, cur) + '</button></div>' +
+    '<button class="row" id="cards" style="margin-top:var(--sp-4)"><span class="tx"><b>' + L('Мои карточки', 'My Cards') + '</b><small>' + cards.list().length + L(' слов', ' words') + (cards.due().length ? ' · ' + L('к повтору: ', 'due: ') + cards.due().length : '') + '</small></span><span class="mut">›</span></button>' +
     '<div class="sec-h"><h3>' + L('Путь', 'Path') + '</h3><span class="mut">' + DIALOGS.length + '</span></div>' +
     '<div class="list">' + rows + '</div>';
   const imp = app.querySelector('#imp'); if(imp) imp.onclick = () => { update(st => { delete st.importNote; }); rerender(); };
   app.querySelector('#th').onclick = () => { toggleTheme(); rerender(); };
+  app.querySelector('#cards').onclick = () => go('cards');
   app.querySelector('#go').onclick = () => go('dialog', { i: cur });
-  app.querySelectorAll('.row').forEach(b => { b.onclick = () => go('dialog', { i: +b.dataset.i }); });
+  app.querySelectorAll('.row[data-i]').forEach(b => { b.onclick = () => go('dialog', { i: +b.dataset.i }); });
 });

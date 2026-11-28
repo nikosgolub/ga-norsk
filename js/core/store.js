@@ -4,7 +4,7 @@ import { TG, hasCloud } from './tg.js';
 
 const KEY = 'ga2_state';
 const CHUNK = 3800, MAX_CHUNKS = 8;
-const DEFAULT = () => ({ v: 1, name: '', lang: 'ru', theme: 'auto', rate: 1, loop: 1, path: {}, days: {}, cards: {}, imported: false });
+const DEFAULT = () => ({ v: 1, name: '', lang: 'ru', theme: 'auto', rate: 1, loop: 1, path: {}, days: {}, cards: { list: [], sets: [] }, imported: false });
 
 export let state = DEFAULT();
 const listeners = new Set();
@@ -12,6 +12,7 @@ let saveTimer = null, sent = {}, nChunks = 0;
 
 function migrate(s){
   const d = Object.assign(DEFAULT(), s || {});
+  if(!d.cards || !Array.isArray(d.cards.list)) d.cards = { list: [], sets: [] };
   d.v = 1;          // здесь — будущие миграции по номеру версии
   return d;
 }

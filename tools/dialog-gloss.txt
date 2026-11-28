@@ -1,0 +1,457 @@
+# Глоссарий слов диалогов, которых нет в словаре уроков. Формат: форма в тексте|словарная форма|русский|English
+# Составлен вручную по контексту диалогов (ЧЕРНОВИК — проверить носителем). Имена собственные — «имя».
+absolutt|absolutt|абсолютно, совершенно|absolutely
+akkurat|akkurat|как раз, именно|exactly, just
+alders|alder|возраст (alders- — «пожилых»)|age (alders- = of the elderly)
+alkoholfri|alkoholfri|безалкогольный|alcohol-free
+altfor|altfor|слишком|far too
+amerikanske|amerikansk|американский|American
+amir|Amir|имя|name
+amo-kurs|et amo-kurs|курс подготовки помощника по уходу|care-assistant course
+anita|Anita|имя|name
+anne|Anne|имя|name
+annes|Anne|Анны (имя)|Anne's (name)
+annet|annen|другой, иной|other, different
+arbeide|å arbeide|работать|to work
+arbeidsledig|arbeidsledig|безработный|unemployed
+asylmottak|et asylmottak|центр размещения беженцев|asylum reception centre
+avhengig|avhengig|зависимый; зависит|dependent
+avstand|en avstand|расстояние|distance
+avtale|en avtale|договорённость, встреча|agreement, appointment
+avtalen|en avtale|договорённость|the agreement
+ball|en ball|мяч|ball
+bandet|et band|группа (музыкальная)|the band
+barndommen|en barndom|детство|childhood
+barnehage|en barnehage|детский сад|kindergarten
+barnehagen|en barnehage|детский сад|kindergarten
+barnevakt|en barnevakt|няня|babysitter
+be|å be|просить; молиться|to ask, to request
+bedring|en bedring|улучшение (выздоровление)|improvement
+beina|et bein|ноги|the legs
+beskjed|en beskjed|сообщение, весточка|message, notice
+bestefar|en bestefar|дедушка|grandfather
+bestemme|å bestemme|решать|to decide
+bestille|å bestille|заказывать, бронировать|to order, to book
+blandingsmeny|en blandingsmeny|комбинированное меню|mixed menu
+blid|blid|весёлый, приветливый|cheerful
+blodtrykket|et blodtrykk|кровяное давление|blood pressure
+bonde|en bonde|фермер|farmer
+bordplassering|en bordplassering|рассадка за столом|seating arrangement
+bot|ei bot|штраф|fine
+bruke|å bruke|использовать; тратить|to use
+bruker|å bruke|использует, пользуется|uses
+bråk|et bråk|шум, скандал|noise, fuss
+bøtene|ei bot|штрафы|the fines
+colaen|en cola|кола|the cola
+dag|en dag|день|day
+darani|Darani|имя|name
+datamaskin|en datamaskin|компьютер|computer
+datamaskinen|en datamaskin|компьютер|the computer
+deltid|en deltid|неполная занятость|part time
+deretter|deretter|после этого, затем|after that
+derfor|derfor|поэтому|therefore
+dessert|en dessert|десерт|dessert
+dessuten|dessuten|к тому же|besides
+dessverre|dessverre|к сожалению|unfortunately
+dialekten|en dialekt|диалект|the dialect
+disiplin|en disiplin|дисциплина|discipline
+dit|dit|туда|there (to)
+driver|å drive|занимается; управляет; (driver med — занимаюсь чем-то)|does, runs (driver med = busy with)
+drømmejobben|en drømmejobb|работа мечты|the dream job
+drømmen|en drøm|мечта; сон|the dream
+dum|dum|глупый|stupid
+dårlige|dårlig|плохие|bad (pl.)
+e-post|en e-post|электронная почта|email
+egentlig|egentlig|вообще-то, на самом деле|actually
+ekstra|ekstra|дополнительный|extra
+elev|en elev|ученик|pupil
+elevene|en elev|ученики|the pupils
+elever|en elev|ученики|pupils
+ella|Ella|имя|name
+ellers|ellers|иначе; в остальном|otherwise
+enda|enda|ещё, всё ещё|even, still
+ene|ene|единственный; один (ene og alene — совсем один)|only, one
+england|England|Англия|England
+etter|etter|после; за|after
+europa|Europa|Европа|Europe
+fagene|et fag|предметы, дисциплины|the subjects
+fall|et fall|падение; случай|fall, case
+fartsbot|ei fartsbot|штраф за превышение скорости|speeding fine
+fartskontroll|en fartskontroll|контроль скорости|speed check
+fastlege|en fastlege|семейный врач|family doctor (GP)
+ferdige|ferdig|готовые, законченные|finished (pl.)
+ferdigmat|en ferdigmat|готовая еда|ready meal
+firma|et firma|фирма, компания|company
+fiskemottak|et fiskemottak|приёмный пункт рыбы|fish reception plant
+fjellgata|ei fjellgate|горная улица|mountain street
+flaske|ei flaske|бутылка|bottle
+fleste|mange|большинство (de fleste)|most (de fleste)
+flink|flink|умелый, способный, молодец|skilful, clever
+flinke|flink|умелые, способные|skilful (pl.)
+fløte|en fløte|сливки|cream
+foregår|å foregå|происходит|takes place
+foreldre|en forelder|родители|parents
+forelesning|en forelesning|лекция|lecture
+foreløpig|foreløpig|пока, на данный момент|for now
+foretrekker|å foretrekke|предпочитает|prefers
+forkjølet|forkjølet|простуженный|having a cold
+form|en form|форма|form, shape
+formelt|formelt|формально|formally
+fornavn|et fornavn|имя (личное)|first name
+fornøyelse|en fornøyelse|удовольствие, развлечение|pleasure
+forresten|forresten|кстати|by the way
+forskjellige|forskjellig|разные|different
+fortalte|å fortelle|рассказал(а)|told
+forteller|å fortelle|рассказывает|tells
+fortsette|å fortsette|продолжать|to continue
+fotball|en fotball|футбол|football
+fotballkamp|en fotballkamp|футбольный матч|football match
+franco|Franco|имя|name
+fred|en fred|мир, покой|peace
+fremmede|fremmed|чужие, незнакомые|strangers, foreign
+fri|fri|свободный; выходной|free
+frihet|en frihet|свобода|freedom
+frisk|frisk|здоровый; свежий|healthy, fresh
+fryktelig|fryktelig|ужасно, страшно|terribly
+fryseren|en fryser|морозилка|the freezer
+full|full|полный; пьяный|full
+fylte|å fylle|заполнил(а); исполнилось (о возрасте)|filled; turned (age)
+fysioterapeut|en fysioterapeut|физиотерапевт|physiotherapist
+får|å få|получает; может; приходится|gets; may; has to
+følte|å føle|чувствовал(а)|felt
+føre|å føre|вести; приводить|to lead
+førerkortet|et førerkort|водительские права|the driving licence
+først|først|сначала, сперва|first
+gaffel|en gaffel|вилка|fork
+gal|gal|сумасшедший, неправильный|mad, wrong
+gammeldags|gammeldags|старомодный|old-fashioned
+gammeldagse|gammeldags|старомодные|old-fashioned (pl.)
+gangen|en gang|раз|the time
+ganske|ganske|довольно, весьма|quite
+giftet|å gifte|вышла/женился (gift seg)|married (gifte seg)
+gjerne|gjerne|охотно, с удовольствием|gladly
+glass|et glass|стакан; стекло|glass
+godkjent|godkjent|одобренный, зачтённый|approved
+grete|Grete|имя|name
+grillet|grillet|приготовленный на гриле|grilled
+grønnsakene|ei grønnsak|овощи|the vegetables
+gutter|en gutt|мальчики, парни|boys
+gøy|gøy|весело, забавно|fun
+hard|hard|твёрдый; тяжёлый|hard
+hardt|hard|сильно, упорно|hard (adv.)
+hassan|Hassan|имя|name
+hei|hei|привет|hi
+heldig|heldig|везучий|lucky
+heldigvis|heldigvis|к счастью|luckily
+hele|hel|весь, целый|whole (pl./def.)
+helgene|en helg|выходные|the weekends
+heller|heller|скорее, тоже (не)|rather; either
+helsestudio|et helsestudio|фитнес-клуб|gym
+helt|helt|совсем, полностью|completely
+hensyn|et hensyn|учёт, внимание|consideration
+hilsen|en hilsen|привет, пожелание|greeting
+hilsener|en hilsen|приветы|greetings
+hilste|å hilse|поздоровался, поприветствовал|greeted
+hjemmet|et hjem|дом, жильё|the home
+hjemmeværende|hjemmeværende|сидящий дома|stay-at-home
+hm|hm|гм|hm
+hovedpersonens|en hovedperson|главного героя|of the main character
+hovedrett|en hovedrett|основное блюдо|main course
+huff|huff|ох, увы|ugh, oh dear
+husker|å huske|помнит|remembers
+hysj|hysj|тсс|shh
+høres|å høre|звучит (høres ut)|sounds
+ideer|en idé|идеи|ideas
+indira|Indira|имя|name
+indisk|indisk|индийский|Indian
+informasjon|en informasjon|информация|information
+ingen|ingen|никто; никакой|nobody, no
+ingeniør|en ingeniør|инженер|engineer
+ingeniørutdanningen|en ingeniørutdanning|инженерное образование|engineering education
+internett|et internett|интернет|internet
+invitasjonen|en invitasjon|приглашение|the invitation
+invitere|å invitere|приглашать|to invite
+irriterende|irriterende|раздражающий|annoying
+italiensk|italiensk|итальянский|Italian
+ja|ja|да|yes
+jan|Jan|имя|name
+javel|javel|ну ладно, понятно|I see, all right
+jo|jo|да ведь; нет, да (ответ на отрицание)|yes (contradicting), you know
+john|John|имя|name
+jordbruk|et jordbruk|сельское хозяйство|agriculture
+jordbær|et jordbær|клубника|strawberry
+julaften|en julaften|Сочельник|Christmas Eve
+julematen|en julemat|рождественская еда|Christmas food
+julen|en jul|Рождество|Christmas
+kafeer|en kafé|кафе|cafés
+kalkun|en kalkun|индейка|turkey
+kameraten|en kamerat|приятель, товарищ|the friend
+kanin|en kanin|кролик|rabbit
+kanskje|kanskje|может быть|maybe
+kanter|en kant|края, стороны|edges, sides
+kapittel|et kapittel|глава|chapter
+karakterer|en karakter|оценки; персонажи|grades; characters
+kari|Kari|имя|name
+kassa|ei kasse|касса|the till
+kaster|å kaste|бросает|throws
+kinoen|en kino|кинотеатр|the cinema
+kjedelig|kjedelig|скучный|boring
+kjemi|en kjemi|химия|chemistry
+kjempegodt|kjempegod|очень вкусно|really good
+kjenne|å kjenne|знать (кого-то); чувствовать|to know (someone); to feel
+kjære|kjær|дорогой|dear
+kjærlige|kjærlig|любящие, нежные|loving
+kjøpesenteret|et kjøpesenter|торговый центр|the shopping centre
+kjør|å kjøre|езжай, води|drive
+kjørt|å kjøre|ехал(а)|driven
+klage|å klage|жаловаться|to complain
+kniv|en kniv|нож|knife
+kokk|en kokk|повар|cook
+kollegene|en kollega|коллеги|the colleagues
+komplisert|komplisert|сложный|complicated
+kona|ei kone|жена|the wife
+konkurranse|en konkurranse|соревнование, конкурс|competition
+konservative|konservativ|консервативные|conservative
+kontoret|et kontor|офис|the office
+kopp|en kopp|чашка|cup
+kopper|en kopp|чашки|cups
+krever|å kreve|требует|demands
+kunst|en kunst|искусство|art
+kunsthistorie|en kunsthistorie|история искусства|art history
+kurs|et kurs|курс|course
+kursene|et kurs|курсы|the courses
+kurset|et kurs|курс|the course
+kutte|å kutte|резать; сокращать|to cut
+kvelder|en kveld|вечера|evenings
+laks|en laks|лосось|salmon
+landet|et land|страна|the country
+larissa|Larissa|имя|name
+laura|Laura|имя|name
+legeutdanningen|en legeutdanning|медицинское образование|medical education
+leit|leit|жаль, грустно (jeg er leit for det)|sorry, sad
+lien|Lien|имя (фамилия)|name (surname)
+likevel|likevel|всё же, тем не менее|still, nevertheless
+likner|å likne|похож|resembles
+linn|Linn|имя|name
+lov|en lov|закон; разрешение|law, permission
+lover|å love|обещает|promises
+lunsjpausen|en lunsjpause|обеденный перерыв|the lunch break
+lunsjsted|et lunsjsted|место для обеда|lunch place
+lærerne|en lærer|учителя|the teachers
+løft|et løft|подъём (груза)|lift
+lønn|en lønn|зарплата|salary
+lønna|ei lønn|зарплата|the salary
+mamma|en mamma|мама|mum
+mann|en mann|мужчина; муж|man; husband
+mas|et mas|надоедливые просьбы, нытьё|nagging
+masala|masala|масала|masala
+matematikk|en matematikk|математика|mathematics
+mediene|et medium|СМИ|the media
+medisin|en medisin|медицина; лекарство|medicine
+medisinsk|medisinsk|медицинский|medical
+medisterpølse|en medisterpølse|колбаса мединстер|medister sausage
+mellom|mellom|между|between
+mennesker|et menneske|люди|people
+mens|mens|пока; в то время как|while
+meste|mest|большая часть (det meste)|most (det meste)
+minste|liten|наименьший (det minste)|smallest (det minste)
+misforståelse|en misforståelse|недоразумение|misunderstanding
+mmm|mmm|ммм|mmm
+mulig|mulig|возможный|possible
+multekrem|en multekrem|крем из морошки|cloudberry cream
+måte|en måte|способ|way
+måten|en måte|способ|the way
+naturlig|naturlig|естественный|natural
+nei|nei|нет|no
+nesten|nesten|почти|almost
+nettet|et nett|сеть, интернет|the net
+nettsidene|en nettside|веб-сайты|the websites
+nok|nok|достаточно; наверное|enough; probably
+nokså|nokså|довольно, достаточно|fairly
+norskboka|ei norskbok|учебник норвежского|the Norwegian textbook
+norske|norsk|норвежские; норвежский|Norwegian
+norskkunnskaper|en norskkunnskap|знание норвежского|Norwegian skills
+norskkurset|et norskkurs|курс норвежского|the Norwegian course
+nydelige|nydelig|прекрасные|lovely
+nytter|å nytte|имеет смысл (det nytter ikke)|is of use
+nødvendig|nødvendig|необходимый|necessary
+også|også|тоже, также|also
+oi|oi|ой|oh
+ok|ok|окей|OK
+oldemor|en oldemor|прабабушка|great-grandmother
+olivenolje|en olivenolje|оливковое масло|olive oil
+oljeindustrien|en oljeindustri|нефтяная промышленность|the oil industry
+oljeteknologi|en oljeteknologi|нефтяные технологии|petroleum technology
+ordentlig|ordentlig|как следует, порядочный|properly
+overdriver|å overdrive|преувеличивает|exaggerates
+pai|en pai|пирог|pie
+panos|Panos|имя|name
+papir|et papir|бумага|paper
+pc|en pc|компьютер|PC
+pc-en|en pc|компьютер|the PC
+per|Per|имя; также «на, в»|name; per
+pinnekjøtt|et pinnekjøtt|пиннекьётт (рождественское блюдо из ребрышек)|pinnekjøtt (Christmas dish)
+pizza|en pizza|пицца|pizza
+pleieassistent|en pleieassistent|помощник по уходу|care assistant
+pleier|å pleie|обычно делает; ухаживает|usually does; takes care of
+politiet|et politi|полиция|the police
+politikk|en politikk|политика|politics
+porsjoner|en porsjon|порции|portions
+prate|å prate|болтать|to chat
+press|et press|давление|pressure
+program|et program|программа; передача|programme
+prøvetime|en prøvetime|пробный урок|trial lesson
+psykologi|en psykologi|психология|psychology
+pugging|en pugging|зубрёжка|cramming
+radar|en radar|радар|radar
+radio|en radio|радио|radio
+randi|Randi|имя|name
+regler|en regel|правила|rules
+regninger|en regning|счета|bills
+respekt|en respekt|уважение|respect
+restauranten|en restaurant|ресторан|the restaurant
+restauranter|en restaurant|рестораны|restaurants
+rette|å rette|исправлять; прямой|to correct; straight
+ribbe|en ribbe|свиные рёбрышки (рождественское блюдо)|pork ribs
+riktig|riktig|правильный|correct
+ris|en ris|рис|rice
+ro|ei ro|покой|calm
+roligere|rolig|спокойнее|calmer
+romantisk|romantisk|романтичный|romantic
+rundstykke|et rundstykke|булочка|bread roll
+råd|et råd|совет|advice
+salat|en salat|салат|salad
+salaten|en salat|салат|the salad
+samarbeid|et samarbeid|сотрудничество|cooperation
+samfunnet|et samfunn|общество|society
+samlet|å samle|собрал(и); вместе|collected; gathered
+samme|samme|тот же самый|same
+sannsynligvis|sannsynligvis|вероятно|probably
+sant|sant|правда|true
+sara|Sara|имя|name
+sekstiårsdag|en sekstiårsdag|60-летний юбилей|60th birthday
+selvfølgelig|selvfølgelig|конечно|of course
+selvsagt|selvsagt|само собой|naturally
+selvstendig|selvstendig|самостоятельный|independent
+selvstendighet|en selvstendighet|самостоятельность|independence
+seminar|et seminar|семинар|seminar
+sherry|en sherry|херес|sherry
+sikker|sikker|уверенный; надёжный|sure, safe
+sikkert|sikkert|наверняка|surely
+sist|sist|последний, в последний раз|last
+situasjonen|en situasjon|ситуация|the situation
+sjenert|sjenert|стеснительный|shy
+sjokoladeis|en sjokoladeis|шоколадное мороженое|chocolate ice cream
+sjokoladesaus|en sjokoladesaus|шоколадный соус|chocolate sauce
+sjåfør|en sjåfør|водитель|driver
+skader|en skade|травмы, повреждения|injuries, damage
+skitur|en skitur|лыжная прогулка|ski trip
+skjønne|å skjønne|понимать|to understand
+skjønner|å skjønne|понимает|understands
+skjønte|å skjønne|понял(а)|understood
+skriver|å skrive|пишет|writes
+skulle|å skulle|должен был; собирался|was supposed to
+slags|en slags|вид, сорт (hva slags — какой)|kind (hva slags = what kind of)
+slanke|å slanke|худеть (slanke seg)|to slim
+slik|slik|так, таким образом|like this
+slå|å slå|бить; включать|to hit; to switch
+smake|å smake|пробовать; иметь вкус|to taste
+smakte|å smake|имело вкус; понравилось на вкус|tasted
+smal|smal|узкий|narrow
+smørbrød|et smørbrød|бутерброд|sandwich
+sonia|Sonia|имя|name
+spare-ribs|spare-ribs|рёбрышки|spare ribs
+spennende|spennende|интересный, захватывающий|exciting
+spesialisere|å spesialisere|специализироваться|to specialise
+spesiell|spesiell|особенный|special
+spesielt|spesielt|особенно|especially
+spilt|å spille|играл(а)|played
+spilte|å spille|играл(а)|played
+spisested|et spisested|место, где едят; ресторанчик|eating place
+språket|et språk|язык|the language
+spørs|å spørre|зависит (det spørs)|depends (det spørs)
+starte|å starte|начинать; открывать (дело)|to start
+stede|et sted|место (på stedet)|place
+steder|et sted|места|places
+stil|en stil|стиль|style
+stilig|stilig|стильный|stylish
+stirre|å stirre|пялиться|to stare
+stole|å stole|доверять (stole på)|to trust (stole på)
+stoppe|å stoppe|останавливать(ся)|to stop
+studerte|å studere|учился(лась) (в вузе)|studied
+studielånet|et studielån|студенческий кредит|the student loan
+studiene|et studium|учёба, занятия|the studies
+studietid|en studietid|время учёбы|study time
+ståle|Ståle|имя|name
+sukkerbiter|en sukkerbit|кусочки сахара|sugar cubes
+sultne|sulten|голодные|hungry (pl.)
+sunt|sunn|здорово, полезно|healthy
+supermarkedet|et supermarked|супермаркет|the supermarket
+sykehjem|et sykehjem|дом ухода (для пожилых)|nursing home
+sykehjemmet|et sykehjem|дом ухода|the nursing home
+synes|å synes|думает, считает|thinks
+sånn|sånn|такой; так|such; like that
+takke|å takke|благодарить|to thank
+taler|å tale|говорит|speaks
+tapper|tapper|храбрый; (tapper i vann — наливать воду)|brave
+tenke|å tenke|думать|to think
+tenkt|å tenke|думал; (tenkt å — собираюсь)|thought
+tenkte|å tenke|думал(а)|thought
+teservering|en teservering|чайная|tea room
+teste|å teste|тестировать|to test
+tida|en tid|время|the time
+tikka|å tikke|тикала (о часах)|ticked
+tja|tja|ну, не знаю|well
+tjene|å tjene|зарабатывать|to earn
+tom|tom|пустой|empty
+tomatene|en tomat|помидоры|the tomatoes
+tomater|en tomat|помидоры|tomatoes
+tor|Tor|имя|name
+trafikk|en trafikk|движение, трафик|traffic
+trening|en trening|тренировка|training
+trettini|trettini|тридцать девять|thirty-nine
+trives|å trives|чувствовать себя хорошо, нравиться|to thrive, to enjoy
+trygghet|en trygghet|безопасность, уверенность|security
+tuller|å tulle|шутит|jokes
+tunge|tung|тяжёлые|heavy
+tydelig|tydelig|ясный, понятный|clear
+typisk|typisk|типичный|typical
+tørst|tørst|жажда; жаждущий|thirst; thirsty
+uenig|uenig|несогласный|disagreeing
+ulogisk|ulogisk|нелогичный|illogical
+umulig|umulig|невозможный|impossible
+unnskyldning|en unnskyldning|извинение|apology
+usa|USA|США|USA
+usikker|usikker|неуверенный|unsure
+utdanning|en utdanning|образование|education
+ute|ute|снаружи, на улице|out, outside
+utenfor|utenfor|снаружи, перед|outside
+utfordringer|en utfordring|вызовы, трудности|challenges
+utlendingene|en utlending|иностранцы|the foreigners
+uttale|en uttale|произношение|pronunciation
+vakter|en vakt|смены; охранники|shifts; guards
+valgte|å velge|выбрал(а)|chose
+vaniljeis|en vaniljeis|ванильное мороженое|vanilla ice cream
+vaskejobb|en vaskejobb|работа уборщиком|cleaning job
+vaskemaskin|en vaskemaskin|стиральная машина|washing machine
+vedtar|å vedta|принимает (решение)|adopts, decides
+veier|en vei|дороги|roads
+vekker|å vekke|будит|wakes
+vel|vel|ну, ведь; пожалуй|well, I suppose
+velkommen|velkommen|добро пожаловать|welcome
+verken|verken|ни (verken … eller)|neither (verken … eller)
+verst|vond|хуже всего|worst
+vikarer|en vikar|заменяющие работники|substitutes
+vinker|å vinke|машет рукой|waves
+virker|å virke|кажется; действует|seems; works
+vognkortet|et vognkort|регистрационное свидетельство авто|the vehicle registration card
+voksne|voksen|взрослые|adults
+våken|våken|бодрствующий, проснувшийся|awake
+åsveien|Åsveien|название улицы|street name
+ødelegge|å ødelegge|портить, разрушать|to ruin
+ødelegger|å ødelegge|портит, разрушает|ruins
+økonomi|en økonomi|экономика; финансы|economy
+økonomistudiene|et økonomistudium|изучение экономики|economics studies
+øl|et øl|пиво|beer
+ønsker|å ønske|желает|wishes
+øyeblikk|et øyeblikk|момент|moment
