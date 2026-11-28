@@ -127,3 +127,7 @@
 .heard b{color:var(--ink);font-variant-numeric:tabular-nums}
 .heard span:last-child{margin-right:12px}
 .sheet-in .method{margin:0 0 var(--sp-3);color:var(--ink-2);font-size:var(--fs-14)}
+.streak{display:inline-flex;align-items:center;gap:6px;height:40px;padding:0 var(--sp-3);border-radius:20px;border:1px solid var(--line);color:var(--ink-2);font-size:var(--fs-14);font-weight:500}
+.streak.today{color:var(--ink)}
+.streak b{color:var(--ink);font-variant-numeric:tabular-nums}
+.top .t{flex:1}

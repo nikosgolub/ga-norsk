@@ -35,3 +35,12 @@ export function toggleHeard(id, k){
     if(i >= 0) p.heard.splice(i, 1); else p.heard.push(k);
   });
 }
+
+// Серия: дни подряд, в каждом из которых активного времени ≥ STREAK_MIN_SEC. Сегодняшний день ещё может «догнать» — серия не рвётся до конца дня.
+export const STREAK_MIN_SEC = 10 * 60;
+export function streak(){
+  let n = 0, off = 0;
+  if(daySec(dstr(0)) < STREAK_MIN_SEC) off = -1;          // сегодня пока мало — считаем от вчера
+  for(;; off--){ if(daySec(dstr(off)) >= STREAK_MIN_SEC) n++; else break; }
+  return n;
+}

@@ -1,7 +1,7 @@
 import { DIALOGS } from '../data/dialogs.js';
 import { cover } from '../data/covers.js';
 import { L, fmtDur } from '../core/i18n.js';
-import { dlgState, currentIndex, daySec, DAY_GOAL_SEC } from '../core/path.js';
+import { dlgState, currentIndex, daySec, DAY_GOAL_SEC, streak, STREAK_MIN_SEC } from '../core/path.js';
 import { register, go } from '../core/router.js';
 import { toggleTheme } from '../core/theme.js';
 import { rerender } from '../core/router.js';
@@ -24,6 +24,13 @@ function ring(sec){
     '<div class="mid"><b>' + fmtDur(sec) + '</b><small>' + L('из 3 ч', 'of 3 h') + '</small></div></div>';
 }
 
+const dayWord = n => { const k = n % 10, h = n % 100; return L(h >= 11 && h <= 14 ? 'дней' : k === 1 ? 'день' : k >= 2 && k <= 4 ? 'дня' : 'дней', n === 1 ? 'day' : 'days'); };
+function streakHTML(){
+  const n = streak();
+  if(!n) return '';
+  const today = daySec() >= STREAK_MIN_SEC;
+  return '<span class="streak' + (today ? ' today' : '') + '" aria-label="' + L('Серия: ', 'Streak: ') + n + ' ' + dayWord(n) + (today ? '' : L(' — сегодня ещё нет', ' — not yet today')) + '"><svg width="16" height="16" viewBox="0 0 24 24" fill="' + (today ? 'currentColor' : 'none') + '" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 2c1 3.5 4 5 4 9.2A4.2 4.2 0 0 1 12 15.4 4.2 4.2 0 0 1 8 11.2c0-1.4.5-2.5 1.3-3.5.2 1.4 1 2 1.7 2C10.600 7 11 4.500 12 2zm0 20a6 6 0 0 1-6-6c0-1.200.4-2.300 1-3.200.4 1.600 2.200 3.400 5 3.400s4.600-1.800 5-3.400c.6.900 1 2 1 3.200a6 6 0 0 1-6 6z"/></svg><b>' + n + '</b> ' + dayWord(n) + '</span>';
+}
 function noteHTML(){
   const n = state.importNote;
   if(!n || !n.dialogs) return '';
@@ -40,7 +47,7 @@ register('home', app => {
       (i === cur ? '<span class="chip-now">' + L('Сейчас', 'Now') + '</span>' : s.stage === 'done' ? '<span class="done-mark" aria-label="' + L('Пройден', 'Done') + '">✓</span>' : '') + '</button>';
   }).join('');
   app.innerHTML =
-    '<div class="top"><span class="t">Gå!</span><button class="hb" id="th" aria-label="' + L('Тема', 'Theme') + '">◐</button></div>' +
+    '<div class="top"><span class="t">Gå!</span>' + streakHTML() + '<button class="hb" id="th" aria-label="' + L('Тема', 'Theme') + '">◐</button></div>' +
     noteHTML() +
     '<div class="night-card day-card" style="margin-top:var(--sp-4)">' + ring(sec) +
       '<button class="btn" id="go">' + BTN(cs, cur) + '</button></div>' +
