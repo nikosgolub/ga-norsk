@@ -13,8 +13,11 @@ export function openSheet(html){
   closeSheet();
   root = document.createElement('div');
   root.className = 'modal';
-  root.innerHTML = '<div class="modal-bg"></div><div class="modal-sheet" role="dialog" aria-modal="true">' + html + '</div>';
+  root.innerHTML = '<div class="modal-bg"></div><div class="modal-sheet" role="dialog" aria-modal="true"><i class="grip2"></i>' + html + '</div>';
   root.querySelector('.modal-bg').onclick = closeSheet;
+  let y0 = null; const sh = root.querySelector('.modal-sheet');
+  sh.addEventListener('touchstart', e => { y0 = e.touches[0].clientY; }, { passive: true });
+  sh.addEventListener('touchmove', e => { if(y0 !== null && e.touches[0].clientY - y0 > 60){ y0 = null; closeSheet(); } }, { passive: true });
   document.body.appendChild(root);
   return root.querySelector('.modal-sheet');
 }
@@ -36,10 +39,8 @@ export function openWordCard(word, lineText){
                  : '<div class="wcard-tr" id="wc-tr">' + esc(c.r) + '</div>') +
       (c.form && c.n !== c.word ? '<div class="wcard-base">' + L('Начальная форма: ', 'Base form: ') + '<b lang="nb">' + esc(c.n) + '</b></div>' : '') +
       (have ? '<div class="wcard-in">✓ ' + L('В карточках', 'In My Cards') + '</div>' : '') +
-      '<div class="modal-row"><button class="btn sec" id="wc-x">' + L('Закрыть', 'Close') + '</button>' +
       (have || c.name ? '' : c.r ? '<button class="btn" id="wc-add">' + L('В карточки', 'Add to My Cards') + '</button>'
-                       : '<button class="btn" id="wc-ai">' + L('Узнать перевод', 'Get translation') + '</button>') + '</div>');
-    sh.querySelector('#wc-x').onclick = closeSheet;
+                       : '<button class="btn" id="wc-ai">' + L('Узнать перевод', 'Get translation') + '</button>'));
     const a = sh.querySelector('#wc-add'); if(a) a.onclick = () => { cards.add(c.n, c.r); buzz('ok'); draw(); };
     const q = sh.querySelector('#wc-ai'); if(q) q.onclick = () => ask(sh);
   };
